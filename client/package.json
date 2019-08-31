@@ -2,5 +2,11 @@
   "private": true,
   "name": "client",
   "version": "0.0.0",
-  "scripts": {}
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^7.0.0-beta.3"
+  }
 }
