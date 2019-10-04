@@ -8,8 +8,12 @@
     "package": "electron-packager . --out=dist --asar --overwrite --all"
   },
   "devDependencies": {
-    "cross-env": "^6.0.3",
+    "@types/node": "^12.7.11",
+    "@types/three": "^0.103.2",
     "electron": "^7.0.0-beta.3",
     "electron-packager": "^14.0.6"
+  },
+  "dependencies": {
+    "three": "^0.109.0"
   }
 }
