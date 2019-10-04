@@ -11,6 +11,8 @@ const Audio = require("./Audio.js");
 class DefaultGameRenderer extends events {
   constructor() {
     super();
+
+    this.isInitialized = false;
     this.renderer = new THREE.WebGLRenderer({
       antialias: true
     });
@@ -18,12 +20,22 @@ class DefaultGameRenderer extends events {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.BasicShadowMap;
-    this.currentScene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
     document.body.appendChild(this.renderer.domElement);
     this.audio = new Audio();
     this.input = new Input(this.renderer.domElement);
+  }
+
+  init(currentScene = new THREE.Scene(), camera) {
+    if (!(camera instanceof THREE.Camera)) {
+      throw new TypeError("camera must be an Object that extend from THREE.Camera");
+    }
+    if (this.isInitialized) {
+      return;
+    }
+    this.currentScene = currentScene;
+    this.isInitialized = true;
+    this.camera = camera;
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -33,18 +45,31 @@ class DefaultGameRenderer extends events {
       this.renderer.render(this.currentScene, this.camera);
     }
 
-    this.resizeRenderer();
     animate();
+    this.resizeRenderer();
     window.onresize = () => this.resizeRenderer();
   }
 
-  cleanScene() {
+  switchScene(newScene) {
+    this.cleanCurrentScene();
+    this.currentScene = newScene;
+  }
+
+  cleanCurrentScene() {
+    if (!this.isInitialized) {
+      return;
+    }
+
     while (this.currentScene.children.length > 0) {
       this.currentScene.remove(this.currentScene.children[0]);
     }
   }
 
   resizeRenderer() {
+    if (!this.isInitialized) {
+      return;
+    }
+
     this.emit("resize");
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
