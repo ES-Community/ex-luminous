@@ -12,10 +12,37 @@ class Scene {
     this.actors = [];
   }
 
+  /**
+   * @function findActorByName
+   * @param {!string} name
+   * @param {!boolean} [lookForActorChildrens]
+   * @returns {Actor}
+   */
+  findActorByName(name, lookForActorChildrens = false) {
+    for (const actor of this.actors) {
+      if (actor.name === name) {
+        return actor;
+      }
+
+      if (!lookForActorChildrens) {
+        continue;
+      }
+
+      const actorChild = actor.getChildrenActorByName(name);
+      if (actorChild !== null) {
+        return actorChild;
+      }
+    }
+
+    return null;
+  }
+
   add(object) {
     if (object instanceof Actor) {
-      this.actors.push(object);
-      this.scene.add(object.threeObject);
+      if (object.parent === null) {
+        this.actors.push(object);
+        this.scene.add(object.threeObject);
+      }
     }
     else {
       this.scene.add(object);
