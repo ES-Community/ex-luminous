@@ -4,6 +4,9 @@ const events = require("events");
 // Require Third-party Dependencies
 const THREE = require("three");
 
+// Require Internal Dependencies
+const Input = require("./Input.js");
+
 class DefaultGameRenderer extends events {
   constructor() {
     super();
@@ -18,9 +21,12 @@ class DefaultGameRenderer extends events {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
     document.body.appendChild(this.renderer.domElement);
+    this.input = new Input(this.renderer.domElement);
 
     const animate = () => {
       requestAnimationFrame(animate);
+
+      this.input.update();
       this.emit("update");
       this.renderer.render(this.currentScene, this.camera);
     }
