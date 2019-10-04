@@ -6,6 +6,7 @@ const THREE = require("three");
 
 // Require Internal Dependencies
 const Input = require("./Input.js");
+const Audio = require("./Audio.js");
 
 class DefaultGameRenderer extends events {
   constructor() {
@@ -21,6 +22,7 @@ class DefaultGameRenderer extends events {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
     document.body.appendChild(this.renderer.domElement);
+    this.audio = new Audio();
     this.input = new Input(this.renderer.domElement);
 
     const animate = () => {
