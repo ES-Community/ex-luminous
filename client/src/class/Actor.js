@@ -82,7 +82,7 @@ class Actor {
   getLocalEulerAngles(angles) { return angles.setFromQuaternion(this.threeObject.quaternion); }
   getLocalScale(scale) { return scale.copy(this.threeObject.scale); }
 
-  getParentGlobalOrientation(orientation) {
+  getParentGlobalOrientation() {
     let ancestorOrientation = new THREE.Quaternion();
     let ancestorActor = this.threeObject;
     while (ancestorActor.parent != null) {

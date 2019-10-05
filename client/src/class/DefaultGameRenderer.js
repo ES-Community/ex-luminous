@@ -89,7 +89,7 @@ class DefaultGameRenderer extends events {
 
     this.accumulatedTime += timestamp - this.lastTimestamp;
     this.lastTimestamp = timestamp;
-    const { updates, timeLeft } = this.tick(this.accumulatedTime);
+    const { timeLeft } = this.tick(this.accumulatedTime);
     this.accumulatedTime = timeLeft;
 
     if (this.input.exited) {

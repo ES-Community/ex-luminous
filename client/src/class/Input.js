@@ -360,7 +360,7 @@ class Input extends EventEmitter {
 
   onBlur() {
     this.reset();
-  };
+  }
 
   onMouseMove(event) {
     event.preventDefault();

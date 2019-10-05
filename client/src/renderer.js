@@ -31,6 +31,9 @@ game.init(currentScene, camera);
 const mySound = SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
 
 game.on("update", () => {
+  if (game.input.wasKeyJustPressed("A")) {
+
+  }
   if (game.input.wasMouseButtonJustReleased(0)) {
     mySound.play();
   }

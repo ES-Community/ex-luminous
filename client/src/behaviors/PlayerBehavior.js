@@ -2,12 +2,13 @@
 const ScriptBehavior = require("../class/ScriptBehavior");
 
 class PlayerBehavior extends ScriptBehavior {
-    awake() {
-      console.log("player awake!");
-    }
+  awake() {
+    console.log("player awake!");
+  }
 
-    update() {
-    }
+  update() {
+
+  }
 }
 
 module.exports = PlayerBehavior;
