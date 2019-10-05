@@ -1,13 +1,15 @@
 "use strict";
 
 const Entity = require("./Entity");
+const { TICKS_PER_SECOND } = require("../config");
 
 const randomDirection = require("../utils/randomDirection");
 const { timeToTicks } = require("../utils/convertTicks");
 
 const SHADOW_MAX_HP = 3;
-const SHADOW_SPEED = timeToTicks(1); // scene unit per second
-const SHADOW_AMPLITUDE = 5;
+const SHADOW_SPEED = 2 / TICKS_PER_SECOND;
+const SHADOW_MAX_AMPLITUDE = 50;
+const SHADOW_MAX_WAITING_TIME = 3;
 
 class Shadow extends Entity {
 
@@ -21,42 +23,72 @@ class Shadow extends Entity {
   constructor(position) {
     super(position, SHADOW_MAX_HP);
 
-    this.currentBehavior = Shadow.Behavior.WAITING;
+    this.currentBehavior = Shadow.Behavior.WANDERING;
     this.wanderingSteps = null;
     this.remainingWanderingTicks = null;
+    this.remainingWaitingTicks = null;
   }
 
   update (gameState) {
     switch (this.currentBehavior) {
-      case Shadow.Behavior.WAITING: {
-        const selectedDirection = randomDirection();
-        const deltaX = Math.cos(selectedDirection) * SHADOW_AMPLITUDE;
-        const deltaZ = Math.sin(selectedDirection) * SHADOW_AMPLITUDE;
-        this.wanderingSteps = {
-          x: deltaX * SHADOW_SPEED,
-          z: deltaZ * SHADOW_SPEED
-        }
-        this.remainingWanderingTicks = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) / SHADOW_SPEED;
-        this.currentBehavior = Shadow.Behavior.WANDERING;
-        break;
-      }
       case Shadow.Behavior.WANDERING: {
-        // move
-        this.position.x += this.wanderingSteps.x;
-        this.position.z += this.wanderingSteps.z;
-        this.remainingWanderingTicks--;
-        if(this.remainingWanderingTicks <= 0) {
-          this.remainingWanderingTicks = null;
-          this.wanderingSteps = null;
-          this.currentBehavior = Shadow.Behavior.WAITING;
+        if(this.remainingWanderingTicks === null && this.wanderingSteps === null) {
+          this.prepareWandering();
         }
+        // move
+        this.wander();
 
         // look for orbs
         break;
       }
+     /* case Shadow.Behavior.WAITING: {
+        this.wait();
+        break;
+      }*/
       default: {
         throw new Error(`missing state implementation: ${this.state}`);
       }
+    }
+  }
+
+  prepareWandering() {
+    console.time('xxx')
+    const selectedDirection = randomDirection();
+    const moveAmplitude = Math.random() * (SHADOW_MAX_AMPLITUDE - 1) + 1;
+
+    const deltaX = Math.cos(selectedDirection) * moveAmplitude;
+    const deltaZ = Math.sin(selectedDirection) * moveAmplitude;
+
+    this.remainingWanderingTicks = Math.sqrt(Math.pow(deltaX, 2), Math.pow(deltaZ, 2)) / SHADOW_SPEED;
+
+    this.wanderingSteps = {
+      x: deltaX / this.remainingWanderingTicks,
+      z: deltaZ / this.remainingWanderingTicks
+    }
+  }
+
+  wander() {
+    this.position.x += this.wanderingSteps.x;
+    this.position.z += this.wanderingSteps.z;
+    this.remainingWanderingTicks--;
+    if(this.remainingWanderingTicks <= 0) {
+      console.log('end wandering')
+      // reset wandering
+      this.remainingWanderingTicks = null;
+      this.wanderingSteps = null;
+
+      // wait
+      this.remainingWaitingTicks = timeToTicks(Math.random() * (SHADOW_MAX_WAITING_TIME - 1) + 1);
+      console.log(`waiting for ${this.remainingWaitingTicks} ticks`)
+      this.currentBehavior = Shadow.Behavior.WAITING;
+    }
+  }
+
+  wait() {
+    this.remainingWaitingTicks--;
+    if(this.remainingWaitingTicks < 0) {
+      this.remainingWaitingTicks = null;
+      this.currentBehavior = Shadow.Behavior.WANDERING;
     }
   }
 }

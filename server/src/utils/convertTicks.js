@@ -3,11 +3,11 @@
 const { TICKS_PER_SECOND } = require("../config");
 
 function ticksToTime(ticks) {
-  return (ticks * 1000) / TICKS_PER_SECOND;
+  return ticks / TICKS_PER_SECOND;
 }
 
 function timeToTicks(time) {
-  return (time * TICKS_PER_SECOND) / 10000;
+  return time * TICKS_PER_SECOND;
 }
 
 module.exports = {
