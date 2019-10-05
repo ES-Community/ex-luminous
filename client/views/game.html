@@ -12,10 +12,23 @@
       const server = whatwgLocation.searchParams.get("server");
       const name = whatwgLocation.searchParams.get("name");
 
-      // TODO: connect the player to the server!
       console.log(`server: ${server}`);
       console.log(`name: ${name}`);
-      require("../src/renderer.js");
+      const { start } = require("../src/game.js");
+      const grpc = require("../src/grpc.js");
+
+      start(server, name)
+        .then((game) => {
+          const grpcClient = grpc.createClient(server);
+          grpcClient.connect({ name }, function(err) {
+            const gameDataStream = grpcClient.gameData({});
+            gameDataStream.on("data", (data) => {
+              console.log("received data from server", data);
+              game.emit("server-data", data.type, JSON.parse(data.data));
+            });
+          });
+        })
+        .catch(console.error);
     </script>
   </body>
 </html>
