@@ -59,8 +59,7 @@ class Shadow extends Entity {
     const deltaX = Math.cos(selectedDirection) * moveAmplitude;
     const deltaZ = Math.sin(selectedDirection) * moveAmplitude;
 
-    this.remainingWanderingTicks = Math.sqrt(Math.pow(deltaX, 2), Math.pow(deltaZ, 2)) / SHADOW_SPEED;
-
+    this.remainingWanderingTicks = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) / SHADOW_SPEED;
     this.wanderingSteps = {
       x: deltaX / this.remainingWanderingTicks,
       z: deltaZ / this.remainingWanderingTicks
