@@ -38,75 +38,14 @@ function initializeGameRenderer(gameDataStream) {
 
   const currentScene = new Scene();
   currentScene.add(Player);
-  currentScene.scene.background = new THREE.Color(0xf0f0f0);
+  currentScene.scene.background = new THREE.Color(0, 0, 0);
 
-  const mask = [
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    0,
-    1,
-    1,
-    0,
-    1,
-    1,
-    1,
-    1,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1
-  ];
-  let plane = FogBehavior.createOrUpdate(mask);
+  const mask = [];
+  const gridSize = 30;
+  for (let i = 0; i < gridSize * gridSize; i++) {
+    mask.push(Math.random() > 0.3 ? 1 : 0);
+  }
+  let plane = FogBehavior.createOrUpdate(mask, gridSize * 4);
   currentScene.add(plane);
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
@@ -123,19 +62,20 @@ function initializeGameRenderer(gameDataStream) {
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
 
-  GridBehavior.generateGrid(10, 10, currentScene.scene);
+  for (const cube of GridBehavior.generateGridEx(30, 30)) {
+    currentScene.add(cube);
+  }
 
   game.on("update", () => {
     if (game.input.wasMouseButtonJustReleased(0)) {
       currentScene.scene.remove(plane);
-      plane = FogBehavior.createOrUpdate(mask);
+      plane = FogBehavior.createOrUpdate(mask, gridSize * 4);
       currentScene.add(plane);
-      //mySound.play();
     }
 
     const playerPos = Player.threeObject.position;
     const playerAngleY = Player.threeObject.rotation.y;
-    gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });	
+    gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
     const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);
     camera.position.set(newPos.x, newPos.y, newPos.z);
     camera.lookAt(Player.threeObject.position);

@@ -10,36 +10,6 @@ const material2 = new THREE.MeshBasicMaterial({ color: new THREE.Color(30, 100, 
 const Grid = {
   cubeSize: 4,
   defaultYPosition: 0,
-  createCubeMesh() {
-    const geometry = new THREE.BoxGeometry(this.cubeSize, this.cubeSize, this.cubeSize);
-
-    return new THREE.Mesh(geometry, material);
-  },
-  generateGrid(sizeX, sizeY, scene) {
-    const gridSize = sizeX * sizeY * 6.25;
-    const geometry = new THREE.BoxGeometry(this.cubeSize, this.cubeSize, this.cubeSize);
-
-    let initialX = -50;
-    let initialZ = -50;
-    let compteur = 0;
-    for (let i = 0; i < gridSize; i++) {
-      var cube = new THREE.Mesh(geometry, material);
-
-      if (initialZ == 50) {
-        initialX = initialX + 4;
-        initialZ = -50;
-      }
-      cube.position.x = initialX + 2;
-      cube.position.z = initialZ + 2;
-      scene.add(cube);
-
-      if (compteur == 10) {
-        compteur = 0;
-      }
-      initialZ = initialZ + 4;
-      compteur++;
-    }
-  },
   *generateGridEx(sizeX, sizeY) {
     const geometry = new THREE.BoxGeometry(this.cubeSize, this.cubeSize, this.cubeSize);
 
