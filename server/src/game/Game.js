@@ -50,6 +50,10 @@ class Game extends EventEmitter {
   receiveData(player, type, data) {
     console.log(`received data from ${player.name}`, type, data);
   }
+
+  getTicks() {
+    return this.state.gameTicks;
+  }
 }
 
 module.exports = Game;

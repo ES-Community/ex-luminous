@@ -27,7 +27,7 @@ async function createGameServer() {
   const currentWindow = remote.getCurrentWindow();
   const serverPath = join(__dirname, "..", "..", "server", "src", "server.js");
 
-  const cp = spawn("node", [serverPath]);
+  const cp = spawn("node", [serverPath], { stdio: ["ignore", "pipe", "pipe", "ipc"] });
   const stopServerBtn = setupServerInfo(cp);
 
   const closeWin = () => {
@@ -70,6 +70,8 @@ async function createGameServer() {
 function setupServerInfo(cp) {
   const mainElement = document.getElementById("main");
   const serverInfoElement = document.getElementById("server-info");
+  const serverInfoPlayersElement = document.getElementById("server-info-players");
+  const serverInfoTimeElement = document.getElementById("server-info-time");
   const stopServerBtn = document.getElementById("stop-server");
 
   mainElement.style.display = "none";
@@ -86,8 +88,13 @@ function setupServerInfo(cp) {
   cp.stderr.on("data", (d) => console.error(d.toString()));
 
   cp.on("message", (msg) => {
-    // TODO: update view with info
-    console.log(msg);
+    serverInfoPlayersElement.innerHTML = "";
+    for (const player of msg.players) {
+      const li = document.createElement("li");
+      li.innerText = `${player.name} (${player.ip})`;
+      serverInfoPlayersElement.appendChild(li);
+    }
+    serverInfoTimeElement.innerText = `${Math.round(msg.time * 100) / 100} seconds`;
   });
 
   cp.on("exit", () => {
