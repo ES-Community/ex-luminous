@@ -7,9 +7,10 @@ const randomDirection = require("../utils/randomDirection");
 const { timeToTicks } = require("../utils/convertTicks");
 
 const SHADOW_MAX_HP = 3;
-const SHADOW_SPEED = 2 / TICKS_PER_SECOND;
-const SHADOW_MAX_AMPLITUDE = 50;
-const SHADOW_MAX_WAITING_TIME = 3;
+const SHADOW_SPEED = 1.5 / TICKS_PER_SECOND;
+const SHADOW_MAX_AMPLITUDE = 5;
+const SHADOW_MAX_WAITING_TIME = 5;
+const SHADOW_MIN_WAITING_TIME = 2;
 
 class Shadow extends Entity {
 
@@ -41,10 +42,10 @@ class Shadow extends Entity {
         // look for orbs
         break;
       }
-     /* case Shadow.Behavior.WAITING: {
+      case Shadow.Behavior.WAITING: {
         this.wait();
         break;
-      }*/
+      }
       default: {
         throw new Error(`missing state implementation: ${this.state}`);
       }
@@ -52,7 +53,7 @@ class Shadow extends Entity {
   }
 
   prepareWandering() {
-    console.time('xxx')
+    console.log('prepare wandering')
     const selectedDirection = randomDirection();
     const moveAmplitude = Math.random() * (SHADOW_MAX_AMPLITUDE - 1) + 1;
 
@@ -65,6 +66,8 @@ class Shadow extends Entity {
       x: deltaX / this.remainingWanderingTicks,
       z: deltaZ / this.remainingWanderingTicks
     }
+
+    console.log(Math.sqrt(Math.pow(deltaX, 2), Math.pow(deltaZ, 2)), this.remainingWanderingTicks, this.wanderingSteps)
   }
 
   wander() {
@@ -72,21 +75,21 @@ class Shadow extends Entity {
     this.position.z += this.wanderingSteps.z;
     this.remainingWanderingTicks--;
     if(this.remainingWanderingTicks <= 0) {
-      console.log('end wandering')
+      console.log('end wandering');
       // reset wandering
       this.remainingWanderingTicks = null;
       this.wanderingSteps = null;
 
       // wait
-      this.remainingWaitingTicks = timeToTicks(Math.random() * (SHADOW_MAX_WAITING_TIME - 1) + 1);
-      console.log(`waiting for ${this.remainingWaitingTicks} ticks`)
+      this.remainingWaitingTicks = timeToTicks(Math.random() * (SHADOW_MAX_WAITING_TIME - SHADOW_MIN_WAITING_TIME) + SHADOW_MIN_WAITING_TIME);
+      console.log(`waiting for ${this.remainingWaitingTicks} ticks`);
       this.currentBehavior = Shadow.Behavior.WAITING;
     }
   }
 
   wait() {
     this.remainingWaitingTicks--;
-    if(this.remainingWaitingTicks < 0) {
+    if(this.remainingWaitingTicks <= 0) {
       this.remainingWaitingTicks = null;
       this.currentBehavior = Shadow.Behavior.WANDERING;
     }
