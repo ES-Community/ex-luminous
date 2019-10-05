@@ -1,0 +1,23 @@
+{
+  "name": "ludum-dare-45",
+  "version": "1.0.0",
+  "description": "- https://grpc.io/docs/quickstart/node/\r - https://grpc.io/docs/tutorials/basic/node/\r - https://grpc.io/docs/guides/\r - https://grpc.github.io/grpc/node/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ES-Community/ludum-dare-45.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ES-Community/ludum-dare-45/issues"
+  },
+  "homepage": "https://github.com/ES-Community/ludum-dare-45#readme",
+  "devDependencies": {
+    "eslint": "^6.5.1"
+  }
+}
