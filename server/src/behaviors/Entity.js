@@ -13,7 +13,7 @@ class Entity {
   }
 
   distanceTo(other) {
-    return (this.x - other.x) ** 2 + (this.y - other.y) ** 2;
+    return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
   }
 
   isTouching(other) {
