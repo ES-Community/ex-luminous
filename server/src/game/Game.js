@@ -34,6 +34,7 @@ class Game extends EventEmitter {
 
   update() {
     console.log("update tick");
+    this.state.shadows.forEach((shadow) => shadow.update(this.state))
     this.state.grass.forEach((grass) => grass.update(this.state));
     this.state.gameTicks += 1;
     console.log(this.state);

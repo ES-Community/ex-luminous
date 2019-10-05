@@ -19,18 +19,17 @@ class Grass extends Entity {
   }
 
   update(gameState) {
-    gameState.xavier = "yo";
     switch (this.state) {
-    case Grass.State.NORMAL: {
-      if (this.isTouchingAnyOrb(gameState)) {
-        this.orbContact++;
-        this.state = Grass.State.LIGHT;
+      case Grass.State.NORMAL: {
+        if (this.isTouchingAnyOrb(gameState)) {
+          this.orbContact++;
+          this.state = Grass.State.LIGHT;
+        }
+        break;
       }
-      break;
-    }
-    default: {
-      throw new Error(`missing state implementation: ${this.state}`);
-    }
+      default: {
+        throw new Error(`missing state implementation: ${this.state}`);
+      }
     }
   }
 
