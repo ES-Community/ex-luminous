@@ -33,7 +33,10 @@ class Game extends EventEmitter {
   }
 
   update() {
-    console.log("update", this.state);
+    console.log("update tick");
+    this.state.grass.forEach((grass) => grass.update(this.state));
+    this.state.gameTicks += 1;
+    console.log(this.state);
     this.emit("change", "currentState", this.state);
   }
 }
