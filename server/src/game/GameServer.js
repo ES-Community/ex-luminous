@@ -62,6 +62,9 @@ class GameServer {
   GameData(stream) {
     const player = this.getPlayer(stream);
     player.setGameDataStream(stream);
+    stream.on("data", (data) => {
+      this.game.receiveData(player, data.type, JSON.parse(data.data));
+    });
   }
 }
 
