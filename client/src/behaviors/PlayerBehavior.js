@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Internal Dependencies
 const ScriptBehavior = require("../class/ScriptBehavior");
 
@@ -6,9 +8,7 @@ class PlayerBehavior extends ScriptBehavior {
     console.log("player awake!");
   }
 
-  update() {
-
-  }
+  update() {}
 }
 
 module.exports = PlayerBehavior;

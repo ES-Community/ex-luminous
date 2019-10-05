@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Node.js Dependencies
 const events = require("events");
 
@@ -29,7 +31,7 @@ class GameRenderer extends events {
   }
 
   tick(accumulatedTime) {
-    const updateInterval = 1 / this.framesPerSecond * 1000;
+    const updateInterval = (1 / this.framesPerSecond) * 1000;
 
     // Limit how many update()s to try and catch up,
     // to avoid falling into the "black pit of despair" aka "doom spiral".
@@ -74,7 +76,7 @@ class GameRenderer extends events {
     const gameLoop = () => {
       this.tickAnimationFrameId = requestAnimationFrame(gameLoop);
       this.update();
-    }
+    };
 
     for (const actor of this.currentScene.actors) {
       actor.triggerBehaviorEvent("awake");

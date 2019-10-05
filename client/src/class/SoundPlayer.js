@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Node.js Dependencies
 const { readFile } = require("fs").promises;
 const { join } = require("path");
@@ -6,7 +8,6 @@ const { join } = require("path");
 const SOUNDS_ASSETS_PATH = join(__dirname, "..", "..", "assets", "sounds");
 
 class SoundPlayer {
-
   /**
    * @function loadSoundAsset
    * @param {*} audio
@@ -74,8 +75,7 @@ class SoundPlayer {
         return;
       }
       this.source.mediaElement.loop = this.isLooping;
-    }
-    else {
+    } else {
       // Assuming AudioBuffer
       this.source = this.audioCtx.createBufferSource();
       this.source.buffer = this.buffer;
@@ -98,15 +98,16 @@ class SoundPlayer {
 
     this.state = SoundPlayer.State.Playing;
     // NOTE: As of Chrome 46, addEventListener("ended") doesn't work!
-    this.source.onended = () => { this.state = SoundPlayer.State.Stopped; };
+    this.source.onended = () => {
+      this.state = SoundPlayer.State.Stopped;
+    };
 
     this.startTime = this.audioCtx.currentTime - this.offset;
 
     if (this.source.mediaElement != null) {
       this.source.mediaElement.currentTime = this.offset;
       this.source.mediaElement.play();
-    }
-    else {
+    } else {
       this.source.start(0, this.offset);
     }
   }
@@ -120,8 +121,7 @@ class SoundPlayer {
       if (this.source.mediaElement !== null) {
         this.source.mediaElement.pause();
         this.source.mediaElement.currentTime = 0;
-      }
-      else {
+      } else {
         this.source.stop(0);
       }
 
@@ -147,8 +147,7 @@ class SoundPlayer {
     this.offset = this.audioCtx.currentTime - this.startTime;
     if (this.source.mediaElement != null) {
       this.source.mediaElement.pause();
-    }
-    else {
+    } else {
       this.source.stop(0);
     }
 
@@ -169,8 +168,7 @@ class SoundPlayer {
     if (this.state === SoundPlayer.State.Playing) {
       if (this.source.playbackState !== null && this.source.playbackState === this.source.FINISHED_STATE) {
         this.state = SoundPlayer.State.Stopped;
-      }
-      else if (this.source.mediaElement !== null && this.source.mediaElement.paused) {
+      } else if (this.source.mediaElement !== null && this.source.mediaElement.paused) {
         this.state = SoundPlayer.State.Stopped;
       }
     }
@@ -186,8 +184,7 @@ class SoundPlayer {
 
     if (this.source.mediaElement !== null) {
       this.source.mediaElement.loop = this.isLooping;
-    }
-    else {
+    } else {
       this.source.loop = this.isLooping;
     }
   }

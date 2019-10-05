@@ -1,3 +1,5 @@
+"use strict";
+
 class Audio {
   constructor() {
     this.ctx = null;

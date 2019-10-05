@@ -1,14 +1,15 @@
 {
-    "extends": "eslint:recommended",
-    "parserOptions": {
-      "ecmaVersion": 2019
-    },
-    "env": {
-      "browser": true,
-      "node": true,
-      "es6": true
-    },
-		"rules": {
-			"indent": ["error", 2]
-		}
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2019
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "strict": ["error", "global"]
+  }
 }

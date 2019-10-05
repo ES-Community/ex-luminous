@@ -1,3 +1,5 @@
+"use strict";
+
 const voidFunction = () => undefined;
 
 class ScriptBehavior {

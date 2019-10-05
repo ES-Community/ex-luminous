@@ -15,7 +15,7 @@ function createWindow() {
   });
 
   win.on("closed", () => {
-      win = null;
+    win = null;
   });
 
   // and load the index.html of the app.

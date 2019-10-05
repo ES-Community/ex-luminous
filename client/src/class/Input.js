@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Node.js Dependencies
 const { EventEmitter } = require("events");
 
@@ -43,21 +45,33 @@ class Input extends EventEmitter {
     document.addEventListener("DOMMouseScroll", this.onMouseWheel.bind(this));
     document.addEventListener("mousewheel", this.onMouseWheel.bind(this));
 
-    if ("onpointerlockchange" in document) document.addEventListener("pointerlockchange", this.onPointerLockChange.bind(this), false);
-    else if ("onmozpointerlockchange" in document) document.addEventListener("mozpointerlockchange", this.onPointerLockChange.bind(this), false);
-    else if ("onwebkitpointerlockchange" in document) document.addEventListener("webkitpointerlockchange", this.onPointerLockChange.bind(this), false);
+    if ("onpointerlockchange" in document)
+      document.addEventListener("pointerlockchange", this.onPointerLockChange.bind(this), false);
+    else if ("onmozpointerlockchange" in document)
+      document.addEventListener("mozpointerlockchange", this.onPointerLockChange.bind(this), false);
+    else if ("onwebkitpointerlockchange" in document)
+      document.addEventListener("webkitpointerlockchange", this.onPointerLockChange.bind(this), false);
 
-    if ("onpointerlockerror" in document) document.addEventListener("pointerlockerror", this.onPointerLockError.bind(this), false);
-    else if ("onmozpointerlockerror" in document) document.addEventListener("mozpointerlockerror", this.onPointerLockError.bind(this), false);
-    else if ("onwebkitpointerlockerror" in document) document.addEventListener("webkitpointerlockerror", this.onPointerLockError.bind(this), false);
+    if ("onpointerlockerror" in document)
+      document.addEventListener("pointerlockerror", this.onPointerLockError.bind(this), false);
+    else if ("onmozpointerlockerror" in document)
+      document.addEventListener("mozpointerlockerror", this.onPointerLockError.bind(this), false);
+    else if ("onwebkitpointerlockerror" in document)
+      document.addEventListener("webkitpointerlockerror", this.onPointerLockError.bind(this), false);
 
-    if ("onfullscreenchange" in document) document.addEventListener("fullscreenchange", this.onFullscreenChange.bind(this), false);
-    else if ("onmozfullscreenchange" in document) document.addEventListener("mozfullscreenchange", this.onFullscreenChange.bind(this), false);
-    else if ("onwebkitfullscreenchange" in document) document.addEventListener("webkitfullscreenchange", this.onFullscreenChange.bind(this), false);
+    if ("onfullscreenchange" in document)
+      document.addEventListener("fullscreenchange", this.onFullscreenChange.bind(this), false);
+    else if ("onmozfullscreenchange" in document)
+      document.addEventListener("mozfullscreenchange", this.onFullscreenChange.bind(this), false);
+    else if ("onwebkitfullscreenchange" in document)
+      document.addEventListener("webkitfullscreenchange", this.onFullscreenChange.bind(this), false);
 
-    if ("onfullscreenerror" in document) document.addEventListener("fullscreenerror", this.onFullscreenError.bind(this), false);
-    else if ("onmozfullscreenerror" in document) document.addEventListener("mozfullscreenerror", this.onFullscreenError.bind(this), false);
-    else if ("onwebkitfullscreenerror" in document) document.addEventListener("webkitfullscreenerror", this.onFullscreenError.bind(this), false);
+    if ("onfullscreenerror" in document)
+      document.addEventListener("fullscreenerror", this.onFullscreenError.bind(this), false);
+    else if ("onmozfullscreenerror" in document)
+      document.addEventListener("mozfullscreenerror", this.onFullscreenError.bind(this), false);
+    else if ("onwebkitfullscreenerror" in document)
+      document.addEventListener("webkitfullscreenerror", this.onFullscreenError.bind(this), false);
 
     // Touch
     this.canvas.addEventListener("touchstart", this.onTouchStart.bind(this));
@@ -95,15 +109,15 @@ class Input extends EventEmitter {
 
   getMousePosition() {
     return new THREE.Vector2(
-      this.mousePosition.x / this.canvas.clientWidth * 2 - 1,
-      (this.mousePosition.y / this.canvas.clientHeight * 2 - 1) * -1
+      (this.mousePosition.x / this.canvas.clientWidth) * 2 - 1,
+      ((this.mousePosition.y / this.canvas.clientHeight) * 2 - 1) * -1
     );
   }
 
   getMouseDelta() {
     return new THREE.Vector2(
-      this.mouseDelta.x / this.canvas.clientWidth * 2,
-      this.mouseDelta.y / this.canvas.clientHeight * -2
+      (this.mouseDelta.x / this.canvas.clientWidth) * 2,
+      (this.mouseDelta.y / this.canvas.clientHeight) * -2
     );
   }
 
@@ -172,21 +186,32 @@ class Input extends EventEmitter {
     document.removeEventListener("DOMMouseScroll", this.onMouseWheel);
     document.removeEventListener("mousewheel", this.onMouseWheel);
 
-    if ("onpointerlockchange" in document) document.removeEventListener("pointerlockchange", this.onPointerLockChange, false);
-    else if ("onmozpointerlockchange" in document) document.removeEventListener("mozpointerlockchange", this.onPointerLockChange, false);
-    else if ("onwebkitpointerlockchange" in document) document.removeEventListener("webkitpointerlockchange", this.onPointerLockChange, false);
+    if ("onpointerlockchange" in document)
+      document.removeEventListener("pointerlockchange", this.onPointerLockChange, false);
+    else if ("onmozpointerlockchange" in document)
+      document.removeEventListener("mozpointerlockchange", this.onPointerLockChange, false);
+    else if ("onwebkitpointerlockchange" in document)
+      document.removeEventListener("webkitpointerlockchange", this.onPointerLockChange, false);
 
-    if ("onpointerlockerror" in document) document.removeEventListener("pointerlockerror", this.onPointerLockError, false);
-    else if ("onmozpointerlockerror" in document) document.removeEventListener("mozpointerlockerror", this.onPointerLockError, false);
-    else if ("onwebkitpointerlockerror" in document) document.removeEventListener("webkitpointerlockerror", this.onPointerLockError, false);
+    if ("onpointerlockerror" in document)
+      document.removeEventListener("pointerlockerror", this.onPointerLockError, false);
+    else if ("onmozpointerlockerror" in document)
+      document.removeEventListener("mozpointerlockerror", this.onPointerLockError, false);
+    else if ("onwebkitpointerlockerror" in document)
+      document.removeEventListener("webkitpointerlockerror", this.onPointerLockError, false);
 
-    if ("onfullscreenchange" in document) document.removeEventListener("fullscreenchange", this.onFullscreenChange, false);
-    else if ("onmozfullscreenchange" in document) document.removeEventListener("mozfullscreenchange", this.onFullscreenChange, false);
-    else if ("onwebkitfullscreenchange" in document) document.removeEventListener("webkitfullscreenchange", this.onFullscreenChange, false);
+    if ("onfullscreenchange" in document)
+      document.removeEventListener("fullscreenchange", this.onFullscreenChange, false);
+    else if ("onmozfullscreenchange" in document)
+      document.removeEventListener("mozfullscreenchange", this.onFullscreenChange, false);
+    else if ("onwebkitfullscreenchange" in document)
+      document.removeEventListener("webkitfullscreenchange", this.onFullscreenChange, false);
 
     if ("onfullscreenerror" in document) document.removeEventListener("fullscreenerror", this.onFullscreenError, false);
-    else if ("onmozfullscreenerror" in document) document.removeEventListener("mozfullscreenerror", this.onFullscreenError, false);
-    else if ("onwebkitfullscreenerror" in document) document.removeEventListener("webkitfullscreenerror", this.onFullscreenError, false);
+    else if ("onmozfullscreenerror" in document)
+      document.removeEventListener("mozfullscreenerror", this.onFullscreenError, false);
+    else if ("onwebkitfullscreenerror" in document)
+      document.removeEventListener("webkitfullscreenerror", this.onFullscreenError, false);
 
     this.canvas.removeEventListener("touchstart", this.onTouchStart);
     this.canvas.removeEventListener("touchend", this.onTouchEnd);
@@ -283,21 +308,23 @@ class Input extends EventEmitter {
       return;
     }
 
-    if ((document).exitPointerLock) (document).exitPointerLock();
-    else if ((document).webkitExitPointerLock) (document).webkitExitPointerLock();
-    else if ((document).mozExitPointerLock) (document).mozExitPointerLock();
+    if (document.exitPointerLock) document.exitPointerLock();
+    else if (document.webkitExitPointerLock) document.webkitExitPointerLock();
+    else if (document.mozExitPointerLock) document.mozExitPointerLock();
   }
 
   _isPointerLocked() {
-    return (document).pointerLockElement === this.canvas ||
-      (document).webkitPointerLockElement === this.canvas ||
-      (document).mozPointerLockElement === this.canvas;
+    return (
+      document.pointerLockElement === this.canvas ||
+      document.webkitPointerLockElement === this.canvas ||
+      document.mozPointerLockElement === this.canvas
+    );
   }
 
   _doPointerLock() {
-    if ((this.canvas).requestPointerLock) (this.canvas).requestPointerLock();
-    else if ((this.canvas).webkitRequestPointerLock) (this.canvas).webkitRequestPointerLock();
-    else if ((this.canvas).mozRequestPointerLock) (this.canvas).mozRequestPointerLock();
+    if (this.canvas.requestPointerLock) this.canvas.requestPointerLock();
+    else if (this.canvas.webkitRequestPointerLock) this.canvas.webkitRequestPointerLock();
+    else if (this.canvas.mozRequestPointerLock) this.canvas.mozRequestPointerLock();
   }
 
   onPointerLockChange() {
@@ -332,15 +359,17 @@ class Input extends EventEmitter {
   }
 
   isFullscreen() {
-    return document.fullscreenElement === this.canvas ||
+    return (
+      document.fullscreenElement === this.canvas ||
       document.webkitFullscreenElement === this.canvas ||
-      document.mozFullScreenElement === this.canvas;
+      document.mozFullScreenElement === this.canvas
+    );
   }
 
   _doGoFullscreen() {
-    if ((this.canvas).requestFullscreen) (this.canvas).requestFullscreen();
-    else if ((this.canvas).webkitRequestFullscreen) (this.canvas).webkitRequestFullscreen();
-    else if ((this.canvas).mozRequestFullScreen) (this.canvas).mozRequestFullScreen();
+    if (this.canvas.requestFullscreen) this.canvas.requestFullscreen();
+    else if (this.canvas.webkitRequestFullscreen) this.canvas.webkitRequestFullscreen();
+    else if (this.canvas.mozRequestFullScreen) this.canvas.mozRequestFullScreen();
   }
 
   onFullscreenChange() {
@@ -371,12 +400,10 @@ class Input extends EventEmitter {
         if (event.movementX !== null) {
           delta.x = event.movementX;
           delta.y = event.movementY;
-        }
-        else if (event.webkitMovementX !== null) {
+        } else if (event.webkitMovementX !== null) {
           delta.x = event.webkitMovementX;
           delta.y = event.webkitMovementY;
-        }
-        else if (event.mozMovementX === null) {
+        } else if (event.mozMovementX === null) {
           delta.x = event.mozMovementX;
           delta.y = event.mozMovementY;
         }
@@ -384,8 +411,7 @@ class Input extends EventEmitter {
         this.newMouseDelta.x += delta.x;
         this.newMouseDelta.y += delta.y;
       }
-    }
-    else {
+    } else {
       const rect = event.target.getBoundingClientRect();
       this.newMousePosition = {
         x: event.clientX - rect.left,
@@ -432,7 +458,7 @@ class Input extends EventEmitter {
 
   onMouseWheel(event) {
     event.preventDefault();
-    this.newScrollDelta = (event.wheelDelta > 0 || event.detail < 0) ? 1 : -1;
+    this.newScrollDelta = event.wheelDelta > 0 || event.detail < 0 ? 1 : -1;
 
     return false;
   }
@@ -498,8 +524,7 @@ class Input extends EventEmitter {
 
     if (!this.keyboardButtonsDown[event.keyCode]) {
       this.keyboardButtonsDown[event.keyCode] = true;
-    }
-    else {
+    } else {
       this.autoRepeatedKey = event.keyCode;
     }
 
@@ -513,11 +538,9 @@ class Input extends EventEmitter {
 
     if (event.char != null) {
       this.newTextEntered += event.char;
-    }
-    else if (event.charCode !== 0) {
+    } else if (event.charCode !== 0) {
       this.newTextEntered += String.fromCharCode(event.charCode);
-    }
-    else {
+    } else {
       this.newTextEntered += String.fromCharCode(event.keyCode);
     }
   }
@@ -548,16 +571,14 @@ class Input extends EventEmitter {
       this.mouseDelta.y = this.newMouseDelta.y;
       this.newMouseDelta.x = 0;
       this.newMouseDelta.y = 0;
-    }
-    else if (this.newMousePosition !== null) {
+    } else if (this.newMousePosition !== null) {
       this.mouseDelta.x = this.newMousePosition.x - this.mousePosition.x;
       this.mouseDelta.y = this.newMousePosition.y - this.mousePosition.y;
 
       this.mousePosition.x = this.newMousePosition.x;
       this.mousePosition.y = this.newMousePosition.y;
       this.newMousePosition = null;
-    }
-    else {
+    } else {
       this.mouseDelta.x = 0;
       this.mouseDelta.y = 0;
     }
@@ -598,7 +619,7 @@ class Input extends EventEmitter {
     this.textEntered = this.newTextEntered;
     this.newTextEntered = "";
 
-    const gamepads = (navigator.getGamepads != null) ? navigator.getGamepads() : null;
+    const gamepads = navigator.getGamepads != null ? navigator.getGamepads() : null;
     if (gamepads === null) {
       return;
     }
@@ -628,7 +649,9 @@ class Input extends EventEmitter {
 
       for (let stick = 0; stick < 2; stick++) {
         if (gamepad.axes[2 * stick] == null || gamepad.axes[2 * stick + 1] == null) continue;
-        const axisLength = Math.sqrt(Math.pow(Math.abs(gamepad.axes[2 * stick]), 2) + Math.pow(Math.abs(gamepad.axes[2 * stick + 1]), 2));
+        const axisLength = Math.sqrt(
+          Math.pow(Math.abs(gamepad.axes[2 * stick]), 2) + Math.pow(Math.abs(gamepad.axes[2 * stick + 1]), 2)
+        );
 
         const axes = [this.gamepadsAxes[index][2 * stick], this.gamepadsAxes[index][2 * stick + 1]];
 
@@ -671,8 +694,10 @@ class Input extends EventEmitter {
           const axisIndex = currentAutoRepeat.axis - stick * 2;
           if (axisIndex === 0 || axisIndex === 1) {
             const autoRepeatedAxis = axes[axisIndex];
-            if ((currentAutoRepeat.positive && !isAxisDown[axisIndex].positive) ||
-              (!currentAutoRepeat.positive && !isAxisDown[axisIndex].negative)) {
+            if (
+              (currentAutoRepeat.positive && !isAxisDown[axisIndex].positive) ||
+              (!currentAutoRepeat.positive && !isAxisDown[axisIndex].negative)
+            ) {
               // Auto-repeated axis has been released
               currentAutoRepeat = this.gamepadsAutoRepeats[index] = null;
             } else {
@@ -688,13 +713,25 @@ class Input extends EventEmitter {
 
         let newAutoRepeat;
         if (axes[0].wasPositiveJustPressed || axes[0].wasNegativeJustPressed) {
-          newAutoRepeat = { axis: stick * 2, positive: axes[0].wasPositiveJustPressed, time: now + this.gamepadAxisAutoRepeatDelayMs };
+          newAutoRepeat = {
+            axis: stick * 2,
+            positive: axes[0].wasPositiveJustPressed,
+            time: now + this.gamepadAxisAutoRepeatDelayMs
+          };
         } else if (axes[1].wasPositiveJustPressed || axes[1].wasNegativeJustPressed) {
-          newAutoRepeat = { axis: stick * 2 + 1, positive: axes[1].wasPositiveJustPressed, time: now + this.gamepadAxisAutoRepeatDelayMs };
+          newAutoRepeat = {
+            axis: stick * 2 + 1,
+            positive: axes[1].wasPositiveJustPressed,
+            time: now + this.gamepadAxisAutoRepeatDelayMs
+          };
         }
 
         if (newAutoRepeat != null) {
-          if (currentAutoRepeat == null || currentAutoRepeat.axis !== newAutoRepeat.axis || currentAutoRepeat.positive !== newAutoRepeat.positive) {
+          if (
+            currentAutoRepeat == null ||
+            currentAutoRepeat.axis !== newAutoRepeat.axis ||
+            currentAutoRepeat.positive !== newAutoRepeat.positive
+          ) {
             this.gamepadsAutoRepeats[index] = newAutoRepeat;
           }
         }

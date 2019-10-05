@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Third-party Dependencies
 const THREE = require("three");
 
@@ -43,8 +45,7 @@ class Scene {
         this.actors.push(object);
         this.scene.add(object.threeObject);
       }
-    }
-    else {
+    } else {
       this.scene.add(object);
     }
   }
