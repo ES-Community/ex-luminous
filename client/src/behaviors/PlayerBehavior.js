@@ -17,9 +17,6 @@ class PlayerBehavior extends ScriptBehavior {
     this.actor.threeObject.add(sphere);
   }
 
-<<<<<<< HEAD
-  update() {}
-=======
   update() {
     const speed = 0.2;
     if (game.input.isMouseButtonDown(2)) {
@@ -42,7 +39,6 @@ class PlayerBehavior extends ScriptBehavior {
       this.actor.moveGlobal(new THREE.Vector3(0, 0, -speed));
     }
   }
->>>>>>> chore: add player sphere and follow camera
 }
 
 module.exports = PlayerBehavior;
