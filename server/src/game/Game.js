@@ -4,6 +4,7 @@ const { EventEmitter } = require("events");
 const { inspect } = require("util");
 
 const { TICKS_PER_SECOND } = require("../config");
+const Orb = require("../behaviors/Orb");
 
 const generateGameState = require("./generateGameState");
 
@@ -40,6 +41,10 @@ class Game extends EventEmitter {
     this.state.gameTicks += 1;
     console.log(inspect(this.state, { depth: 10, colors: true }));
     this.emit("change", "currentState", this.state);
+  }
+
+  addPlayer(name) {
+    this.state.orbs.push(new Orb(name));
   }
 }
 

@@ -44,6 +44,7 @@ class GameServer {
       player = new Player(clientIp, name);
       this.playersByIp.set(clientIp, player);
       this.playersByName.set(name, player);
+      this.game.addPlayer(name);
     } else {
       if (name !== player.name) {
         if (this.playersByName.has(name)) {
@@ -61,7 +62,6 @@ class GameServer {
   GameData(stream) {
     const player = this.getPlayer(stream);
     player.setGameDataStream(stream);
-    player.sendGameData("init", "test");
   }
 }
 

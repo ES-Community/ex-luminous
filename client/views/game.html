@@ -23,8 +23,9 @@
           grpcClient.connect({ name }, function(err) {
             const gameDataStream = grpcClient.gameData({});
             gameDataStream.on("data", (data) => {
-              console.log("received data from server", data);
-              game.emit("server-data", data.type, JSON.parse(data.data));
+              const parsedData = JSON.parse(data.data);
+              console.log("received data from server", parsedData);
+              game.emit("server-data", data.type, parsedData);
             });
           });
         })
