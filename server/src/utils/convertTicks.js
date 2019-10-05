@@ -7,7 +7,7 @@ function ticksToTime(ticks) {
 }
 
 function timeToTicks(time) {
-  return (time * TICKS_PER_SECOND) / 10000;
+  return (time * TICKS_PER_SECOND) / 1000;
 }
 
 module.exports = {
