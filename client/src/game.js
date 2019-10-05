@@ -25,10 +25,6 @@ async function start(server, name) {
 
     const gameDataStream = grpcClient.gameData({});
     initializeGameRenderer(gameDataStream);
-
-    // setInterval(() => {
-    //   gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: 1, z: 2 }) });
-    // }, 1000);
   });
 }
 
@@ -139,6 +135,7 @@ function initializeGameRenderer(gameDataStream) {
 
     const playerPos = Player.threeObject.position;
     const playerAngleY = Player.threeObject.rotation.y;
+    gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });	
     const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);
     camera.position.set(newPos.x, newPos.y, newPos.z);
     camera.lookAt(Player.threeObject.position);
