@@ -41,7 +41,7 @@ const FogBehavior = {
         // construct a mesh
         const plane = new THREE.Mesh(geometry, material);
 
-        plane.position.y = 1;
+        plane.position.y = 3;
         plane.rotation.x = 55;
         return plane;
     }

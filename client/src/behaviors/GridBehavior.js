@@ -4,7 +4,7 @@ const THREE = require("three");
 const Grid = {
     async generateGrid(sizeX, sizeY, scene) {
 
-        const gridSize = sizeX * sizeY * 5;
+        const gridSize = sizeX * sizeY * 6.25;
         var geometry = new THREE.BoxGeometry(4, 4, 4);
         var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
