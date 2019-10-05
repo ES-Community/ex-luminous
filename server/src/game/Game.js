@@ -30,7 +30,7 @@ class Game extends EventEmitter {
 
   update() {
     console.log("update");
-    this.emit("change", "test", { hello: "world" });
+    this.emit("change", "currentState", this.state);
   }
 }
 
