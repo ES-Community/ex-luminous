@@ -10,9 +10,9 @@ class PlayerBehavior extends ScriptBehavior {
   awake() {
     console.log("player awake!");
     this.actor.setGlobalPosition(new THREE.Vector3(0, 10, 0));
-    const geometry = new THREE.SphereGeometry( 5, 32, 32 );
-    const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-    const sphere = new THREE.Mesh( geometry, material );
+    const geometry = new THREE.SphereGeometry(5, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const sphere = new THREE.Mesh(geometry, material);
     // sphere.position = new THREE.Vector3(0, 5, 0);
     this.actor.threeObject.add(sphere);
   }
@@ -20,22 +20,22 @@ class PlayerBehavior extends ScriptBehavior {
   update() {
     const speed = 0.2;
     if (game.input.isMouseButtonDown(2)) {
-      console.log("RIGHT CLICK !")
+      console.log("RIGHT CLICK !");
       // const mouseDelta = game.input.getMouseDelta();
       // console.log(camera.rotation);
       // camera.rotateY(mouseDelta.x);
       // camera.rotateX(-mouseDelta.y);
     }
-    if(game.input.isKeyDown("Z")) {
+    if (game.input.isKeyDown("KeyW")) {
       this.actor.moveGlobal(new THREE.Vector3(-speed, 0, 0));
     }
-    if (game.input.isKeyDown("S")) {
+    if (game.input.isKeyDown("KeyS")) {
       this.actor.moveGlobal(new THREE.Vector3(speed, 0, 0));
     }
-    if(game.input.isKeyDown("Q")) {
+    if (game.input.isKeyDown("KeyA")) {
       this.actor.moveGlobal(new THREE.Vector3(0, 0, speed));
     }
-    if (game.input.isKeyDown("D")) {
+    if (game.input.isKeyDown("KeyD")) {
       this.actor.moveGlobal(new THREE.Vector3(0, 0, -speed));
     }
   }
