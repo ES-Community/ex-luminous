@@ -2,6 +2,7 @@
 
 const getIp = require("../utils/getIp");
 
+const Game = require("./Game");
 const Player = require("./Player");
 
 class GameServer {
@@ -12,14 +13,15 @@ class GameServer {
     /** @type {Map<string, Player>} */
     this.playersByName = new Map();
 
-    setInterval(() => {
-      console.log({
-        players: Array.from(this.players())
-      });
+    this.game = new Game();
+
+    this.game.on("change", (type, data) => {
       for (const player of this.players()) {
-        player.sendGameData("interval", { hello: "world" });
+        player.sendGameData(type, data);
       }
-    }, 1000);
+    });
+
+    this.game.start();
   }
 
   players() {
