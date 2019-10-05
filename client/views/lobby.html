@@ -11,18 +11,26 @@
   </head>
   <body>
     <div id="server-info">
+      <h1>Connected players:</h1>
+      <br />
+      <ul>
+        <li>Fraxken</li>
+        <li>Haze</li>
+        <li>Targos</li>
+        <li>Xstoudi</li>
+      </ul>
       <button id="stop-server">stop server</button>
     </div>
     <main id="main">
       <input type="text" id="nickname" value="pseudo" />
-      <div class="error">
+      <div class="error hide">
         <p>Connection to <b>localhost:1337</b> failed!</p>
       </div>
       <div class="btn clickable" id="host-game"><p>🌍 Host a (new) Game</p></div>
       <div class="btn">
         <p>👥 Join a Game</p>
         <form id="join-game">
-          <input type="text" id="ip-to-join" placeholder="ip to join" />
+          <input type="text" id="ip-to-join" placeholder="127.0.0.1:50051" />
           <input type="submit" value="join" />
         </form>
       </div>

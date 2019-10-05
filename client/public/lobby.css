@@ -12,13 +12,12 @@ body {
 }
 
 ::placeholder {
-  color: #000;
+  color: rgb(146, 146, 146);
   font-weight: bold;
-  text-align: center;
 }
 
 input {
-  height: 30px;
+  height: 35px;
   border: 2px solid #fff;
   border-radius: 2px;
   outline: none;
@@ -40,10 +39,11 @@ input#nickname {
 }
 
 input[type="submit"] {
-  height: 34px;
+  height: 39px;
   background: #9edc39;
   color: #242e33;
   font-weight: bold;
+  padding: 0 20px;
 }
 input[type="submit"]:hover {
   cursor: pointer;
@@ -52,6 +52,24 @@ input[type="submit"]:hover {
 
 #server-info {
   display: none;
+  width: 380px;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 1px 1px 10px rgba(20, 20, 20, 0.5);
+  border: 3px solid #5d6e7783;
+  padding: 10px;
+}
+#server-info > h1 {
+  text-align: center;
+  border-bottom: 2px solid #5d6e7783;
+}
+#server-info > #stop-server {
+  background: #c62828;
+  border: 2px solid #b71c1c;
+  border-radius: 4px;
+  color: #fff;
+  margin-top: 10px;
 }
 
 main {
@@ -69,13 +87,16 @@ main > div.error {
   border: 2px solid #b71c1c;
   height: 30px;
   border-radius: 12px;
-  display: none;
   padding: 0 10px;
+  display: flex;
   justify-content: center;
   align-items: center;
   color: #e1f5fe;
   font-weight: bold;
   font-size: 14px;
+}
+main > div.error.hide {
+  display: none;
 }
 main > div.error b {
   color: #f0f4c3;

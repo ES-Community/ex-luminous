@@ -11,6 +11,7 @@ const { remote } = require("electron");
 
 // Variables & Loaders
 let isServerStarted = false;
+let errorTriggered = null;
 const packageDefinition = protoLoader.loadSync("../protos/game.proto", {
   keepCase: true,
   enums: String,
@@ -26,6 +27,10 @@ async function createGameServer() {
   isServerStarted = true;
 
   const playerName = document.getElementById("nickname").value.trim();
+  if (playerName === "") {
+    return showError("<p>player name <b>must not</b> be empty!</p>");
+  }
+
   const currentWindow = remote.getCurrentWindow();
   const serverPath = join(__dirname, "..", "..", "server", "src", "server.js");
 
@@ -101,6 +106,9 @@ function setupServerInfo(cp) {
 function connectPlayerToServer() {
   event.preventDefault();
   const playerName = document.getElementById("nickname").value.trim();
+  if (playerName === "") {
+    return showError("<p>player name <b>must not</b> be empty!</p>");
+  }
 
   // Retrieve ip in form
   const ipInputElement = document.getElementById("ip-to-join");
@@ -109,15 +117,33 @@ function connectPlayerToServer() {
     ipValue = "127.0.0.1:50051";
   }
 
-  // TODO: how to check if the connection is ok ?
+  if (errorTriggered) {
+    hideError();
+  }
+
   const client = new proto.Game(ipValue, grpc.credentials.createInsecure());
+  client.connect({ name: playerName }, function(err) {
+    if (err) {
+      showError(`<p>Connection to <b>${ipValue}</b> failed!</p>`);
+    } else {
+      const currentWindow = remote.getCurrentWindow();
+      currentWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}`);
+    }
+  });
+}
 
-  // client.connect({ name: playerName }, function() {
-  //   console.log("connected");
-  // });
+function showError(content = "") {
+  const error = document.querySelector(".error");
+  error.classList.remove("hide");
+  error.innerHTML = content;
+  errorTriggered = setTimeout(hideError, 5000);
+}
 
-  // TODO: load game
-  // remote.BrowserWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}`);
+function hideError() {
+  const error = document.querySelector(".error");
+
+  error.classList.add("hide");
+  errorTriggered = null;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
