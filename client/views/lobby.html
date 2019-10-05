@@ -7,9 +7,13 @@
     <title>Lobby</title>
     <link rel="stylesheet" href="../public/reset.css" />
     <link rel="stylesheet" href="../public/lobby.css" />
+    <script src="../public/scripts/lobby.js"></script>
   </head>
   <body>
-    <main>
+    <div id="server-info">
+      <button id="stop-server">stop server</button>
+    </div>
+    <main id="main">
       <input type="text" id="nickname" value="pseudo" />
       <div class="error">
         <p>Connection to <b>localhost:1337</b> failed!</p>
@@ -23,25 +27,5 @@
         </form>
       </div>
     </main>
-
-    <script>
-      const { remote } = require("electron");
-
-      document.addEventListener("DOMContentLoaded", () => {
-        console.log("DOM Loaded");
-        const hostGameButton = document.getElementById("host-game");
-        const joinGameForm = document.getElementById("join-game");
-
-        hostGameButton.addEventListener("click", () => {
-          remote.getCurrentWindow().loadFile("./views/game.html");
-        });
-
-        joinGameForm.addEventListener("submit", (event) => {
-          event.preventDefault();
-          const ipInputElement = document.getElementById("ip-to-join");
-          console.log(ipInputElement.value);
-        });
-      });
-    </script>
   </body>
 </html>

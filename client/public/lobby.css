@@ -49,6 +49,10 @@ input[type="submit"]:hover {
   background: #cddc39;
 }
 
+#server-info {
+  display: none;
+}
+
 main {
   width: 400px;
   display: flex;
