@@ -9,7 +9,6 @@ require("three/examples/js/controls/OrbitControls");
 const GameRenderer = require("./class/GameRenderer.js");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
-const SoundPlayer = require("./class/SoundPlayer");
 
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
