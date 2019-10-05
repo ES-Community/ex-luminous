@@ -5,20 +5,13 @@ const { join } = require("path");
 const { spawn } = require("child_process");
 
 // Require Third-party Dependencies
-const grpc = require("grpc");
-const protoLoader = require("@grpc/proto-loader");
 const { remote } = require("electron");
+
+const grpc = require("../src/grpc");
 
 // Variables & Loaders
 let isServerStarted = false;
 let errorTriggered = null;
-const packageDefinition = protoLoader.loadSync("../protos/game.proto", {
-  keepCase: true,
-  enums: String,
-  defaults: true,
-  oneofs: true
-});
-const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
 
 async function createGameServer() {
   if (isServerStarted) {
@@ -121,7 +114,7 @@ function connectPlayerToServer() {
     hideError();
   }
 
-  const client = new proto.Game(ipValue, grpc.credentials.createInsecure());
+  const client = grpc.createClient(ipValue);
   client.connect({ name: playerName }, function(err) {
     if (err) {
       showError(`<p>Connection to <b>${ipValue}</b> failed!</p>`);

@@ -19,13 +19,6 @@ class PlayerBehavior extends ScriptBehavior {
 
   update() {
     const speed = 0.2;
-    if (game.input.isMouseButtonDown(2)) {
-      console.log("RIGHT CLICK !");
-      // const mouseDelta = game.input.getMouseDelta();
-      // console.log(camera.rotation);
-      // camera.rotateY(mouseDelta.x);
-      // camera.rotateX(-mouseDelta.y);
-    }
     if (game.input.isKeyDown("KeyW")) {
       this.actor.moveGlobal(new THREE.Vector3(-speed, 0, 0));
     }
