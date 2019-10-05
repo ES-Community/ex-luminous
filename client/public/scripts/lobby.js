@@ -25,6 +25,7 @@ async function createGameServer() {
   }
   isServerStarted = true;
 
+  const playerName = document.getElementById("nickname").value.trim();
   const currentWindow = remote.getCurrentWindow();
   const serverPath = join(__dirname, "..", "..", "server", "src", "server.js");
 
@@ -38,8 +39,8 @@ async function createGameServer() {
   currentWindow.on("close", closeWin);
 
   let gameWindow = new remote.BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: true
     }
@@ -64,8 +65,8 @@ async function createGameServer() {
     stopServerBtn.removeEventListener("click", stopServer);
   });
 
-  // gameWindow.webContents.openDevTools();
-  gameWindow.loadFile("./views/game.html");
+  gameWindow.webContents.openDevTools();
+  gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1:50051&name=${playerName}`);
 }
 
 function setupServerInfo(cp) {
@@ -111,10 +112,12 @@ function connectPlayerToServer() {
   // TODO: how to check if the connection is ok ?
   const client = new proto.Game(ipValue, grpc.credentials.createInsecure());
 
-  // TODO: export this in the game
-  client.connect({ name: playerName }, function() {
-    console.log("connected");
-  });
+  // client.connect({ name: playerName }, function() {
+  //   console.log("connected");
+  // });
+
+  // TODO: load game
+  // remote.BrowserWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}`);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

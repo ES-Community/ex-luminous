@@ -8,6 +8,13 @@
 
   <body>
     <script>
+      const whatwgLocation = new URL(window.location.href);
+      const server = whatwgLocation.searchParams.get("server");
+      const name = whatwgLocation.searchParams.get("name");
+
+      // TODO: connect the player to the server!
+      console.log(`server: ${server}`);
+      console.log(`name: ${name}`);
       require("../src/renderer.js");
     </script>
   </body>
