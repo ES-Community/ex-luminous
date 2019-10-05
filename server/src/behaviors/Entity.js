@@ -1,6 +1,6 @@
 "use strict";
 
-const getId = require("../game/getId");
+const getId = require("../utils/getId");
 
 class Entity {
     constructor(position, healhPoints) {

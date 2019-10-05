@@ -1,6 +1,6 @@
 "use strict";
 
-const getId = require("./getId");
+const getId = require("../utils/getId");
 
 const MAP_SIZE_X = 64;
 const MAP_SIZE_Y = 64;
