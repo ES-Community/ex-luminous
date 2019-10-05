@@ -34,15 +34,19 @@ function generateShadows() {
       behavior: "normal"
     };
 
+    while (coordinatesAreUsed(shadow, shadows)) {
+      Object.assign(shadow, randomCoordinates());
+    }
+
     shadows.push(shadow);
   }
   return shadows;
 }
 
 function generateGrass() {
-  const grass = [];
+  const grasses = [];
   for (let i = 0; i < 15; i++) {
-    const g = {
+    const grass = {
       id: getId(),
       ...randomCoordinates(),
       healthPoints: GRASS_MAX_HP,
@@ -50,9 +54,13 @@ function generateGrass() {
       loading: 0
     };
 
-    grass.push(g);
+    while (coordinatesAreUsed(grass, grasses)) {
+      Object.assign(grass, randomCoordinates());
+    }
+
+    grasses.push(grass);
   }
-  return grass;
+  return grasses;
 }
 
 function randomCoordinates() {
@@ -64,6 +72,15 @@ function randomCoordinates() {
 
 function randomInt(max) {
   return Math.floor(Math.random() * max);
+}
+
+function coordinatesAreUsed(object, objects) {
+  for (const other of objects) {
+    if (object.x === other.x && object.y === other.y) {
+      return true;
+    }
+  }
+  return false;
 }
 
 module.exports = generateGameState;
