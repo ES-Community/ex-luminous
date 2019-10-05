@@ -1,5 +1,5 @@
 // Require Node.js Dependencies
-const { readFileSync } = require("fs");
+const { readFile } = require("fs").promises;
 const { join } = require("path");
 
 // CONSTANTS
@@ -16,11 +16,12 @@ class SoundPlayer {
    * @param {boolean} [options.loop=false]
    * @returns {SoundPlayer}
    */
-  static loadSoundAsset(audio, assetNameOrPath, options = {}) {
+  static async loadSoundAsset(audio, assetNameOrPath, options = {}) {
     const { volume = 1, loop = false, pan = 0, pitch = 0 } = options;
 
     const ctx = audio.getContext();
-    const buffer = readFileSync(join(SOUNDS_ASSETS_PATH, assetNameOrPath));
+    const fileBuffer = await readFile(join(SOUNDS_ASSETS_PATH, assetNameOrPath));
+    const buffer = await ctx.decodeAudioData(fileBuffer.buffer);
     const sound = new SoundPlayer(ctx, audio.masterGain, buffer);
 
     sound.setVolume(volume);

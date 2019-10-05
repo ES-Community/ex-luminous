@@ -9,7 +9,7 @@ const Input = require("./Input.js");
 const Audio = require("./Audio.js");
 const Scene = require("./Scene");
 
-class DefaultGameRenderer extends events {
+class GameRenderer extends events {
   constructor() {
     super();
 
@@ -117,4 +117,4 @@ class DefaultGameRenderer extends events {
   }
 }
 
-module.exports = DefaultGameRenderer;
+module.exports = GameRenderer;

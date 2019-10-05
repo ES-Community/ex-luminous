@@ -2,7 +2,7 @@
 const THREE = require("three");
 
 // Require Internal Dependencies
-const DefaultGameRenderer = require("./class/DefaultGameRenderer.js");
+const GameRenderer = require("./class/GameRenderer.js");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
 const SoundPlayer = require("./class/SoundPlayer");
@@ -10,7 +10,7 @@ const SoundPlayer = require("./class/SoundPlayer");
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
 
-const game = new DefaultGameRenderer();
+const game = new GameRenderer();
 window.game = game;
 
 // Initialize Camera & Controls
@@ -28,13 +28,13 @@ currentScene.add(new THREE.GridHelper(100, 20));
 
 game.init(currentScene, camera);
 
-const mySound = SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
+async function main() {
+  const mySound = await SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
 
-game.on("update", () => {
-  if (game.input.wasKeyJustPressed("A")) {
-
-  }
-  if (game.input.wasMouseButtonJustReleased(0)) {
-    mySound.play();
-  }
-});
+  game.on("update", () => {
+    if (game.input.wasMouseButtonJustReleased(0)) {
+      mySound.play();
+    }
+  });
+}
+main().catch(console.error);
