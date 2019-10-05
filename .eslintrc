@@ -11,5 +11,8 @@
   "rules": {
     "indent": ["error", 2],
     "strict": ["error", "global"]
+  },
+  "globals": {
+    "game": true
   }
 }
