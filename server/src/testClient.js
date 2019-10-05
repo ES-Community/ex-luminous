@@ -16,14 +16,8 @@ const packageDefinition = protoLoader.loadSync(protoPath, {
 
 const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
 
-function sayHello(call, callback) {
-  callback(null, { message: `Hello ${call.request.name}` });
-}
+const client = new proto.Test("127.0.0.1:50051", grpc.credentials.createInsecure());
 
-const address = "0.0.0.0:50051";
-
-const server = new grpc.Server();
-server.addService(proto.Test.service, { sayHello });
-server.bind(address, grpc.ServerCredentials.createInsecure());
-server.start();
-console.log(`Server listening on ${address}`);
+client.sayHello({ name: "world" }, function(err, response) {
+  console.log("Greeting:", response.message);
+});
