@@ -27,8 +27,19 @@ const currentScene = new Scene();
 currentScene.add(Player);
 currentScene.scene.background = new THREE.Color(0xf0f0f0);
 currentScene.add(new THREE.GridHelper(100, 20));
-let plane = FogBehavior.createOrUpdate();
-currentScene.scene.add(plane);
+
+const mask = [
+  1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 0, 0, 0, 0, 1, 1,
+  1, 1, 0, 0, 0, 0, 1, 1,
+  1, 1, 0, 1, 1, 0, 1, 1,
+  1, 1, 0, 0, 0, 0, 1, 1
+]
+let plane = FogBehavior.createOrUpdate(mask);
+currentScene.add(plane);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 console.log(camera);
@@ -38,26 +49,19 @@ camera.lookAt(Player.threeObject.position);
 
 game.init(currentScene, camera);
 
-
+let index = 1;
 async function main() {
   const mySound = await SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
   game.on("update", () => {
     if (game.input.wasMouseButtonJustReleased(0)) {
+      mask[index] = 0;
+      index++;
       currentScene.scene.remove(plane);
-     const mask = [
-        1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 0, 0, 0, 0, 1, 1,
-        1, 1, 0, 0, 0, 0, 1, 1,
-        1, 1, 0, 1, 1, 0, 1, 1,
-        1, 1, 0, 0, 0, 0, 1, 1
-      ]
-      currentScene.scene.add(FogBehavior.createOrUpdate(mask));
-      mySound.play();
+      plane = FogBehavior.createOrUpdate(mask);
+      currentScene.add(plane);
+      // mySound.play();
     }
     const playerPos = Player.threeObject.position;
     const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);

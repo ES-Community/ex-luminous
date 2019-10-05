@@ -25,6 +25,7 @@ const FogBehavior = {
         //it's likely that our texture will not have "power of two" size, meaning that mipmaps are not going to be supported on WebGL 1.0, so let's turn them off
         texture.generateMipmaps = false;
 
+        texture.needsUpdate = true;
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearFilter;
 
