@@ -7,6 +7,8 @@ const MAP_SIZE_Y = 64;
 const SHADOW_MAX_HP = 1;
 const ORB_MAX_HP = 1;
 const GRASS_MAX_HP = 3;
+const INIT_SHADOW_COUNT = 10;
+const INIT_GRASS_COUNT = 15;
 
 const totalTiles = MAP_SIZE_X * MAP_SIZE_Y;
 
@@ -26,7 +28,7 @@ function generateGameState() {
 
 function generateShadows() {
   const shadows = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < INIT_SHADOW_COUNT; i++) {
     const shadow = {
       id: getId(),
       ...randomCoordinates(),
@@ -45,7 +47,7 @@ function generateShadows() {
 
 function generateGrass() {
   const grasses = [];
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < INIT_GRASS_COUNT; i++) {
     const grass = {
       id: getId(),
       ...randomCoordinates(),
