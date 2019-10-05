@@ -1,4 +1,8 @@
 class Audio {
+  constructor() {
+    this.ctx = null;
+  }
+
   getContext() {
     if (this.ctx !== null) {
       return this.ctx;

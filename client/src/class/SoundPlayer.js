@@ -1,4 +1,36 @@
+// Require Node.js Dependencies
+const { readFileSync } = require("fs");
+const { join } = require("path");
+
+// CONSTANTS
+const SOUNDS_ASSETS_PATH = join(__dirname, "..", "..", "assets", "sounds");
+
 class SoundPlayer {
+
+  /**
+   * @function loadSoundAsset
+   * @param {*} audio
+   * @param {!string} assetNameOrPath
+   * @param {object} [options]
+   * @param {number} [options.volume=1]
+   * @param {boolean} [options.loop=false]
+   * @returns {SoundPlayer}
+   */
+  static loadSoundAsset(audio, assetNameOrPath, options = {}) {
+    const { volume = 1, loop = false, pan = 0, pitch = 0 } = options;
+
+    const ctx = audio.getContext();
+    const buffer = readFileSync(join(SOUNDS_ASSETS_PATH, assetNameOrPath));
+    const sound = new SoundPlayer(ctx, audio.masterGain, buffer);
+
+    sound.setVolume(volume);
+    sound.setLoop(loop);
+    sound.setPan(pan);
+    sound.setPitch(pitch);
+
+    return sound;
+  }
+
   constructor(audioCtx, audioMasterGain, buffer) {
     this.offset = 0;
     this.isLooping = false;
@@ -8,12 +40,14 @@ class SoundPlayer {
     this.audioCtx = audioCtx;
     this.audioMasterGain = audioMasterGain;
     this.buffer = buffer;
+    this.source = null;
   }
 
   destroy() {
     this.stop();
     this.audioCtx = null;
     this.audioMasterGain = null;
+    this.source = null;
   }
 
   play() {
@@ -42,13 +76,13 @@ class SoundPlayer {
     }
     else {
       // Assuming AudioBuffer
-      const source = this.source = this.audioCtx.createBufferSource();
-      source.buffer = this.buffer;
-      source.loop = this.isLooping;
+      this.source = this.audioCtx.createBufferSource();
+      this.source.buffer = this.buffer;
+      this.source.loop = this.isLooping;
 
       // NOTE: As of November 2015, playbackRate is not supported on MediaElementSources
       // so let's only apply it for buffer sources
-      source.playbackRate.value = Math.pow(2, this.pitch);
+      this.source.playbackRate.value = Math.pow(2, this.pitch);
     }
 
     this.pannerNode = this.audioCtx.createStereoPanner();

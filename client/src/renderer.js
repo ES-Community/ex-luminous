@@ -5,6 +5,7 @@ const THREE = require("three");
 const DefaultGameRenderer = require("./class/DefaultGameRenderer.js");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
+const SoundPlayer = require("./class/SoundPlayer");
 
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
@@ -27,8 +28,10 @@ currentScene.add(new THREE.GridHelper(100, 20));
 
 game.init(currentScene, camera);
 
+const mySound = SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
+
 game.on("update", () => {
   if (game.input.wasMouseButtonJustReleased(0)) {
-    console.log("click !!");
+    mySound.play();
   }
 });
