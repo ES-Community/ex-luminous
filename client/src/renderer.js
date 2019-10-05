@@ -12,6 +12,7 @@ const SoundPlayer = require("./class/SoundPlayer");
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
 const FogBehavior = require("./behaviors/FogBehavior");
+const GridBehavior = require("./behaviors/GridBehavior");
 
 const game = new GameRenderer();
 window.game = game;
@@ -55,6 +56,7 @@ async function main() {
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
   game.on("update", () => {
+    GridBehavior.generateGrid(10, 10, currentScene.scene);
     if (game.input.wasMouseButtonJustReleased(0)) {
       mask[index] = 0;
       index++;
