@@ -1,6 +1,7 @@
 "use strict";
 
 const { EventEmitter } = require("events");
+const { inspect } = require("util");
 
 const { TICKS_PER_SECOND } = require("../config");
 
@@ -37,7 +38,7 @@ class Game extends EventEmitter {
     this.state.shadows.forEach((shadow) => shadow.update(this.state));
     this.state.grass.forEach((grass) => grass.update(this.state));
     this.state.gameTicks += 1;
-    console.log(this.state);
+    console.log(inspect(this.state, { depth: 10, colors: true }));
     this.emit("change", "currentState", this.state);
   }
 }
