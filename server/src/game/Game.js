@@ -2,9 +2,9 @@
 
 const { EventEmitter } = require("events");
 
-const generateGameState = require("./generateGameState");
+const { TICKS_PER_SECOND } = require("../config");
 
-const TICKS_PER_SECOND = 1;
+const generateGameState = require("./generateGameState");
 
 class Game extends EventEmitter {
   constructor() {
@@ -34,7 +34,7 @@ class Game extends EventEmitter {
 
   update() {
     console.log("update tick");
-    this.state.shadows.forEach((shadow) => shadow.update(this.state))
+    this.state.shadows.forEach((shadow) => shadow.update(this.state));
     this.state.grass.forEach((grass) => grass.update(this.state));
     this.state.gameTicks += 1;
     console.log(this.state);

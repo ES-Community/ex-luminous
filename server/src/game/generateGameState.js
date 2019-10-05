@@ -1,16 +1,8 @@
 "use strict";
 
+const { MAP_SIZE_X, MAP_SIZE_Z, INIT_SHADOW_COUNT, INIT_GRASS_COUNT } = require("../config");
 const Grass = require("../behaviors/Grass");
 const Shadow = require("../behaviors/Shadow");
-
-const MAP_SIZE_X = 64;
-const MAP_SIZE_Z = 64;
-const SHADOW_MAX_HP = 1;
-const ORB_MAX_HP = 1;
-const INIT_SHADOW_COUNT = 10;
-const INIT_GRASS_COUNT = 15;
-
-const totalTiles = MAP_SIZE_X * MAP_SIZE_Z;
 
 function generateGameState() {
   return {
