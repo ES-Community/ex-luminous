@@ -1,7 +1,7 @@
 "use strict";
 
 const Grass = require("../behaviors/Grass");
-const getId = require("../utils/getId");
+const Shadow = require("../behaviors/Shadow");
 
 const MAP_SIZE_X = 64;
 const MAP_SIZE_Y = 64;
@@ -29,7 +29,7 @@ function generateGameState() {
 function generateShadows() {
   const shadows = [];
   for (let i = 0; i < INIT_SHADOW_COUNT; i++) {
-    const shadow = new ShadowRoot(randomCoordinates());
+    const shadow = new Shadow(randomCoordinates());
 
     while (coordinatesAreUsed(shadow, shadows)) {
       Object.assign(shadow, randomCoordinates());
