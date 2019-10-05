@@ -46,6 +46,10 @@ class Game extends EventEmitter {
   addPlayer(name) {
     this.state.orbs.push(new Orb(name));
   }
+
+  receiveData(player, type, data) {
+    console.log(`received data from ${player.name}`, type, data);
+  }
 }
 
 module.exports = Game;

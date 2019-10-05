@@ -27,6 +27,9 @@
               console.log("received data from server", parsedData);
               game.emit("server-data", data.type, parsedData);
             });
+            setInterval(() => {
+              gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: 1, z: 2 }) });
+            }, 1000);
           });
         })
         .catch(console.error);

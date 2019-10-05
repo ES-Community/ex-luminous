@@ -4,7 +4,7 @@ package exluminous;
 
 service Game {
   rpc Connect (ConnectRequest) returns (ConnectResponse) {}
-  rpc GameData (GameDataRequest) returns (stream GameData) {}
+  rpc GameData (stream GameData) returns (stream GameData) {}
 }
 
 message ConnectRequest {
@@ -15,7 +15,6 @@ message ConnectResponse {
   string reason = 2;
 }
 
-message GameDataRequest {}
 message GameData {
   string type = 1;
   string data = 2;
