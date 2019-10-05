@@ -7,7 +7,9 @@ service Game {
   rpc GameData (GameDataRequest) returns (stream GameData) {}
 }
 
-message ConnectRequest {}
+message ConnectRequest {
+  string name = 1;
+}
 message ConnectResponse {
   bool ok = 1;
 }

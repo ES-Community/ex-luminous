@@ -18,7 +18,7 @@ const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
 
 const client = new proto.Game("127.0.0.1:50051", grpc.credentials.createInsecure());
 
-client.connect({}, function() {
+client.connect({ name: "Robert" }, function() {
   console.log("connected");
   const gameDataStream = client.gameData({});
   gameDataStream.on("data", (data) => {

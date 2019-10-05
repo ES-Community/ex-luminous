@@ -7,31 +7,39 @@ const Player = require("./Player");
 class GameServer {
   constructor() {
     /** @type {Map<string, Player>} */
-    this.players = new Map();
+    this.playersByIp = new Map();
+
+    /** @type {Map<string, Player>} */
+    this.playersByName = new Map();
+
     setInterval(() => {
-      console.log({ state: this });
-      for (const player of this.players.values()) {
+      console.log({
+        players: Array.from(this.playersByIp.values())
+      });
+      for (const player of this.playersByIp.values()) {
         player.sendGameData("interval", { hello: "world" });
       }
     }, 1000);
   }
 
   getPlayer(call) {
-    return this.players.get(getIp(call));
+    return this.playersByIp.get(getIp(call));
   }
 
-  connect(call, callback) {
+  Connect(call, callback) {
     const clientIp = getIp(call);
-    let player = this.players.get(clientIp);
+    const name = call.request.name;
+    let player = this.playersByIp.get(clientIp);
     if (!player) {
-      player = new Player();
-      this.players.set(clientIp, player);
+      player = new Player(clientIp, name);
+      this.playersByIp.set(clientIp, player);
+      this.playersByName.set(name, player);
     }
     player.ping();
     callback(null, { ok: true });
   }
 
-  gameData(stream) {
+  GameData(stream) {
     const player = this.getPlayer(stream);
     player.setGameDataStream(stream);
     player.sendGameData("init", "test");
