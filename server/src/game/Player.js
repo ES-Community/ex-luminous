@@ -16,6 +16,10 @@ class Player {
     this.gameDataStream = stream;
   }
 
+  setName(name) {
+    this.name = name;
+  }
+
   sendGameData(type, data) {
     if (this.gameDataStream) {
       this.gameDataStream.write({ type, data: JSON.stringify(data) });

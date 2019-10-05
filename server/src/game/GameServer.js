@@ -14,12 +14,16 @@ class GameServer {
 
     setInterval(() => {
       console.log({
-        players: Array.from(this.playersByIp.values())
+        players: Array.from(this.players())
       });
-      for (const player of this.playersByIp.values()) {
+      for (const player of this.players()) {
         player.sendGameData("interval", { hello: "world" });
       }
     }, 1000);
+  }
+
+  players() {
+    return this.playersByIp.values();
   }
 
   getPlayer(call) {
@@ -30,10 +34,23 @@ class GameServer {
     const clientIp = getIp(call);
     const name = call.request.name;
     let player = this.playersByIp.get(clientIp);
+
     if (!player) {
+      if (this.playersByName.has(name)) {
+        return callback(null, { ok: false, reason: `name ${name} is already in use` });
+      }
       player = new Player(clientIp, name);
       this.playersByIp.set(clientIp, player);
       this.playersByName.set(name, player);
+    } else {
+      if (name !== player.name) {
+        if (this.playersByName.has(name)) {
+          return callback(null, { ok: false, reason: `name ${name} is already in use` });
+        }
+        this.playersByName.delete(player.name);
+        player.setName(name);
+        this.playersByName.set(name, player);
+      }
     }
     player.ping();
     callback(null, { ok: true });
