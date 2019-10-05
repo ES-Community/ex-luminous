@@ -8,31 +8,17 @@
 
   <body>
     <script>
-      const whatwgLocation = new URL(window.location.href);
-      const server = whatwgLocation.searchParams.get("server");
-      const name = whatwgLocation.searchParams.get("name");
-
-      console.log(`server: ${server}`);
-      console.log(`name: ${name}`);
       const { start } = require("../src/game.js");
-      const grpc = require("../src/grpc.js");
 
-      start(server, name)
-        .then((game) => {
-          const grpcClient = grpc.createClient(server);
-          grpcClient.connect({ name }, function(err) {
-            const gameDataStream = grpcClient.gameData({});
-            gameDataStream.on("data", (data) => {
-              const parsedData = JSON.parse(data.data);
-              console.log("received data from server", parsedData);
-              game.emit("server-data", data.type, parsedData);
-            });
-            setInterval(() => {
-              gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: 1, z: 2 }) });
-            }, 1000);
-          });
-        })
-        .catch(console.error);
+      // Retrieve server name and current player name
+      const whatwgLocation = new URL(window.location.href);
+      const server = whatwgLocation.searchParams.get("server") || "127.0.0.1:50051";
+      const name = whatwgLocation.searchParams.get("name") || "invite";
+
+      console.log(`remote server ip: ${server}`);
+      console.log(`player name: ${name}`);
+
+      start(server, name).catch(console.error);
     </script>
   </body>
 </html>

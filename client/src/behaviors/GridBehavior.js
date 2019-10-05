@@ -6,7 +6,7 @@ const Grid = {
   generateGrid(sizeX, sizeY, scene) {
     const gridSize = sizeX * sizeY * 6.25;
     var geometry = new THREE.BoxGeometry(4, 4, 4);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
 
     let initialX = -50;
     let initialZ = -50;

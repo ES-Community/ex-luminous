@@ -9,6 +9,7 @@ require("three/examples/js/controls/OrbitControls");
 const GameRenderer = require("./class/GameRenderer.js");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
+const grpc = require("./grpc.js");
 
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
@@ -16,7 +17,23 @@ const FogBehavior = require("./behaviors/FogBehavior");
 const GridBehavior = require("./behaviors/GridBehavior");
 
 async function start(server, name) {
-  const game = new GameRenderer(server, name);
+  const grpcClient = grpc.createClient(server);
+  grpcClient.connect({ name }, function(err) {
+    if (err) {
+      // TODO: retry connection ?
+    }
+
+    const gameDataStream = grpcClient.gameData({});
+    initializeGameRenderer(gameDataStream);
+
+    // setInterval(() => {
+    //   gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: 1, z: 2 }) });
+    // }, 1000);
+  });
+}
+
+function initializeGameRenderer(gameDataStream) {
+  const game = new GameRenderer();
   window.game = game;
 
   // Initialize Camera & Controls
@@ -123,6 +140,11 @@ async function start(server, name) {
 
   camera.lookAt(Player.threeObject.position);
   game.init(currentScene, camera);
+  gameDataStream.on("data", (data) => {
+    const parsedData = JSON.parse(data.data);
+    console.log("received data from server", parsedData);
+    game.emit("server-data", data.type, parsedData);
+  });
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
   animate();
