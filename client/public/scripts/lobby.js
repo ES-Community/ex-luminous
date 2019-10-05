@@ -1,34 +1,41 @@
 "use strict";
 
+// Require Node.js Dependencies
 const { join } = require("path");
 const { spawn } = require("child_process");
+
+// Require Third-party Dependencies
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
-
 const { remote } = require("electron");
 
-let isHostingGame = false;
-async function hostGame() {
-  if (isHostingGame) {
+// Variables & Loaders
+let isServerStarted = false;
+const packageDefinition = protoLoader.loadSync("../protos/game.proto", {
+  keepCase: true,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
+const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
+
+async function createGameServer() {
+  if (isServerStarted) {
     return;
   }
-  isHostingGame = true;
+  isServerStarted = true;
 
   const currentWindow = remote.getCurrentWindow();
   const serverPath = join(__dirname, "..", "..", "server", "src", "server.js");
 
   const cp = spawn("node", [serverPath]);
-  setupServerInfo(cp);
+  const stopServerBtn = setupServerInfo(cp);
+
   const closeWin = () => {
     cp.kill();
-    isHostingGame = false;
+    isServerStarted = false;
   };
   currentWindow.on("close", closeWin);
-
-  cp.on("exit", () => {
-    isHostingGame = false;
-    currentWindow.removeListener("close", closeWin);
-  });
 
   let gameWindow = new remote.BrowserWindow({
     width: 800,
@@ -38,15 +45,26 @@ async function hostGame() {
     }
   });
 
-  gameWindow.on("closed", () => {
-    console.log("window closed!");
-    cp.kill();
-    cp.emit("exit");
-    isHostingGame = false;
-    gameWindow = null;
+  cp.on("exit", () => {
+    isServerStarted = false;
+    if (gameWindow !== null && !gameWindow.isDestroyed()) {
+      gameWindow.close();
+    }
+    currentWindow.removeListener("close", closeWin);
   });
 
-  gameWindow.webContents.openDevTools();
+  const stopServer = () => {
+    gameWindow.close();
+  };
+  stopServerBtn.addEventListener("click", stopServer);
+  gameWindow.on("closed", () => {
+    cp.kill();
+    isServerStarted = false;
+    gameWindow = null;
+    stopServerBtn.removeEventListener("click", stopServer);
+  });
+
+  // gameWindow.webContents.openDevTools();
   gameWindow.loadFile("./views/game.html");
 }
 
@@ -71,35 +89,35 @@ function setupServerInfo(cp) {
   });
 
   cp.on("exit", () => {
+    mainElement.style.display = "flex";
+    serverInfoElement.style.display = "none";
     stopServerBtn.removeEventListener("click", exitListener);
+  });
+
+  return stopServerBtn;
+}
+
+function connectPlayerToServer() {
+  event.preventDefault();
+  const playerName = document.getElementById("nickname").value.trim();
+
+  // Retrieve ip in form
+  const ipInputElement = document.getElementById("ip-to-join");
+  let ipValue = ipInputElement.value.trim();
+  if (ipValue === "") {
+    ipValue = "127.0.0.1:50051";
+  }
+
+  // TODO: how to check if the connection is ok ?
+  const client = new proto.Game(ipValue, grpc.credentials.createInsecure());
+
+  // TODO: export this in the game
+  client.connect({ name: playerName }, function() {
+    console.log("connected");
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const hostGameButton = document.getElementById("host-game");
-  const joinGameForm = document.getElementById("join-game");
-
-  hostGameButton.addEventListener("click", hostGame);
-  joinGameForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const ipInputElement = document.getElementById("ip-to-join");
-    let ipValue = ipInputElement.value.trim();
-    if (ipValue === "") {
-      ipValue = "127.0.0.1:50051";
-    }
-
-    const packageDefinition = protoLoader.loadSync("../protos/game.proto", {
-      keepCase: true,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-
-    const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
-    const client = new proto.Game(ipValue, grpc.credentials.createInsecure());
-
-    client.connect({}, function() {
-      console.log("connected");
-    });
-  });
+  document.getElementById("host-game").addEventListener("click", createGameServer);
+  document.getElementById("join-game").addEventListener("submit", connectPlayerToServer);
 });
