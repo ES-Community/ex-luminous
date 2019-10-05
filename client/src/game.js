@@ -2,7 +2,8 @@
 
 // Require Third-party Dependencies
 const THREE = require("three");
-const OrbitControls = require('three-orbit-controls')(THREE);
+window.THREE = THREE;
+require("three/examples/js/controls/OrbitControls");
 
 // Require Internal Dependencies
 const GameRenderer = require("./class/GameRenderer.js");
@@ -23,33 +24,86 @@ async function start(server, name) {
   const Player = new Actor("Player");
   Player.addScriptedBehavior(new PlayerBehavior());
 
-
   const currentScene = new Scene();
   currentScene.add(Player);
   currentScene.scene.background = new THREE.Color(0xf0f0f0);
   currentScene.add(new THREE.GridHelper(100, 20));
 
   const mask = [
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 0, 0, 0, 0, 1, 1,
-    1, 1, 0, 0, 0, 0, 1, 1,
-    1, 1, 0, 1, 1, 0, 1, 1,
-    1, 1, 0, 0, 0, 0, 1, 1
-  ]
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+  ];
   let plane = FogBehavior.createOrUpdate(mask);
   currentScene.add(plane);
 
   function animate() {
-
     requestAnimationFrame(animate);
 
     controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
     camera.lookAt(Player.threeObject.position);
-    game.renderer.render(currentScene.scene, camera)
-
+    game.renderer.render(currentScene.scene, camera);
   }
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
@@ -58,7 +112,7 @@ async function start(server, name) {
   camera.position.set(50, 50, 0);
 
   // Rotation controls
-  let controls = new OrbitControls(camera, game.renderer.domElement);
+  let controls = new THREE.OrbitControls(camera, game.renderer.domElement);
   controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
   controls.dampingFactor = 0.0005;
   controls.enableKeys = false;
@@ -74,12 +128,12 @@ async function start(server, name) {
   game.init(currentScene, camera);
 
   const mySound = await SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
-  
+
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
   animate();
-  
+
   GridBehavior.generateGrid(10, 10, currentScene.scene);
-  
+
   let index = 0;
   game.on("update", () => {
     if (game.input.wasMouseButtonJustReleased(0)) {
