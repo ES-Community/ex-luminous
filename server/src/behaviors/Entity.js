@@ -3,7 +3,7 @@
 const getId = require("../utils/getId");
 
 class Entity {
-  constructor(position, healthPoints) {
+  constructor(position = mandatory("position"), healthPoints = mandatory("healthPoints")) {
     this.id = getId()
     this.position = position
     this.healthPoints = healthPoints
