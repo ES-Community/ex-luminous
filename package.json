@@ -4,6 +4,7 @@
   "description": "- https://grpc.io/docs/quickstart/node/\r - https://grpc.io/docs/tutorials/basic/node/\r - https://grpc.io/docs/guides/\r - https://grpc.github.io/grpc/node/",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +20,12 @@
   "homepage": "https://github.com/ES-Community/ludum-dare-45#readme",
   "devDependencies": {
     "eslint": "^6.5.1"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "singleQuote": false,
+    "semi": true,
+    "printWidth": 120,
+    "tabWidth": 2
   }
 }
