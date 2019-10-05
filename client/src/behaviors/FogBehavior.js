@@ -1,21 +1,14 @@
+"use strict";
+
 // Require Internal Dependencies
 const THREE = require("three");
 
 const FogBehavior = {
-  createOrUpdate(mask = [
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 0, 1, 1, 1, 1,
-    1, 1, 0, 0, 0, 1, 1, 1,
-    1, 0, 0, 0, 0, 0, 1, 1,
-    1, 1, 0, 0, 0, 1, 1, 1
-  ]) {
+  createOrUpdate(mask) {
     //create a typed array to hold texture data
     const data = new Uint8Array(mask.length);
     //copy mask into the typed array
-    data.set(mask.map(v => v * 255));
+    data.set(mask.map((v) => v * 255));
     //create the texture
     const texture = new THREE.DataTexture(data, 8, 8, THREE.LuminanceFormat, THREE.UnsignedByteType);
 
@@ -45,9 +38,6 @@ const FogBehavior = {
     plane.rotation.x = 55;
     return plane;
   }
-
-}
-
-
+};
 
 module.exports = FogBehavior;

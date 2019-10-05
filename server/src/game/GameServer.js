@@ -1,5 +1,6 @@
 "use strict";
 
+const { TICKS_PER_SECOND } = require("../config");
 const getIp = require("../utils/getIp");
 
 const Game = require("./Game");
@@ -30,6 +31,15 @@ class GameServer {
 
   getPlayer(call) {
     return this.playersByIp.get(getIp(call));
+  }
+
+  enableReport() {
+    setInterval(() => {
+      process.send({
+        time: this.game.getTicks() / TICKS_PER_SECOND,
+        players: Array.from(this.players()).map((player) => ({ name: player.name, ip: player.ip }))
+      });
+    }, 1000);
   }
 
   Connect(call, callback) {
