@@ -1,9 +1,13 @@
 "use strict";
 
+// eslint-disable-next-line
+const Actor = require("./Actor");
+
 const voidFunction = () => undefined;
 
 class ScriptBehavior {
   constructor() {
+    /** @type {Actor} */
     this.actor = null;
 
     for (const methodName of ScriptBehavior.AvailableMethods) {

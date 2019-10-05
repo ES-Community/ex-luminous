@@ -4,8 +4,14 @@
 const THREE = require("three");
 
 // Cube textures
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const material2 = new THREE.MeshBasicMaterial({ color: new THREE.Color(30, 100, 50) });
+const material = new THREE.MeshBasicMaterial({
+  color: 0x00ff00,
+  wireframe: true
+});
+const material2 = new THREE.MeshBasicMaterial({
+  color: new THREE.Color(30, 100, 50),
+  wireframe: true
+});
 
 const Grid = {
   cubeSize: 4,

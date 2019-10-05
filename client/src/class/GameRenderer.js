@@ -28,6 +28,10 @@ class GameRenderer extends events {
     this.audio = new Audio();
     this.input = new Input(this.renderer.domElement);
     this.framesPerSecond = 60;
+    this.localCache = {
+      Orbs: new Map(),
+      Grass: new Map()
+    };
   }
 
   tick(accumulatedTime) {

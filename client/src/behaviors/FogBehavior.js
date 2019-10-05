@@ -4,7 +4,7 @@
 const THREE = require("three");
 
 const FogBehavior = {
-  createOrUpdate(mask, size) {
+  createOrUpdate(mask, sizeX, sizeY) {
     //create a typed array to hold texture data
     const data = new Uint8Array(mask.length);
     //copy mask into the typed array
@@ -22,7 +22,7 @@ const FogBehavior = {
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearFilter;
 
-    const geometry = new THREE.PlaneBufferGeometry(size, size, 1, 1);
+    const geometry = new THREE.PlaneBufferGeometry(sizeX, sizeY, 1, 1);
     const material = new THREE.MeshBasicMaterial({
       color: "black",
       alphaMap: texture,
