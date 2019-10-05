@@ -5,6 +5,8 @@ const path = require("path");
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
 
+const GameServer = require("./game/GameServer");
+
 const protoPath = path.join(__dirname, "../../protos/game.proto");
 
 const packageDefinition = protoLoader.loadSync(protoPath, {
@@ -16,14 +18,10 @@ const packageDefinition = protoLoader.loadSync(protoPath, {
 
 const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
 
-function sayHello(call, callback) {
-  callback(null, { message: `Hello ${call.request.name}` });
-}
-
 const address = "0.0.0.0:50051";
 
 const server = new grpc.Server();
-server.addService(proto.Test.service, { sayHello });
+server.addService(proto.Game.service, new GameServer());
 server.bind(address, grpc.ServerCredentials.createInsecure());
 server.start();
 console.log(`Server listening on ${address}`);

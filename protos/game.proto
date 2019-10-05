@@ -2,14 +2,18 @@ syntax = "proto3";
 
 package exluminous;
 
-service Test {
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+service Game {
+  rpc Connect (ConnectRequest) returns (ConnectResponse) {}
+  rpc GameData (GameDataRequest) returns (stream GameData) {}
 }
 
-message HelloRequest {
-  string name = 1;
+message ConnectRequest {}
+message ConnectResponse {
+  bool ok = 1;
 }
 
-message HelloReply {
-  string message = 1;
+message GameDataRequest {}
+message GameData {
+  string type = 1;
+  string data = 2;
 }

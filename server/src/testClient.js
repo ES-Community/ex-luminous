@@ -16,8 +16,12 @@ const packageDefinition = protoLoader.loadSync(protoPath, {
 
 const proto = grpc.loadPackageDefinition(packageDefinition).exluminous;
 
-const client = new proto.Test("127.0.0.1:50051", grpc.credentials.createInsecure());
+const client = new proto.Game("127.0.0.1:50051", grpc.credentials.createInsecure());
 
-client.sayHello({ name: "world" }, function(err, response) {
-  console.log("Greeting:", response.message);
+client.connect({}, function() {
+  console.log("connected");
+  const gameDataStream = client.gameData({});
+  gameDataStream.on("data", (data) => {
+    console.log("got game data", data);
+  });
 });
