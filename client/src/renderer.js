@@ -11,6 +11,7 @@ const SoundPlayer = require("./class/SoundPlayer");
 
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
+const FogBehavior = require("./behaviors/FogBehavior");
 
 const game = new GameRenderer();
 window.game = game;
@@ -27,7 +28,8 @@ const currentScene = new Scene();
 currentScene.add(Player);
 currentScene.scene.background = new THREE.Color(0xf0f0f0);
 currentScene.add(new THREE.GridHelper(100, 20));
-
+let plane = FogBehavior.createOrUpdate();
+currentScene.scene.add(plane);
 game.init(currentScene, camera);
 
 async function main() {
@@ -35,6 +37,18 @@ async function main() {
 
   game.on("update", () => {
     if (game.input.wasMouseButtonJustReleased(0)) {
+      currentScene.scene.remove(plane);
+     const mask = [
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 1, 1, 0, 1, 1,
+        1, 1, 0, 0, 0, 0, 1, 1
+      ]
+      currentScene.scene.add(FogBehavior.createOrUpdate(mask));
       mySound.play();
     }
   });
