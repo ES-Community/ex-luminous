@@ -1,6 +1,8 @@
 {
   "extends": "eslint:recommended",
+  "parser": "babel-eslint",
   "parserOptions": {
+    "sourceType": "script",
     "ecmaVersion": 2019
   },
   "env": {
