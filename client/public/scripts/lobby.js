@@ -82,6 +82,8 @@ function setupServerInfo(cp) {
   };
   stopServerBtn.addEventListener("click", exitListener);
 
+  cp.stderr.on("data", (d) => console.error(d.toString()));
+
   cp.on("message", (msg) => {
     // TODO: update view with info
     console.log(msg);
