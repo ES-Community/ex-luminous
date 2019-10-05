@@ -29,12 +29,7 @@ function generateGameState() {
 function generateShadows() {
   const shadows = [];
   for (let i = 0; i < INIT_SHADOW_COUNT; i++) {
-    const shadow = {
-      id: getId(),
-      ...randomCoordinates(),
-      healthPoints: SHADOW_MAX_HP,
-      behavior: "normal"
-    };
+    const shadow = new ShadowRoot(randomCoordinates());
 
     while (coordinatesAreUsed(shadow, shadows)) {
       Object.assign(shadow, randomCoordinates());
