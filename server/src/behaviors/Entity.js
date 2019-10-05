@@ -1,9 +1,12 @@
 "use strict";
 
-class Entity {
+const getId = require("../game/getId");
 
-    constructor(params){
-        
+class Entity {
+    constructor(position, healhPoints) {
+        this.id = getId()
+        this.position = position
+        this.healhPoints = healhPoints
     }
 }
 
