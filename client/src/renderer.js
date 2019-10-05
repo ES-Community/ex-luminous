@@ -18,8 +18,6 @@ const game = new GameRenderer();
 window.game = game;
 
 // Initialize Camera & Controls
-
-
 const Player = new Actor("Player");
 Player.addScriptedBehavior(new PlayerBehavior());
 
@@ -46,24 +44,24 @@ const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerH
 console.log(camera);
 camera.name = "Camera";
 camera.position.set(50, 50, 0);
-camera.lookAt(Player.threeObject.position);
 
+camera.lookAt(Player.threeObject.position);
 game.init(currentScene, camera);
 
-let index = 1;
+let index = 0;
 async function main() {
   const mySound = await SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
+  GridBehavior.generateGrid(10, 10, currentScene.scene);
   game.on("update", () => {
-    GridBehavior.generateGrid(10, 10, currentScene.scene);
     if (game.input.wasMouseButtonJustReleased(0)) {
       mask[index] = 0;
       index++;
       currentScene.scene.remove(plane);
       plane = FogBehavior.createOrUpdate(mask);
       currentScene.add(plane);
-      // mySound.play();
+      //mySound.play();
     }
     const playerPos = Player.threeObject.position;
     const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);
