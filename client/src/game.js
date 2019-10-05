@@ -127,8 +127,6 @@ async function start(server, name) {
   camera.lookAt(Player.threeObject.position);
   game.init(currentScene, camera);
 
-  const mySound = await SoundPlayer.loadSoundAsset(game.audio, "0218.ogg");
-
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
   animate();
 
