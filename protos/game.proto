@@ -13,6 +13,7 @@ message ConnectRequest {
 message ConnectResponse {
   bool ok = 1;
   string reason = 2;
+  string data = 3;
 }
 
 message GameData {

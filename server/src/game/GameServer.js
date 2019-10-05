@@ -66,7 +66,9 @@ class GameServer {
       }
     }
     player.ping();
-    callback(null, { ok: true });
+
+    const { mapSize } = this.game.state;
+    callback(null, { ok: true, data: JSON.stringify({ mapSize }) });
   }
 
   GameData(stream) {

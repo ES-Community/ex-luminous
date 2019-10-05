@@ -18,11 +18,12 @@ const GridBehavior = require("./behaviors/GridBehavior");
 
 async function start(server, name) {
   const grpcClient = grpc.createClient(server);
-  grpcClient.connect({ name }, function(err) {
+  grpcClient.connect({ name }, function(err, data) {
     if (err) {
       // TODO: retry connection ?
     }
 
+    console.log(data);
     const gameDataStream = grpcClient.gameData({});
     initializeGameRenderer(gameDataStream);
   });
