@@ -53,7 +53,6 @@ class Shadow extends Entity {
   }
 
   prepareWandering() {
-    console.log('prepare wandering')
     const selectedDirection = randomDirection();
     const moveAmplitude = Math.random() * (SHADOW_MAX_AMPLITUDE - 1) + 1;
 
@@ -66,8 +65,6 @@ class Shadow extends Entity {
       x: deltaX / this.remainingWanderingTicks,
       z: deltaZ / this.remainingWanderingTicks
     }
-
-    console.log(Math.sqrt(Math.pow(deltaX, 2), Math.pow(deltaZ, 2)), this.remainingWanderingTicks, this.wanderingSteps)
   }
 
   wander() {
@@ -75,14 +72,12 @@ class Shadow extends Entity {
     this.position.z += this.wanderingSteps.z;
     this.remainingWanderingTicks--;
     if(this.remainingWanderingTicks <= 0) {
-      console.log('end wandering');
       // reset wandering
       this.remainingWanderingTicks = null;
       this.wanderingSteps = null;
 
       // wait
       this.remainingWaitingTicks = timeToTicks(Math.random() * (SHADOW_MAX_WAITING_TIME - SHADOW_MIN_WAITING_TIME) + SHADOW_MIN_WAITING_TIME);
-      console.log(`waiting for ${this.remainingWaitingTicks} ticks`);
       this.currentBehavior = Shadow.Behavior.WAITING;
     }
   }
