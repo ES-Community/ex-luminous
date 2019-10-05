@@ -3,10 +3,13 @@
   "name": "server",
   "version": "0.0.0",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "nodemon src/server.js"
   },
   "dependencies": {
     "@grpc/proto-loader": "^0.5.2",
     "grpc": "^1.24.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3"
   }
 }
