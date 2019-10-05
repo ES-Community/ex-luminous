@@ -2,6 +2,8 @@
 
 const { EventEmitter } = require("events");
 
+const generateGameState = require("./generateGameState");
+
 const TICKS_PER_SECOND = 1;
 
 class Game extends EventEmitter {
@@ -11,6 +13,8 @@ class Game extends EventEmitter {
     this.isInitialized = false;
     this.waitBetweenTicks = Math.round(1000 / TICKS_PER_SECOND);
     this.timeout;
+
+    this.state = generateGameState();
   }
 
   start() {
@@ -29,7 +33,7 @@ class Game extends EventEmitter {
   }
 
   update() {
-    console.log("update");
+    console.log("update", this.state);
     this.emit("change", "currentState", this.state);
   }
 }
