@@ -1,12 +1,12 @@
 "use strict";
 
+const Grass = require("../behaviors/Grass");
 const getId = require("../utils/getId");
 
 const MAP_SIZE_X = 64;
 const MAP_SIZE_Y = 64;
 const SHADOW_MAX_HP = 1;
 const ORB_MAX_HP = 1;
-const GRASS_MAX_HP = 3;
 const INIT_SHADOW_COUNT = 10;
 const INIT_GRASS_COUNT = 15;
 
@@ -48,13 +48,7 @@ function generateShadows() {
 function generateGrass() {
   const grasses = [];
   for (let i = 0; i < INIT_GRASS_COUNT; i++) {
-    const grass = {
-      id: getId(),
-      ...randomCoordinates(),
-      healthPoints: GRASS_MAX_HP,
-      state: "normal",
-      loading: 0
-    };
+    const grass = new Grass(randomCoordinates());
 
     while (coordinatesAreUsed(grass, grasses)) {
       Object.assign(grass, randomCoordinates());

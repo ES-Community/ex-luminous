@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/ES-Community/ludum-dare-45#readme",
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1"
   },
   "prettier": {
@@ -28,5 +29,6 @@
     "semi": true,
     "printWidth": 120,
     "tabWidth": 2
-  }
+  },
+  "dependencies": {}
 }
