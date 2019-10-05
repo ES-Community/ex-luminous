@@ -26,7 +26,6 @@ async function start(server, name) {
   const currentScene = new Scene();
   currentScene.add(Player);
   currentScene.scene.background = new THREE.Color(0xf0f0f0);
-  currentScene.add(new THREE.GridHelper(100, 20));
 
   const mask = [
     1,
@@ -106,7 +105,6 @@ async function start(server, name) {
   }
 
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-  console.log(camera);
   camera.name = "Camera";
   camera.position.set(50, 50, 0);
 
