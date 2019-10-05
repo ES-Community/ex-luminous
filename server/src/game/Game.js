@@ -48,7 +48,14 @@ class Game extends EventEmitter {
   }
 
   receiveData(player, type, data) {
-    console.log(`received data from ${player.name}`, type, data);
+    switch(type) {
+      case "player-moved": {
+        const orb = this.state.orbs.find((orb) => orb.name === player.name)
+        orb.position = data
+        break;
+      }
+      default: throw new Error("Missing data handler")
+    }
   }
 
   getTicks() {
