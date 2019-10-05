@@ -1,0 +1,109 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(255, 253, 231);
+  background: -moz-radial-gradient(center, ellipse cover, rgba(255, 253, 231, 1) 2%, rgba(236, 239, 241, 1) 100%);
+  background: -webkit-radial-gradient(center, ellipse cover, rgba(255, 253, 231, 1) 2%, rgba(236, 239, 241, 1) 100%);
+  background: radial-gradient(ellipse at center, rgba(255, 253, 231, 1) 2%, rgba(236, 239, 241, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fffde7', endColorstr='#eceff1',GradientType=1 );
+  font-family: "Courier New", Courier, monospace;
+}
+
+::placeholder {
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+}
+
+input {
+  height: 30px;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  outline: none;
+  padding: 0 10px;
+}
+input#nickname {
+  width: 70%;
+  margin-left: 15%;
+  text-align: center;
+  height: 40px;
+  font-size: 26px;
+  background: none;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 3px solid #546e7a2c;
+  color: #546e7ab0;
+  border-radius: 0;
+}
+
+input[type="submit"] {
+  height: 34px;
+  background: greenyellow;
+  color: #242e33;
+  font-weight: bold;
+}
+input[type="submit"]:hover {
+  cursor: pointer;
+  background: #cddc39;
+}
+
+main {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+main > * + * {
+  margin-top: 15px;
+}
+
+main > div.error {
+  background: #c62828;
+  border: 2px solid #b71c1c;
+  height: 30px;
+  border-radius: 12px;
+  display: none;
+  padding: 0 10px;
+  justify-content: center;
+  align-items: center;
+  color: #e1f5fe;
+  font-weight: bold;
+  font-size: 14px;
+}
+main > div.error b {
+  color: #f0f4c3;
+}
+
+main > div.btn {
+  background: rgb(38, 50, 56);
+  background: -moz-linear-gradient(-45deg, rgba(38, 50, 56, 1) 1%, rgba(55, 71, 79, 1) 100%);
+  background: -webkit-linear-gradient(-45deg, rgba(38, 50, 56, 1) 1%, rgba(55, 71, 79, 1) 100%);
+  background: linear-gradient(135deg, rgba(38, 50, 56, 1) 1%, rgba(55, 71, 79, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#263238', endColorstr='#37474f',GradientType=1 );
+  border: 3px solid #242e33;
+  border-radius: 12px;
+  min-height: 100px;
+  padding: 5px;
+  box-shadow: 1px 1px 10px rgba(20, 20, 20, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+main > div.btn.clickable:hover {
+  border-color: #dce775;
+  color: #dce775;
+  cursor: pointer;
+}
+
+main > div.btn > p {
+  font-weight: bold;
+  font-size: 22px;
+  text-shadow: 1px 1px 10px #dce77583;
+}
+main > div.btn > form {
+  margin-top: 20px;
+}

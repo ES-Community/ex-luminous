@@ -1,8 +1,9 @@
-'use strict';
+"use strict";
 
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require("electron");
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
+const [defaultView = "game"] = process.argv.slice(2);
 
 function createWindow() {
   // Create the browser window.
@@ -10,8 +11,8 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
-    },
+      nodeIntegration: true
+    }
   });
 
   win.on("closed", () => {
@@ -19,15 +20,15 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  win.loadFile('index.html');
+  win.loadFile(`./views/${defaultView}.html`);
 
   // Open the DevTools.
   win.webContents.openDevTools();
 
   // Quit when all windows are closed.
-  app.on('window-all-closed', () => {
+  app.on("window-all-closed", () => {
     app.quit();
   });
 }
 
-app.on('ready', createWindow);
+app.on("ready", createWindow);

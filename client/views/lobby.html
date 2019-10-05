@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Lobby</title>
+    <link rel="stylesheet" href="../public/reset.css" />
+    <link rel="stylesheet" href="../public/lobby.css" />
+  </head>
+  <body>
+    <main>
+      <input type="text" id="nickname" value="pseudo" />
+      <div class="error">
+        <p>Connection to <b>localhost:1337</b> failed!</p>
+      </div>
+      <div class="btn clickable" id="host-game"><p>🌍 Host a (new) Game</p></div>
+      <div class="btn">
+        <p>👥 Join a Game</p>
+        <form id="join-game">
+          <input type="text" id="ip-to-join" placeholder="ip to join" />
+          <input type="submit" value="join" />
+        </form>
+      </div>
+    </main>
+
+    <script>
+      const { remote } = require("electron");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM Loaded");
+        const hostGameButton = document.getElementById("host-game");
+        const joinGameForm = document.getElementById("join-game");
+
+        hostGameButton.addEventListener("click", () => {
+          remote.getCurrentWindow().loadFile("./views/game.html");
+        });
+
+        joinGameForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const ipInputElement = document.getElementById("ip-to-join");
+          console.log(ipInputElement.value);
+        });
+      });
+    </script>
+  </body>
+</html>

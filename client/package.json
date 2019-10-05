@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "lobby": "electron . lobby",
     "package": "electron-packager . --out=dist --asar --overwrite --all"
   },
   "devDependencies": {

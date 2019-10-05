@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ludum-dare-45</title>
+    <link rel="stylesheet" href="../public/reset.css" />
+  </head>
+
+  <body>
+    <script>
+      console.log(window.isHost);
+      console.log(window.location);
+      require("../src/renderer.js");
+      console.log(`Node.js version: ${process.versions.node}`);
+      console.log(`Chrome version: ${process.versions.chrome}`);
+      console.log(`Electron version: ${process.versions.electron}`);
+    </script>
+  </body>
+</html>
