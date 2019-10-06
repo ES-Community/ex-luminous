@@ -13,9 +13,13 @@ class GrassBehavior extends ScriptBehavior {
   }
 
   awake() {
+    const radiusLight = 5;
+    const light = new THREE.PointLight(0xffffff, 5, radiusLight * 4)
+    light.position.set(0, 1, 0);
     game.modelLoader.load("Herbe", "Herbe_Neutre.png").then((model) => {
       model.scale.set(0.3, 0.3, 0.3);
       this.actor.threeObject.add(model);
+      this.actor.threeObject.add(light);
     });
     this.actor.threeObject.position.set(this.defaultPos.x, 3, this.defaultPos.y);
   }

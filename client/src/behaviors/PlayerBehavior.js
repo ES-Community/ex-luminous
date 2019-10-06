@@ -27,7 +27,7 @@ class PlayerBehavior extends ScriptBehavior {
     this.radiusLight = 5;
     const sphere = PlayerBehavior.CreateMesh();
     const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4)
-    light.position.set(0, 0, 0);
+    light.position.set(0, 1, 0);
     // this.fog = this.actor.threeObject.parent.getObjectByName("Fog");
     // console.log(this.fog);
     this.actor.threeObject.add(sphere);

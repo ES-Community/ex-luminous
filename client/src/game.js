@@ -115,15 +115,9 @@ function updateLight(actor, type) {
     if (actor.threeObject.children[1] instanceof THREE.PointLight) {
       actor.threeObject.children[1].visible = false;
     }
-
   } else if (type == "add") {
     if (actor.threeObject.children[1] instanceof THREE.PointLight) {
       actor.threeObject.children[1].visible = true;
-    } else {
-      const radiusLight = 5;
-      const light = new THREE.PointLight(0xffffff, 5, radiusLight * 4)
-      light.position.set(0, 0, 0);
-      actor.threeObject.add(light);
     }
   }
 }
