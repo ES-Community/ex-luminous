@@ -41,7 +41,7 @@ function createOrb(currentScene, orbs) {
   orbsColor.setHex(Math.random() * 0xffffff);
   const orbsMesh = PlayerBehavior.CreateMesh(orbsColor);
 
-  orbsMesh.position.set(orbs.position.x, PlayerBehavior.Y_POSITION, orbs.position.z);
+  orbsActor.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
   orbsActor.threeObject.add(orbsMesh);
   currentScene.add(orbsActor);
 
@@ -78,8 +78,8 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
   const mask = [];
   for (let i = 0; i < mapSize.x * mapSize.z; i++) {
-    mask.push(Math.random() > 0.3 ? 1 : 0);
-    // mask.push(0);
+    // mask.push(Math.random() > 0.3 ? 1 : 0);
+    mask.push(0);
   }
   let plane = FogBehavior.createOrUpdate(mask, mapSize.x * 4, mapSize.z * 4);
   currentScene.add(plane);
