@@ -3,6 +3,8 @@
 const { app, BrowserWindow } = require("electron");
 const { join } = require("path");
 
+const isDev = require("electron-is-dev");
+
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 const [defaultView = "game"] = process.argv.slice(2);
 
@@ -26,7 +28,7 @@ function createWindow() {
   win.loadURL(`file://${__dirname}/views/${defaultView}.html`);
 
   // Open the DevTools.
-  if (defaultView !== "lobby") {
+  if (isDev) {
     win.webContents.openDevTools();
   }
 
