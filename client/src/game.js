@@ -115,7 +115,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
   camera.name = "Camera";
   camera.position.set(50, 50, 0);
-<<<<<<< HEAD
   camera.lookAt(Player.threeObject.position);
 
   gameDataStream.on("data", ({ type, data }) => {
@@ -166,7 +165,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
     // emit to the game renderer
     game.emit("data", type, payload);
-=======
   currentScene.add(camera);
   // camera.rotation.x = -Math.PI / 4
   camera.lookAt(Player.threeObject.position);
@@ -180,7 +178,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     const parsedData = JSON.parse(data.data);
     console.log("received data from server", parsedData);
     game.emit("server-data", data.type, parsedData);
->>>>>>> feat: rotate camera, move by player angle & lerp cam
   });
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
@@ -196,14 +193,12 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let lerpCamDuration = 60;
   let cameraPosition = camera.position;
   game.on("update", () => {
-<<<<<<< HEAD
     const playerPos = Player.threeObject.position;
 
     gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
     const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);
     camera.position.set(newPos.x, newPos.y, newPos.z);
     camera.lookAt(Player.threeObject.position);
-=======
     if (game.input.wasMouseButtonJustReleased(0)) {
       currentScene.scene.remove(plane);
       plane = FogBehavior.createOrUpdate(mask, gridSize * 4);
@@ -236,7 +231,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       // rotationAngleY += mouseDelta.x * rotationSpeed;
       Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -mouseDelta.x * rotationSpeed);
     }
->>>>>>> feat: rotate camera, move by player angle & lerp cam
   });
 }
 
