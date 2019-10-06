@@ -84,6 +84,9 @@ class Grass extends Entity {
         }
         break;
       }
+      case Grass.State.BLOOM: {
+        break;
+      }
       default: {
         throw new Error(`missing state implementation: ${this.state}`);
       }
