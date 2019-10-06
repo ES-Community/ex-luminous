@@ -38,7 +38,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function (err, data = defaultData) {
+      grpcClient.connect({ name }, function(err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -70,12 +70,12 @@ async function start(server, name) {
   }
 }
 function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function (obj) {
+  actor.threeObject.traverse(function(obj) {
     if (obj instanceof THREE.Mesh) {
       obj.material.map = texture;
       obj.material.needsUpdate = true;
     }
-  })
+  });
 }
 async function updateGrassTexture(actor, state) {
   switch (state) {
@@ -103,7 +103,6 @@ async function updateGrassTexture(actor, state) {
     }
   }
 }
-
 
 function createOrb(currentScene, orbs) {
   const orbsActor = new Actor(`orbs_${orbs.id}`);
@@ -152,7 +151,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   window.game = game;
 
   const currentScene = new Scene();
-  const color = 0xFF0000;
+  const color = 0xff0000;
   const intensity = 0;
   // const light = new THREE.AmbientLight(color, intensity);
   // currentScene.add(new THREE.AmbientLight(0x606060));
@@ -240,7 +239,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         }
       }
 
-
       for (const grass of payload.grass) {
         if (!game.localCache.Grass.has(grass.id)) {
           game.localCache.Grass.set(grass.id, createGrass(currentScene, grass));
@@ -248,7 +246,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
-          updateGrassTexture(grassActor, grass.state)
+          updateGrassTexture(grassActor, grass.state);
         }
       }
     }
@@ -274,9 +272,9 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
     camera.lookAt(Player.threeObject.position);
     // if (game.input.wasMouseButtonJustReleased(0)) {
-      // currentScene.scene.remove(plane);
-      // plane = FogBehavior.createOrUpdate(mask.flat(), mapSize.x, mapSize.z);
-      // currentScene.add(plane);
+    // currentScene.scene.remove(plane);
+    // plane = FogBehavior.createOrUpdate(mask.flat(), mapSize.x, mapSize.z);
+    // currentScene.add(plane);
     // }
     if (game.input.isKeyDown("KeyM")) {
       if (lerpCam === false) {
@@ -301,12 +299,8 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
     if (game.input.isMouseButtonDown(2)) {
       const mouseDelta = game.input.mouseDelta;
-<<<<<<< HEAD
-      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -mouseDelta.x * rotationSpeed);
-=======
       // game.input.lockMouse();
-      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -mouseDelta.x * rotationSpeed);
->>>>>>> replace fog by lights
+      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -mouseDelta.x * rotationSpeed);
     }
     if (game.input.wasMouseButtonJustReleased(2)) {
       // game.input.unlockMouse();
