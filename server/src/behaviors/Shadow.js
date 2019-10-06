@@ -113,7 +113,6 @@ class Shadow extends Entity {
     if (this.currentMeal) {
       if (this.currentMeal instanceof Orb) {
         this.currentMeal.huntedBy = [];
-        console.error(this.currentMeal.huntedBy);
       }
       this.currentMeal = null;
       this.setWandering();
