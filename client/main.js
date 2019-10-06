@@ -6,7 +6,7 @@ const { join } = require("path");
 const isDev = require("electron-is-dev");
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
-const [defaultView = "game"] = process.argv.slice(2);
+const [defaultView = "lobby"] = process.argv.slice(2);
 
 function createWindow() {
   // Create the browser window.
