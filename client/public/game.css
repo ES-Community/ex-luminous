@@ -80,6 +80,11 @@ body {
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   text-shadow: 1px 1px 10px rgba(20, 20, 20, 0.5);
   box-shadow: 1px 1px 10px rgba(20, 20, 20, 0.5);
+  transition: opacity 0.2s ease-in-out;
+  opacity: 1;
+}
+#fade > .btn.hide {
+  opacity: 0;
 }
 #fade > .btn:hover {
   cursor: pointer;

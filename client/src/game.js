@@ -1,6 +1,7 @@
 "use strict";
 
 // Require Third-party Dependencies
+const { remote } = require("electron");
 const THREE = require("three");
 window.THREE = THREE;
 require("three/examples/js/controls/OrbitControls");
@@ -24,9 +25,15 @@ const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
 async function start(server, name) {
   const fadeTxt = document.getElementById("fade-txt");
   const fadeSpan = document.getElementById("fade-span");
+  const closeWindowBtn = document.getElementById("close-window");
   const grpcClient = grpc.createClient(server);
 
   let connectionPayload = null;
+  const closeListener = () => {
+    const currentWindow = remote.getCurrentWindow();
+    currentWindow.close();
+  };
+  closeWindowBtn.addEventListener("click", closeListener);
 
   // eslint-disable-next-line
   while (1) {
@@ -51,6 +58,8 @@ async function start(server, name) {
   }
 
   if (connectionPayload.ok) {
+    closeWindowBtn.removeEventListener("click", closeListener);
+    closeWindowBtn.classList.add("hide");
     fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
 
     const { mapSize } = JSON.parse(connectionPayload.data);
@@ -137,6 +146,8 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       }
 
       game.init(currentScene, camera);
+      game.renderer.domElement.focus();
+      game.input.lockMouse();
       setTimeout(() => {
         document.getElementById("fade").classList.add("hide");
       }, 500);
@@ -202,18 +213,17 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
       const x = THREE.Math.lerp(cameraPosition.x, cameraPosition.x + scrollRange, factor);
       const y = THREE.Math.lerp(cameraPosition.y, cameraPosition.y + scrollRange, factor);
-  
+
       camera.position.set(x, y, 0);
-      if( timer === lerpCamDuration) {
+      if (timer === lerpCamDuration) {
         lerpCam = false;
         timer = 0;
       }
-
     }
 
     if (game.input.isMouseButtonDown(2)) {
       const mouseDelta = game.input.mouseDelta;
-      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -mouseDelta.x * rotationSpeed);
+      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -mouseDelta.x * rotationSpeed);
     }
   });
 }
