@@ -113,7 +113,7 @@ function setupServerInfo(cp) {
       li.innerText = `${player.name} (${player.ip})`;
       serverInfoPlayersElement.appendChild(li);
     }
-    serverInfoTimeElement.innerText = `${Math.round(msg.time * 100) / 100} seconds`;
+    serverInfoTimeElement.innerText = `${Math.round(msg.time)} seconds (${msg.ticks} ticks) | ${msg.tps} TPS`;
   });
 
   cp.on("exit", () => {
