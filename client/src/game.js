@@ -11,6 +11,7 @@ const GameRenderer = require("./class/GameRenderer.js");
 const ModelLoader = require("./class/ModelLoader");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
+const { updateLight, updateMeshTexture } = require("./utils");
 const grpc = require("./grpc.js");
 
 // Require Behaviors
@@ -51,7 +52,7 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
   }
 }
 
-function updatePlayer(actor, currentBehavior, orbTexture, scene) {
+function updatePlayer(actor, currentBehavior, orbTexture) {
   switch (currentBehavior) {
     case "NORMAL": {
       updateMeshTexture(actor, orbTexture[0]);
@@ -134,36 +135,6 @@ async function reconnectAndResetGame() {
   await start();
 }
 
-function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function(obj) {
-    if (obj instanceof THREE.Mesh) {
-      if (obj.material.map == texture) {
-        return;
-      } else {
-        obj.material.map = texture;
-        obj.material.needsUpdate = true;
-      }
-    }
-  });
-}
-
-function updateMesh3D(actor, newMesh) {
-  actor.threeObject.children.filter((children) => children.type == "Group");
-  actor.threeObject.add(newMesh);
-}
-
-function updateLight(actor, type) {
-  if (type == "remove") {
-    if (actor.threeObject.children[1] instanceof THREE.PointLight) {
-      actor.threeObject.children[1].visible = false;
-    }
-  } else if (type == "add") {
-    if (actor.threeObject.children[1] instanceof THREE.PointLight) {
-      actor.threeObject.children[1].visible = true;
-    }
-  }
-}
-
 function createOrb(currentScene, orbs) {
   const orbsActor = new Actor(`orbs_${orbs.id}`);
   const orbsColor = new THREE.Color(0xffffff);
@@ -192,7 +163,6 @@ function createShadow(currentScene, shadows) {
 
 function createGrass(currentScene, grass) {
   const grassActor = new Actor(`grass_${grass.id}`);
-  // console.log(grass.position);
   const grassPosition = PlayerBehavior.PosToVector3(grass.position);
 
   grassActor.addScriptedBehavior(new GrassBehavior(grassPosition));
@@ -204,7 +174,7 @@ function createGrass(currentScene, grass) {
 async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let isFirstGameData = true;
 
-  const game = new GameRenderer();
+  window.game = new GameRenderer();
   game.modelLoader = new ModelLoader({
     modelsPath: "../assets/models/",
     texturePath: "../assets/textures/"
@@ -212,16 +182,11 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   game.mapSize = mapSize;
   game.cubeSize = 4;
   GridBehavior.cubeSize = game.cubeSize;
-  window.game = game;
 
   const currentScene = new Scene();
   currentScene.background = new THREE.Color("black");
 
   const Player = new Actor("Player");
-  Player.isInitialized = false;
-  game.on("init", () => {
-    Player.isInitialized = true;
-  });
   Player.addScriptedBehavior(new PlayerBehavior(true));
   currentScene.add(Player);
 
@@ -328,13 +293,11 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let lerpCamDuration = 60;
   let cameraPosition = camera.position;
   game.on("update", () => {
-    if (Player.isInitialized === true) {
-      const playerPos = Player.threeObject.position.clone();
-      gameDataStream.write({
-        type: "player-moved",
-        data: JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize })
-      });
-    }
+    const playerPos = Player.threeObject.position.clone();
+    gameDataStream.write({
+      type: "player-moved",
+      data: JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize })
+    });
     camera.lookAt(Player.threeObject.position);
 
     if (game.input.isKeyDown("KeyM") && !lerpCam) {
