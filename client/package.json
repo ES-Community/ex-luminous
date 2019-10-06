@@ -7,9 +7,9 @@
   "scripts": {
     "start": "electron .",
     "lobby": "electron . lobby",
-    "package-base": "electron-packager . --out=dist --asar --overwrite",
-    "package": "npm run package-base -- --all",
-    "package-win": "node build.js",
+    "package-linux": "node build.js linux",
+    "package-mac": "node build.js osx",
+    "package-win": "node build.js win32",
     "postinstall": "npm rebuild grpc --target=5.0.0 --runtime=electron --dist-url=https://atom.io/download/electron"
   },
   "devDependencies": {

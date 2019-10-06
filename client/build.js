@@ -15,12 +15,11 @@ async function bundleElectronApp() {
     dir: __dirname,
     afterCopy: [copyExternal],
     arch: "x64",
-    platform: "win32",
+    platform: process.argv[2],
     asar: true,
     out: path.join(__dirname, "dist"),
     overwrite: true
   };
-  console.log("building");
   const result = await packager(options);
   console.log("build done", result);
 }
