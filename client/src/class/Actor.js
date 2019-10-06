@@ -119,7 +119,9 @@ class Actor {
   }
 
   setGlobalPosition(pos) {
-    this.threeObject.parent.worldToLocal(pos);
+    if (this.threeObject.parent !== null) {
+      this.threeObject.parent.worldToLocal(pos);
+    }
     this.threeObject.position.set(pos.x, pos.y, pos.z);
     this.threeObject.updateMatrixWorld(false);
   }
