@@ -28,7 +28,6 @@ class Shadow extends Entity {
     this.remainingWanderingTicks = null;
     this.remainingWaitingTicks = null;
     this.currentMeal = null;
-    this.currentHunt = null;
   }
 
   toJSON() {
@@ -39,6 +38,7 @@ class Shadow extends Entity {
   }
 
   update(gameState) {
+    this.lookForTarget(gameState);
     switch (this.currentBehavior) {
       case Shadow.Behavior.WANDERING: {
         if (this.remainingWanderingTicks === null && this.wanderingSteps === null) {
@@ -47,13 +47,11 @@ class Shadow extends Entity {
         // move
         this.wander();
 
-        this.lookForTarget(gameState);
         break;
       }
       case Shadow.Behavior.WAITING: {
         this.wait();
 
-        this.lookForTarget(gameState);
         break;
       }
       case Shadow.Behavior.EATING: {
@@ -70,7 +68,16 @@ class Shadow extends Entity {
         break;
       }
       case Shadow.Behavior.HUNTING: {
-        // todo
+        const orb = this.currentMeal;
+        const distance = this.distanceTo(orb);
+        const direction = Math.atan2(orb.position.z - this.position.z, orb.position.x - this.position.x);
+        if (distance <= SHADOW_SPEED) {
+          this.position.x = orb.position.x;
+          this.position.z = orb.position.z;
+        } else {
+          this.position.x += SHADOW_SPEED * Math.cos(direction);
+          this.position.z += SHADOW_SPEED * Math.sin(direction);
+        }
         break;
       }
       default: {
@@ -87,19 +94,24 @@ class Shadow extends Entity {
     }
     const grassList = this.sortByDistance(gameState.grass.filter((grass) => grass.isLuminous()));
     const grass = grassList.find(inVisionRadius);
+    const orbList = this.sortByDistance(gameState.orbs);
+    const orb = orbList.find(inVisionRadius);
     if (grass) {
       this.currentBehavior = Shadow.Behavior.EATING;
       this.currentMeal = grass.entity;
       return;
-    }
-    const orbList = this.sortByDistance(gameState.orbs);
-    const orb = orbList.find(inVisionRadius);
+    } else if (grass == undefined) {
     if (orb) {
       this.currentBehavior = Shadow.Behavior.HUNTING;
-      this.currentHunt = orb.entity;
+      this.currentMeal = orb.entity;
       orb.entity.huntedBy.push(this);
       return;
+    } else if (orb == undefined) {
+      this.currentMeal = null;
+      this.currentBehavior = Shadow.Behavior.WANDERING;
+      return;
     }
+  }
   }
 
   prepareWandering() {
