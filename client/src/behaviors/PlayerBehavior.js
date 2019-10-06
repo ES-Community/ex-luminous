@@ -30,25 +30,31 @@ class PlayerBehavior extends ScriptBehavior {
     const mapSizeZ = game.mapSize.z * 2 - 1;
     const mapSizeX = game.mapSize.x * 2 - 1;
 
-    const currentPos = this.actor.threeObject.position;
-    const movementLock = {
-      left: currentPos.z + this.speed >= mapSizeZ,
-      right: currentPos.z - this.speed <= -mapSizeZ,
-      top: currentPos.x - this.speed <= -mapSizeX,
-      bottom: currentPos.x + this.speed >= mapSizeX
-    };
-
-    if (game.input.isKeyDown("KeyW") && !movementLock.top) {
+    if (game.input.isKeyDown("KeyW")) {
       this.actor.threeObject.translateX(-this.speed);
     }
-    if (game.input.isKeyDown("KeyS") && !movementLock.bottom) {
+    if (game.input.isKeyDown("KeyS")) {
       this.actor.threeObject.translateX(this.speed);
     }
-    if (game.input.isKeyDown("KeyA") && !movementLock.left) {
+    if (game.input.isKeyDown("KeyA")) {
       this.actor.threeObject.translateZ(this.speed);
     }
-    if (game.input.isKeyDown("KeyD") && !movementLock.right) {
+    if (game.input.isKeyDown("KeyD")) {
       this.actor.threeObject.translateZ(-this.speed);
+    }
+
+    const currentPos = this.actor.threeObject.position;
+    if (currentPos.z < -mapSizeZ) {
+      this.actor.threeObject.position.z = -mapSizeZ;
+    }
+    if (currentPos.z > mapSizeZ) {
+      this.actor.threeObject.position.z = mapSizeZ;
+    }
+    if (currentPos.x < -mapSizeX) {
+      this.actor.threeObject.position.x = -mapSizeX;
+    }
+    if (currentPos.x > mapSizeX) {
+      this.actor.threeObject.position.x = mapSizeX;
     }
   }
 }

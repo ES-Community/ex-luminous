@@ -213,7 +213,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
     if (game.input.isMouseButtonDown(2)) {
       const mouseDelta = game.input.mouseDelta;
-      // rotationAngleY += mouseDelta.x * rotationSpeed;
       Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -mouseDelta.x * rotationSpeed);
     }
   });
