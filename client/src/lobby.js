@@ -14,15 +14,15 @@ let isServerStarted = false;
 let errorTriggered = null;
 
 async function createGameServer() {
-  if (isServerStarted) {
-    return;
-  }
-  isServerStarted = true;
-
   const playerName = document.getElementById("nickname").value.trim();
   if (playerName === "") {
     return showError("<p>player name <b>must not</b> be empty!</p>");
   }
+
+  if (isServerStarted) {
+    return;
+  }
+  isServerStarted = true;
 
   const currentWindow = remote.getCurrentWindow();
   const serverPath = join(__dirname, "..", "..", "server", "src", "server.js");
@@ -136,6 +136,9 @@ function connectPlayerToServer() {
 }
 
 function showError(content = "") {
+  if (errorTriggered !== null) {
+    clearTimeout(errorTriggered);
+  }
   const error = document.querySelector(".error");
   error.classList.remove("hide");
   error.innerHTML = content;

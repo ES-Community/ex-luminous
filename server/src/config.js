@@ -9,7 +9,7 @@ module.exports = {
   MAP_SIZE_X: 64,
   MAP_SIZE_Z: 64,
   INIT_SHADOW_COUNT: 1,
-  INIT_GRASS_COUNT: 1,
+  INIT_GRASS_COUNT: 14,
 
   /**
    * Time during which the grass emits light after it lost contact with a player.

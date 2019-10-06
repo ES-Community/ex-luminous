@@ -8,19 +8,21 @@
     <link rel="stylesheet" href="../public/reset.css" />
     <link rel="stylesheet" href="../public/lobby.css" />
     <script src="../src/lobby.js"></script>
+    <script src="../public/particules.js" async defer></script>
   </head>
   <body>
+    <canvas id="pixie"></canvas>
     <div id="server-info">
-      <h1>Connected players:</h1>
+      <h1>Connected players</h1>
       <br />
       <ul id="server-info-players"></ul>
       <br />
-      <h1>Time:</h1>
+      <h1>Uptime</h1>
       <div id="server-info-time"></div>
       <button id="stop-server">stop server</button>
     </div>
     <main id="main">
-      <input type="text" id="nickname" value="pseudo" />
+      <input type="text" id="nickname" placeholder="your name here" />
       <div class="error hide">
         <p>Connection to <b>localhost:1337</b> failed!</p>
       </div>
