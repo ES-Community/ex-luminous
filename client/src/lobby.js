@@ -105,7 +105,7 @@ function setupServerInfo(cp) {
   };
   stopServerBtn.addEventListener("click", exitListener);
 
-  // cp.stdout.on("data", (d) => console.log(d.toString()));
+  cp.stdout.on("data", (d) => console.log(d.toString()));
   cp.stderr.on("data", (d) => console.error(d.toString()));
 
   cp.on("message", (msg) => {

@@ -1,6 +1,6 @@
 "use strict";
 
-const randomCoordinates = require("../utils/randomCoordinates");
+const { randomPosition } = require("../utils/random");
 
 const Entity = require("./Entity");
 
@@ -13,7 +13,7 @@ class Orb extends Entity {
     DEAD: "DEAD"
   };
   constructor(name) {
-    super(randomCoordinates(), ORB_MAX_HP);
+    super(randomPosition(), ORB_MAX_HP);
     this.name = name;
     this.huntedBy = [];
     this.interactingWith = null;
@@ -30,7 +30,7 @@ class Orb extends Entity {
     };
   }
 
-  update(gameState) {
+  update() {
     this.isHunted();
     switch (this.currentBehavior) {
       case Orb.Behavior.NORMAL: {
