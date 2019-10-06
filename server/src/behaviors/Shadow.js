@@ -80,32 +80,38 @@ class Shadow extends Entity {
 
   lookForTarget(gameState) {
     if (this.currentMeal instanceof Orb) {
-      this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter(shadow => shadow.id == this.id);
+      this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter((shadow) => shadow.id == this.id);
     }
     const visionRadius =
       this.currentBehavior === Shadow.Behavior.HUNTING ? SHADOW_NORMAL_VISION_RADIUS : SHADOW_HUNTING_VISION_RADIUS;
     function inVisionRadius(item) {
       return item.distance <= visionRadius;
     }
+
     const grassList = this.sortByDistance(gameState.grass.filter((grass) => grass.isLuminous()));
     const grass = grassList.find(inVisionRadius);
-    const orbList = this.sortByDistance(gameState.orbs);
-    const orb = orbList.find(inVisionRadius);
     if (grass) {
       this.currentBehavior = Shadow.Behavior.EATING;
       this.currentMeal = grass.entity;
       return;
-    } else if (grass == undefined) {
-      if (orb) {
-        this.currentBehavior = Shadow.Behavior.HUNTING;
-        this.currentMeal = orb.entity;
-        orb.entity.huntedBy.push(this);
-        return;
-      } else if (orb == undefined) {
-        this.currentMeal = null;
-        this.setWandering();
-        return;
+    }
+
+    const orbList = this.sortByDistance(gameState.orbs);
+    const orb = orbList.find(inVisionRadius);
+    if (orb) {
+      this.currentBehavior = Shadow.Behavior.HUNTING;
+      this.currentMeal = orb.entity;
+      orb.entity.huntedBy.push(this);
+      return;
+    }
+
+    if (this.currentMeal) {
+      if (this.currentMeal instanceof Orb) {
+        this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter((shadow) => shadow.id == this.id);
       }
+      this.currentMeal = null;
+      this.setWandering();
+      return;
     }
   }
 
