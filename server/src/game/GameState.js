@@ -5,18 +5,22 @@ const Grass = require("../behaviors/Grass");
 const Shadow = require("../behaviors/Shadow");
 const { randomPosition } = require("../utils/random");
 
-function generateGameState() {
-  return {
-    gameTicks: 0,
-    mapSize: {
+class GameState {
+  constructor() {
+    this.gameTicks = 0;
+    this.mapSize = {
       x: MAP_SIZE_X,
       z: MAP_SIZE_Z
-    },
-    gameStep: 1,
-    shadows: generateShadows(),
-    orbs: [],
-    grass: generateGrass()
-  };
+    };
+    this.gameStep = 1;
+    this.shadows = generateShadows();
+    this.orbs = [];
+    this.grass = generateGrass();
+  }
+
+  onlineOrbs() {
+    return this.orbs.filter((orb) => orb.currentBehavior !== "OFFLINE");
+  }
 }
 
 function generateShadows() {
@@ -56,4 +60,4 @@ function coordinatesAreUsed(object, objects) {
   return false;
 }
 
-module.exports = generateGameState;
+module.exports = GameState;

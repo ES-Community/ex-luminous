@@ -3,8 +3,18 @@ syntax = "proto3";
 package exluminous;
 
 service Game {
+  rpc Status (StatusRequest) returns (StatusResponse) {}
   rpc Connect (ConnectRequest) returns (ConnectResponse) {}
   rpc GameData (stream GameData) returns (stream GameData) {}
+}
+
+message StatusRequest {
+  string name = 1;
+}
+message StatusResponse {
+  bool canPlay = 1;
+  string reason = 2;
+  uint32 players = 3;
 }
 
 message ConnectRequest {

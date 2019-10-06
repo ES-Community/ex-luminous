@@ -9,7 +9,10 @@ const Player = require("./Player");
 class GameServer {
   constructor() {
     /** @type {Map<string, Player>} */
-    this.playersByName = new Map();
+    this.onlinePlayers = new Map();
+
+    /** @type {Map<string, Player>} */
+    this.offlinePlayers = new Map();
 
     this.game = new Game();
 
@@ -23,11 +26,11 @@ class GameServer {
   }
 
   players() {
-    return this.playersByName.values();
+    return this.onlinePlayers.values();
   }
 
   getPlayer(call) {
-    return this.playersByName.get(call.metadata.get("name")[0]);
+    return this.onlinePlayers.get(call.metadata.get("name")[0]);
   }
 
   enableReport() {
@@ -54,17 +57,40 @@ class GameServer {
     }, 1000);
   }
 
+  Status(call, callback) {
+    const name = call.request.name;
+    const response = {
+      players: this.onlinePlayers.size
+    };
+    if (this.onlinePlayers.has(name)) {
+      response.canPlay = false;
+      response.reason = `Username "${name}" is already in game`;
+    } else {
+      response.canPlay = true;
+    }
+
+    callback(null, response);
+  }
+
   Connect(call, callback) {
     const clientIp = getIp(call);
     const name = call.request.name;
-    let player = this.playersByName.get(name);
 
-    if (!player) {
-      player = new Player(clientIp, name);
-      this.playersByName.set(name, player);
+    if (this.onlinePlayers.has(name)) {
+      return callback(null, { ok: false, reason: `Username "${name}" is already in game` });
+    }
+
+    if (this.offlinePlayers.has(name)) {
+      const player = this.offlinePlayers.get(name);
+      this.offlinePlayers.delete(name);
+      this.onlinePlayers.set(name, player);
+      this.game.setPlayerOnline(player);
+      player.ping();
+    } else {
+      const player = new Player(clientIp, name);
+      this.onlinePlayers.set(name, player);
       this.game.addPlayer(name);
     }
-    player.ping();
 
     const { mapSize } = this.game.state;
     callback(null, { ok: true, data: JSON.stringify({ mapSize }) });
@@ -72,9 +98,22 @@ class GameServer {
 
   GameData(stream) {
     const player = this.getPlayer(stream);
+    if (!player) {
+      stream.end();
+      return;
+    }
     player.setGameDataStream(stream);
     stream.on("data", (data) => {
       this.game.receiveData(player, data.type, JSON.parse(data.data));
+    });
+    stream.on("end", () => {
+      this.onlinePlayers.delete(player.name);
+      this.offlinePlayers.set(player.name, player);
+      this.game.setPlayerOffline(player);
+      player.setGameDataStream(null);
+    });
+    stream.on("error", (err) => {
+      console.error("Server GameData stream error", err);
     });
   }
 }

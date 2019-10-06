@@ -95,7 +95,7 @@ class Grass extends Entity {
   }
 
   isTouchingAnyOrb(gameState) {
-    return gameState.orbs.some((orb) => this.isTouching(orb));
+    return gameState.onlineOrbs().some((orb) => this.isTouching(orb));
   }
 
   isTouchingAnyShadow(gameState) {

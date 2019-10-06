@@ -5,7 +5,7 @@ const { EventEmitter } = require("events");
 const { TICKS_PER_SECOND } = require("../config");
 const Orb = require("../behaviors/Orb");
 
-const generateGameState = require("./generateGameState");
+const GameState = require("./GameState");
 
 class Game extends EventEmitter {
   constructor() {
@@ -15,7 +15,7 @@ class Game extends EventEmitter {
     this.waitBetweenTicks = Math.round(1000 / TICKS_PER_SECOND);
     this.timeout;
 
-    this.state = generateGameState();
+    this.state = new GameState();
   }
 
   start() {
@@ -36,7 +36,7 @@ class Game extends EventEmitter {
   update() {
     this.state.shadows.forEach((shadow) => shadow.update(this.state, this));
     this.state.shadows = this.state.shadows.filter(notDeleted);
-    
+
     this.state.grass.forEach((grass) => grass.update(this.state, this));
     this.state.grass = this.state.grass.filter(notDeleted);
 
@@ -54,7 +54,7 @@ class Game extends EventEmitter {
   receiveData(player, type, data) {
     switch (type) {
       case "player-moved": {
-        const orb = this.state.orbs.find((orb) => orb.name === player.name);
+        const orb = this.findOrbByPlayer(player);
         if (typeof orb !== "undefined") {
           orb.position = data;
         }
@@ -63,6 +63,28 @@ class Game extends EventEmitter {
       default:
         throw new Error("Missing data handler");
     }
+  }
+
+  setPlayerOffline(player) {
+    const orb = this.findOrbByPlayer(player);
+    orb.previousBehavior = orb.currentBehavior;
+    orb.currentBehavior = "OFFLINE";
+    for (const shadow of orb.huntedBy) {
+      shadow.currentMeal = null;
+      shadow.setWandering();
+    }
+    orb.huntedBy = [];
+    orb.interactingWith = null;
+  }
+
+  setPlayerOnline(player) {
+    const orb = this.findOrbByPlayer(player);
+    orb.currentBehavior = orb.previousBehavior;
+    orb.previousBehavior = null;
+  }
+
+  findOrbByPlayer(player) {
+    return this.state.orbs.find((orb) => orb.name === player.name);
   }
 
   getTicks() {

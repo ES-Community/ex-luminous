@@ -96,7 +96,7 @@ class Shadow extends Entity {
       return;
     }
 
-    const orbList = this.sortByDistance(gameState.orbs);
+    const orbList = this.sortByDistance(gameState.onlineOrbs());
     const orb = orbList.find(inVisionRadius);
     if (orb) {
       this.currentBehavior = Shadow.Behavior.HUNTING;
@@ -106,9 +106,6 @@ class Shadow extends Entity {
     }
 
     if (this.currentMeal) {
-      if (this.currentMeal instanceof Orb) {
-        this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter((shadow) => shadow.id == this.id);
-      }
       this.currentMeal = null;
       this.setWandering();
       return;

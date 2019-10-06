@@ -10,7 +10,8 @@ class Orb extends Entity {
   static Behavior = {
     NORMAL: "NORMAL",
     HUNTED: "HUNTED",
-    DEAD: "DEAD"
+    DEAD: "DEAD",
+    OFFLINE: "OFFLINE"
   };
   constructor(name) {
     super(randomPosition(), ORB_MAX_HP);
@@ -26,11 +27,14 @@ class Orb extends Entity {
       ...super.toJSON(),
       name: this.name,
       currentBehavior: this.currentBehavior,
-      isDead: this.isDead,
+      isDead: this.isDead
     };
   }
 
   update() {
+    if (this.currentBehavior === "OFFLINE") {
+      return;
+    }
     this.isHunted();
     switch (this.currentBehavior) {
       case Orb.Behavior.NORMAL: {
