@@ -5,12 +5,13 @@ const { join } = require("path");
 const { spawn } = require("child_process");
 
 // Require Third-party Dependencies
-const { remote } = require("electron");
+const { remote, shell } = require("electron");
 
 const grpc = require("../src/grpc");
 
 // Variables & Loaders
 let isServerStarted = false;
+let connectTriggered = false;
 let errorTriggered = null;
 
 async function createGameServer() {
@@ -85,7 +86,7 @@ function setupServerInfo(cp) {
   };
   stopServerBtn.addEventListener("click", exitListener);
 
-  cp.stdout.on("data", (d) => console.log(d.toString()));
+  // cp.stdout.on("data", (d) => console.log(d.toString()));
   cp.stderr.on("data", (d) => console.error(d.toString()));
 
   cp.on("message", (msg) => {
@@ -108,11 +109,18 @@ function setupServerInfo(cp) {
 }
 
 function connectPlayerToServer() {
+  if (connectTriggered) {
+    return;
+  }
+
   event.preventDefault();
   const playerName = document.getElementById("nickname").value.trim();
   if (playerName === "") {
     return showError("<p>player name <b>must not</b> be empty!</p>");
   }
+  const submitBtn = document.getElementById("join-submit");
+  submitBtn.disabled = true;
+  connectTriggered = true;
 
   // Retrieve ip in form
   const ipInputElement = document.getElementById("ip-to-join");
@@ -129,6 +137,8 @@ function connectPlayerToServer() {
   client.connect({ name: playerName }, function(err) {
     if (err) {
       showError(`<p>Connection to <b>${ipValue}</b> failed!</p>`);
+      submitBtn.disabled = false;
+      connectTriggered = false;
     } else {
       sessionStorage.setItem("cachedPlayerName", playerName);
 
@@ -161,6 +171,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const nickNameInput = document.getElementById("nickname");
     nickNameInput.value = localName;
   }
+
+  const githubIcon = document.getElementById("github-icon");
+  githubIcon.addEventListener("click", () => {
+    shell.openExternal("https://github.com/ES-Community/ludum-dare-45");
+  });
 
   document.getElementById("host-game").addEventListener("click", createGameServer);
   document.getElementById("join-game").addEventListener("submit", connectPlayerToServer);
