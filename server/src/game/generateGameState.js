@@ -3,7 +3,7 @@
 const { MAP_SIZE_X, MAP_SIZE_Z, INIT_SHADOW_COUNT, INIT_GRASS_COUNT } = require("../config");
 const Grass = require("../behaviors/Grass");
 const Shadow = require("../behaviors/Shadow");
-const randomCoordinates = require("../utils/randomCoordinates");
+const { randomPosition } = require("../utils/random");
 
 function generateGameState() {
   return {
@@ -22,10 +22,10 @@ function generateGameState() {
 function generateShadows() {
   const shadows = [];
   for (let i = 0; i < INIT_SHADOW_COUNT; i++) {
-    const shadow = new Shadow(randomCoordinates());
+    const shadow = new Shadow(randomPosition());
 
     while (coordinatesAreUsed(shadow, shadows)) {
-      shadow.position = randomCoordinates();
+      shadow.position = randomPosition();
     }
 
     shadows.push(shadow);
@@ -36,10 +36,10 @@ function generateShadows() {
 function generateGrass() {
   const grasses = [];
   for (let i = 0; i < INIT_GRASS_COUNT; i++) {
-    const grass = new Grass(randomCoordinates());
+    const grass = new Grass(randomPosition());
 
     while (coordinatesAreUsed(grass, grasses)) {
-      grass.position = randomCoordinates();
+      grass.position = randomPosition();
     }
 
     grasses.push(grass);

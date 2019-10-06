@@ -1,17 +1,23 @@
 "use strict";
 
-const Entity = require("./Entity");
-const Orb = require("./Orb");
-const { TICKS_PER_SECOND, SHADOW_NORMAL_VISION_RADIUS, SHADOW_HUNTING_VISION_RADIUS } = require("../config");
-
-const randomDirection = require("../utils/randomDirection");
+const {
+  TICKS_PER_SECOND,
+  SHADOW_NORMAL_VISION_RADIUS,
+  SHADOW_HUNTING_VISION_RADIUS,
+  SHADOW_MAX_HP,
+  SHADOW_MIN_WANDERING_TIME,
+  SHADOW_MAX_WANDERING_TIME,
+  SHADOW_MAX_WAITING_TIME,
+  SHADOW_MIN_WAITING_TIME,
+  SHADOW_SPEED
+} = require("../config");
+const { randomFloatInRange, randomAngle } = require("../utils/random");
 const { timeToTicks } = require("../utils/convertTicks");
 
-const SHADOW_MAX_HP = 3;
-const SHADOW_SPEED = 8 / TICKS_PER_SECOND;
-const SHADOW_MAX_AMPLITUDE = 5;
-const SHADOW_MAX_WAITING_TIME = 5;
-const SHADOW_MIN_WAITING_TIME = 2;
+const Entity = require("./Entity");
+const Orb = require("./Orb");
+
+const effectiveShadowSpeed = SHADOW_SPEED / TICKS_PER_SECOND;
 
 class Shadow extends Entity {
   static Behavior = {
@@ -24,11 +30,8 @@ class Shadow extends Entity {
   constructor(position) {
     super(position, SHADOW_MAX_HP);
 
-    this.currentBehavior = Shadow.Behavior.WANDERING;
-    this.wanderingSteps = null;
-    this.remainingWanderingTicks = null;
-    this.remainingWaitingTicks = null;
     this.currentMeal = null;
+    this.setWandering();
   }
 
   toJSON() {
@@ -42,12 +45,7 @@ class Shadow extends Entity {
     this.lookForTarget(gameState);
     switch (this.currentBehavior) {
       case Shadow.Behavior.WANDERING: {
-        if (this.remainingWanderingTicks === null && this.wanderingSteps === null) {
-          this.prepareWandering();
-        }
-        // move
         this.wander();
-
         break;
       }
       case Shadow.Behavior.WAITING: {
@@ -57,7 +55,7 @@ class Shadow extends Entity {
       case Shadow.Behavior.EATING: {
         const grass = this.currentMeal;
         const distance = this.distanceTo(grass);
-        if (distance <= SHADOW_SPEED) {
+        if (distance <= effectiveShadowSpeed) {
           this.moveTo(grass.position);
         } else {
           this.moveTowards(grass);
@@ -67,7 +65,7 @@ class Shadow extends Entity {
       case Shadow.Behavior.HUNTING: {
         const orb = this.currentMeal;
         const distance = this.distanceTo(orb);
-        if (distance <= SHADOW_SPEED) {
+        if (distance <= effectiveShadowSpeed) {
           this.moveTo(orb.position);
         } else {
           this.moveTowards(orb);
@@ -81,6 +79,9 @@ class Shadow extends Entity {
   }
 
   lookForTarget(gameState) {
+    if (this.currentMeal instanceof Orb) {
+      this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter(shadow => shadow.id == this.id);
+    }
     const visionRadius =
       this.currentBehavior === Shadow.Behavior.HUNTING ? SHADOW_NORMAL_VISION_RADIUS : SHADOW_HUNTING_VISION_RADIUS;
     function inVisionRadius(item) {
@@ -101,64 +102,59 @@ class Shadow extends Entity {
         orb.entity.huntedBy.push(this);
         return;
       } else if (orb == undefined) {
-        if(this.currentMeal instanceof Orb && this.currentMeal != null)
-        {
-          this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter(shadow => shadow.id == this.id);
-        }
         this.currentMeal = null;
-        this.currentBehavior = Shadow.Behavior.WANDERING;
+        this.setWandering();
         return;
       }
     }
   }
 
-  prepareWandering() {
-    const selectedDirection = randomDirection();
-    const moveAmplitude = Math.random() * (SHADOW_MAX_AMPLITUDE - 1) + 1;
-
-    const deltaX = Math.cos(selectedDirection) * moveAmplitude;
-    const deltaZ = Math.sin(selectedDirection) * moveAmplitude;
-
-    this.remainingWanderingTicks = Math.hypot(deltaX, deltaZ) / SHADOW_SPEED;
-    this.wanderingSteps = {
-      x: deltaX / this.remainingWanderingTicks,
-      z: deltaZ / this.remainingWanderingTicks
-    };
-  }
-
   wander() {
-    this.moveTo({
-      x: this.position.x + this.wanderingSteps.x,
-      z: this.position.z + this.wanderingSteps.z
-    });
+    this.moveInDirection(this.wanderingDirection);
     this.remainingWanderingTicks--;
     if (this.remainingWanderingTicks <= 0) {
-      // reset wandering
-      this.remainingWanderingTicks = null;
-      this.wanderingSteps = null;
-
-      // wait
-      this.remainingWaitingTicks = timeToTicks(
-        Math.random() * (SHADOW_MAX_WAITING_TIME - SHADOW_MIN_WAITING_TIME) + SHADOW_MIN_WAITING_TIME
-      );
-      this.currentBehavior = Shadow.Behavior.WAITING;
+      this.setWaiting();
     }
   }
 
   wait() {
     this.remainingWaitingTicks--;
     if (this.remainingWaitingTicks <= 0) {
-      this.remainingWaitingTicks = null;
-      this.currentBehavior = Shadow.Behavior.WANDERING;
+      this.setWandering();
     }
   }
 
   moveTowards(entity) {
-    const direction = Math.atan2(entity.position.z - this.position.z, entity.position.x - this.position.x);
+    this.moveInDirection(Math.atan2(entity.position.z - this.position.z, entity.position.x - this.position.x));
+  }
+
+  moveInDirection(direction) {
     this.moveTo({
-      x: this.position.x + SHADOW_SPEED * Math.cos(direction),
-      z: this.position.z + SHADOW_SPEED * Math.sin(direction)
+      x: this.position.x + effectiveShadowSpeed * Math.cos(direction),
+      z: this.position.z + effectiveShadowSpeed * Math.sin(direction)
     });
+  }
+
+  setWandering() {
+    this.remainingWaitingTicks = null;
+
+    this.currentBehavior = Shadow.Behavior.WANDERING;
+
+    this.wanderingDirection = randomAngle();
+    this.remainingWanderingTicks = Math.round(
+      timeToTicks(randomFloatInRange(SHADOW_MIN_WANDERING_TIME, SHADOW_MAX_WANDERING_TIME))
+    );
+  }
+
+  setWaiting() {
+    this.wanderingDirection = null;
+    this.remainingWanderingTicks = null;
+
+    this.currentBehavior = Shadow.Behavior.WAITING;
+
+    this.remainingWaitingTicks = Math.round(
+      timeToTicks(randomFloatInRange(SHADOW_MIN_WAITING_TIME, SHADOW_MAX_WAITING_TIME))
+    );
   }
 }
 
