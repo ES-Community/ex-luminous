@@ -19,8 +19,6 @@ const PlayerBehavior = require("./behaviors/PlayerBehavior");
 const GridBehavior = require("./behaviors/GridBehavior");
 const GrassBehavior = require("./behaviors/GrassBehavior");
 
-const colorOfOrbs = [];
-
 function updateGrass(actor, currentBehavior, grassTexture, scene) {
   switch (currentBehavior) {
     case "NORMAL": {
@@ -139,11 +137,11 @@ function createOrb(currentScene, orbs) {
   const orbsActor = new Actor(`orbs_${orbs.id}`);
   const orbsColor = new THREE.Color(0xffffff);
   orbsColor.setHex(Math.random() * 0xffffff);
-  colorOfOrbs.push(orbsColor);
   const orbsMesh = PlayerBehavior.CreateMesh(orbsColor);
 
   orbsActor.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
   orbsActor.threeObject.add(orbsMesh);
+  orbsActor.threeObject.add(PlayerBehavior.CreateLight(4));
   currentScene.add(orbsActor);
 
   return orbsActor;
