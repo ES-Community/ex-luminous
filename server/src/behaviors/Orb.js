@@ -7,7 +7,6 @@ const Entity = require("./Entity");
 const ORB_MAX_HP = 1;
 
 class Orb extends Entity {
-
   static Behavior = {
     NORMAL: "NORMAL",
     HUNTED: "HUNTED",
@@ -44,7 +43,7 @@ class Orb extends Entity {
         break;
       }
       default: {
-        throw new Error(`missing state implementation: ${this.state}`);
+        throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
       }
     }
   }

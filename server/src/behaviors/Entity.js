@@ -41,7 +41,7 @@ class Entity {
   }
 
   update() {
-    throw new Error("Entities must implement the update(state) method");
+    throw new Error("Entities must implement the update(gameState) method");
   }
 }
 

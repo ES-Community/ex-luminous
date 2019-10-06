@@ -80,7 +80,7 @@ class Shadow extends Entity {
         break;
       }
       default: {
-        throw new Error(`missing state implementation: ${this.state}`);
+        throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
       }
     }
   }
@@ -100,17 +100,17 @@ class Shadow extends Entity {
       this.currentMeal = grass.entity;
       return;
     } else if (grass == undefined) {
-    if (orb) {
-      this.currentBehavior = Shadow.Behavior.HUNTING;
-      this.currentMeal = orb.entity;
-      orb.entity.huntedBy.push(this);
-      return;
-    } else if (orb == undefined) {
-      this.currentMeal = null;
-      this.currentBehavior = Shadow.Behavior.WANDERING;
-      return;
+      if (orb) {
+        this.currentBehavior = Shadow.Behavior.HUNTING;
+        this.currentMeal = orb.entity;
+        orb.entity.huntedBy.push(this);
+        return;
+      } else if (orb == undefined) {
+        this.currentMeal = null;
+        this.currentBehavior = Shadow.Behavior.WANDERING;
+        return;
+      }
     }
-  }
   }
 
   prepareWandering() {

@@ -23,8 +23,8 @@ const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
 
 const colorOfOrbs = [];
 
-function updateGrass(actor, state, grassTexture, scene) {
-  switch (state) {
+function updateGrass(actor, currentBehavior, grassTexture, scene) {
+  switch (currentBehavior) {
     case "NORMAL": {
       updateMeshTexture(actor, grassTexture[0]);
       updateLight(actor, "remove");
@@ -54,15 +54,15 @@ function updateGrass(actor, state, grassTexture, scene) {
   }
 }
 
-function updatePlayer(actor, state, orbTexture) {
-  switch (state) {
+function updatePlayer(actor, currentBehavior, orbTexture, scene) {
+  switch (currentBehavior) {
     case "NORMAL": {
       updateMeshTexture(actor, colorOfOrbs[0]);
       break;
     }
     case "HUNTED": {
       console.log("Is Hunted !");
-      updateMeshTexture(actor, orbTexture[1])
+      updateMeshTexture(actor, orbTexture[1]);
       break;
     }
     case "WOUNDED": {
@@ -70,8 +70,8 @@ function updatePlayer(actor, state, orbTexture) {
     }
     case "DEAD": {
       const playerPosition = actor.threeObject.position;
-      scene.remove(actor.threeObject)
-      const orbsColor = new THREE.Color('grey');
+      scene.remove(actor.threeObject);
+      const orbsColor = new THREE.Color("grey");
       const playerBehavior = new PlayerBehavior(false);
       const orbsMesh = playerBehavior.CreateMesh(orbsColor);
       orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
@@ -100,7 +100,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function (err, data = defaultData) {
+      grpcClient.connect({ name }, function(err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -134,7 +134,7 @@ async function start(server, name) {
   }
 }
 function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function (obj) {
+  actor.threeObject.traverse(function(obj) {
     if (obj instanceof THREE.Mesh) {
       if (obj.material.map == texture) {
         return;
@@ -244,7 +244,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   const orbTexture = [
     await game.modelLoader.loadTexture("Orb.png"),
     await game.modelLoader.loadTexture("Orb_Detect.png")
-  ]
+  ];
 
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
@@ -275,19 +275,18 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
       return;
     } else if (type === "currentState") {
-      for (const orbs of payload.orbs) {
-        if (game.localCache.Orbs.has(orbs.id)) {
-          const orbActor = game.localCache.Orbs.get(orbs.id);
-          console.log(orbActor);
-          updatePlayer(orbActor, orbs.state, orbTexture);
-          if (orbs.name === playerName) {
+      for (const orb of payload.orbs) {
+        if (game.localCache.Orbs.has(orb.id)) {
+          const orbActor = game.localCache.Orbs.get(orb.id);
+          updatePlayer(orbActor, orb.currentBehavior, orbTexture, currentScene.scene);
+          if (orb.name === playerName) {
             continue;
           }
           /** @type {Actor} */
-          const newPosition = PlayerBehavior.PosToVector3(orbs.position);
+          const newPosition = PlayerBehavior.PosToVector3(orb.position);
           orbActor.setGlobalPosition(newPosition);
         } else {
-          game.localCache.Orbs.set(orbs.id, createOrb(currentScene, orbs));
+          game.localCache.Orbs.set(orb.id, createOrb(currentScene, orb));
         }
       }
 
@@ -309,7 +308,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
-          updateGrass(grassActor, grass.state, grassTexture, currentScene.scene);
+          updateGrass(grassActor, grass.currentBehavior, grassTexture, currentScene.scene);
         }
       }
     } else if (type === "grass-dead") {
