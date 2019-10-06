@@ -3,11 +3,13 @@
 // Require Node.js Dependencies
 const { join } = require("path");
 const { spawn } = require("child_process");
+const { hostname } = require("os");
 
 // Require Third-party Dependencies
 const { remote, shell } = require("electron");
 const isDev = require("electron-is-dev");
-const ip = require("ip");
+const { get } = require("httpie");
+const { lookup } = require("dns").promises;
 
 const grpc = require("../src/grpc");
 
@@ -78,10 +80,18 @@ function setupServerInfo(cp) {
   const serverInfoTimeElement = document.getElementById("server-info-time");
   const stopServerBtn = document.getElementById("stop-server");
 
-  const internetIp = ip.address();
-  const ipv4 = ip.address("Ethernet", "ipv4");
-  document.getElementById("ip-internet").innerHTML = `<b>ip</b> ${internetIp}`;
-  document.getElementById("ip-ipv4").innerHTML = `<b>ipv4</b> ${ipv4}`;
+  lookup(hostname(), "ipv4")
+    .then((ip) => {
+      console.log(ip);
+      document.getElementById("ip-ipv4").innerHTML = `<b>local</b> ${ip.address}`;
+    })
+    .catch(console.error);
+
+  get("https://api.ipify.org/?format=json")
+    .then(({ data }) => {
+      document.getElementById("ip-internet").innerHTML = `<b>ip</b> ${data.ip}`;
+    })
+    .catch(console.error);
 
   mainElement.style.display = "none";
   serverInfoElement.style.display = "flex";
