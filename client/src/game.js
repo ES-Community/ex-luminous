@@ -57,11 +57,10 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
 function updatePlayer(actor, currentBehavior, orbTexture, scene) {
   switch (currentBehavior) {
     case "NORMAL": {
-      updateMeshTexture(actor, colorOfOrbs[0]);
+      updateMeshTexture(actor, orbTexture[0]);
       break;
     }
     case "HUNTED": {
-      console.log("Is Hunted !");
       updateMeshTexture(actor, orbTexture[1]);
       break;
     }
