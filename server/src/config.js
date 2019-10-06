@@ -7,7 +7,7 @@ module.exports = {
    */
   TICKS_PER_SECOND: 120,
   MAP_SIZE_X: 64,
-  MAP_SIZE_Z: 64,
+  MAP_SIZE_Z: 24,
   INIT_SHADOW_COUNT: 10,
   INIT_GRASS_COUNT: 50,
 
