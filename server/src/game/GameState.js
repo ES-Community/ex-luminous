@@ -7,6 +7,7 @@ const { randomPosition } = require("../utils/random");
 
 class GameState {
   constructor() {
+    this.isPaused = true;
     this.gameTicks = 0;
     this.mapSize = {
       x: MAP_SIZE_X,

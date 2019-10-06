@@ -7,26 +7,25 @@ const Orb = require("../behaviors/Orb");
 
 const GameState = require("./GameState");
 
+const waitBetweenTicks = Math.round(1000 / TICKS_PER_SECOND);
+
 class Game extends EventEmitter {
   constructor() {
     super();
 
-    this.isInitialized = false;
-    this.waitBetweenTicks = Math.round(1000 / TICKS_PER_SECOND);
-    this.timeout;
-
+    this.timeout = null;
     this.state = new GameState();
   }
 
   start() {
-    if (this.isInitialized) {
+    if (this.timeout !== null) {
       return;
     }
 
-    this.isInitialized = true;
+    this.state.isPaused = false;
 
     const gameLoop = () => {
-      this.timeout = setTimeout(gameLoop, this.waitBetweenTicks);
+      this.timeout = setTimeout(gameLoop, waitBetweenTicks);
       this.update();
     };
 
@@ -89,6 +88,12 @@ class Game extends EventEmitter {
 
   getTicks() {
     return this.state.gameTicks;
+  }
+
+  pause() {
+    clearTimeout(this.timeout);
+    this.timeout = null;
+    this.state.isPaused = true;
   }
 }
 

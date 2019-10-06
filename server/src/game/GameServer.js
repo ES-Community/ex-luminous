@@ -29,10 +29,6 @@ class GameServer {
     return this.onlinePlayers.values();
   }
 
-  getPlayer(call) {
-    return this.onlinePlayers.get(call.metadata.get("name")[0]);
-  }
-
   enableReport() {
     let tickList = [];
     setInterval(() => {
@@ -55,6 +51,32 @@ class GameServer {
         players: Array.from(this.players()).map((player) => ({ name: player.name, ip: player.ip }))
       });
     }, 1000);
+  }
+
+  setPlayerOnline(clientIp, name) {
+    if (this.offlinePlayers.has(name)) {
+      const player = this.offlinePlayers.get(name);
+      this.offlinePlayers.delete(name);
+      this.onlinePlayers.set(name, player);
+      this.game.setPlayerOnline(player);
+    } else {
+      const player = new Player(clientIp, name);
+      this.onlinePlayers.set(name, player);
+      this.game.addPlayer(name);
+    }
+    if (this.onlinePlayers.size === 1) {
+      this.game.start();
+    }
+  }
+
+  setPlayerOffline(player) {
+    this.onlinePlayers.delete(player.name);
+    this.offlinePlayers.set(player.name, player);
+    this.game.setPlayerOffline(player);
+    player.setGameDataStream(null);
+    if (this.onlinePlayers.size === 0) {
+      this.game.pause();
+    }
   }
 
   Status(call, callback) {
@@ -80,25 +102,18 @@ class GameServer {
       return callback(null, { ok: false, reason: `Username "${name}" is already in game` });
     }
 
-    if (this.offlinePlayers.has(name)) {
-      const player = this.offlinePlayers.get(name);
-      this.offlinePlayers.delete(name);
-      this.onlinePlayers.set(name, player);
-      this.game.setPlayerOnline(player);
-      player.ping();
-    } else {
-      const player = new Player(clientIp, name);
-      this.onlinePlayers.set(name, player);
-      this.game.addPlayer(name);
-    }
+    console.log(`Player ${name} connected`);
+    this.setPlayerOnline(clientIp, name);
 
     const { mapSize } = this.game.state;
     callback(null, { ok: true, data: JSON.stringify({ mapSize }) });
   }
 
   GameData(stream) {
-    const player = this.getPlayer(stream);
+    const name = stream.metadata.get("name")[0];
+    const player = this.onlinePlayers.get(name);
     if (!player) {
+      console.error(`Player tried to initiate data stream without connecting: ${name}`);
       stream.end();
       return;
     }
@@ -107,13 +122,12 @@ class GameServer {
       this.game.receiveData(player, data.type, JSON.parse(data.data));
     });
     stream.on("end", () => {
-      this.onlinePlayers.delete(player.name);
-      this.offlinePlayers.set(player.name, player);
-      this.game.setPlayerOffline(player);
-      player.setGameDataStream(null);
+      console.log(`Player ${name} disconnected`);
+      this.setPlayerOffline(player);
     });
     stream.on("error", (err) => {
-      console.error("Server GameData stream error", err);
+      console.error("Server GameData stream error", name, err);
+      this.setPlayerOffline(player);
     });
   }
 }
