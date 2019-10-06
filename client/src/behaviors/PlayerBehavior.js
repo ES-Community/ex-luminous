@@ -10,7 +10,7 @@ class PlayerBehavior extends ScriptBehavior {
   static CreateMesh(color = 0xffff00) {
     const geometry = new THREE.SphereGeometry(2, 32, 32);
     const material = new THREE.MeshBasicMaterial({
-      color, 
+      color,
       transparent: true,
       opacity: 0.5
     });
@@ -25,13 +25,12 @@ class PlayerBehavior extends ScriptBehavior {
     this.actor.setGlobalPosition(new THREE.Vector3(0, PlayerBehavior.Y_POSITION, 0));
     this.speed = 0.3;
     this.radiusLight = 5;
-    const sphere = PlayerBehavior.CreateMesh();
-    const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4)
+    const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4);
     light.position.set(0, 1, 0);
-    // this.fog = this.actor.threeObject.parent.getObjectByName("Fog");
-    // console.log(this.fog);
-    this.actor.threeObject.add(sphere);
-    this.actor.threeObject.add(light);
+    game.modelLoader.load("Orb", "Orb_Dark.png").then((model) => {
+      this.actor.threeObject.add(model);
+      this.actor.threeObject.add(light);
+    });
   }
 
   update() {
@@ -92,7 +91,6 @@ class PlayerBehavior extends ScriptBehavior {
     //     }
     //   }
     // }
-
   }
 }
 
