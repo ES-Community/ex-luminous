@@ -49,7 +49,7 @@ function generateGrass() {
 
 function coordinatesAreUsed(object, objects) {
   for (const other of objects) {
-    if (object.position.x === other.position.x && object.position.z === other.position.z) {
+    if (object.isTouching(other)) {
       return true;
     }
   }

@@ -9,8 +9,8 @@ function randomCoordinates() {
   };
 }
 
-function randomInt(max) {
-  return Math.floor(Math.random() * max);
+function randomFloat(max) {
+  return Math.random() * max;
 }
 
 module.exports = randomCoordinates;

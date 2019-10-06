@@ -24,5 +24,8 @@ module.exports = {
    * Time during which the grass must be loading until it blooms.
    */
   GRASS_BLOOM_TIME: 8,
-  GRASS_MAX_HP: 3
+  GRASS_MAX_HP: 3,
+
+  SHADOW_NORMAL_VISION_RADIUS: 12,
+  SHADOW_HUNTING_VISION_RADIUS: 15
 };
