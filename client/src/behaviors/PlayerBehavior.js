@@ -27,16 +27,27 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   update() {
-    if (game.input.isKeyDown("KeyW")) {
+    const mapSizeZ = game.mapSize.z * 2 - 1;
+    const mapSizeX = game.mapSize.x * 2 - 1;
+
+    const currentPos = this.actor.threeObject.position;
+    const movementLock = {
+      left: currentPos.z + this.speed >= mapSizeZ,
+      right: currentPos.z - this.speed <= -mapSizeZ,
+      top: currentPos.x - this.speed <= -mapSizeX,
+      bottom: currentPos.x + this.speed >= mapSizeX
+    };
+
+    if (game.input.isKeyDown("KeyW") && !movementLock.top) {
       this.actor.moveGlobal(new THREE.Vector3(-this.speed, 0, 0));
     }
-    if (game.input.isKeyDown("KeyS")) {
+    if (game.input.isKeyDown("KeyS") && !movementLock.bottom) {
       this.actor.moveGlobal(new THREE.Vector3(this.speed, 0, 0));
     }
-    if (game.input.isKeyDown("KeyA")) {
+    if (game.input.isKeyDown("KeyA") && !movementLock.left) {
       this.actor.moveGlobal(new THREE.Vector3(0, 0, this.speed));
     }
-    if (game.input.isKeyDown("KeyD")) {
+    if (game.input.isKeyDown("KeyD") && !movementLock.right) {
       this.actor.moveGlobal(new THREE.Vector3(0, 0, -this.speed));
     }
   }
