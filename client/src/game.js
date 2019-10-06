@@ -47,6 +47,7 @@ function updateGrass(actor, state, grassTexture) {
       break;
     }
     case "DEAD": {
+      scene.remove(actor);
       break;
     }
   }
@@ -272,12 +273,15 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
           updateGrass(grassActor, grass.state, grassTexture)
         }
       }
+    } else if (type === "grass-dead") {
+      /** @type {Actor} */
+      const grassActor = game.localCache.Grass.get(data.id);
+      updateGrass(grassActor, grass.state, grassTexture, currentScene.scene);
     }
 
     // emit to the game renderer
     game.emit("data", type, payload);
   });
-
   for (const cube of GridBehavior.generateGridEx(mapSize.x, mapSize.z)) {
     currentScene.add(cube);
   }

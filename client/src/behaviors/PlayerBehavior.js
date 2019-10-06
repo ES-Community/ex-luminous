@@ -52,14 +52,14 @@ class PlayerBehavior extends ScriptBehavior {
     }
 
     const currentPos = this.actor.threeObject.position.clone();
-    if (currentPos.z < -mapSizeZ) {
-      this.actor.threeObject.position.z = -mapSizeZ;
+    if (currentPos.z < 0) {
+      this.actor.threeObject.position.z = 0;
     }
     if (currentPos.z > mapSizeZ) {
       this.actor.threeObject.position.z = mapSizeZ;
     }
-    if (currentPos.x < -mapSizeX) {
-      this.actor.threeObject.position.x = -mapSizeX;
+    if (currentPos.x < 0) {
+      this.actor.threeObject.position.x = 0;
     }
     if (currentPos.x > mapSizeX) {
       this.actor.threeObject.position.x = mapSizeX;

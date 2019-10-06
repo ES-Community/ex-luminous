@@ -17,7 +17,7 @@ class GrassBehavior extends ScriptBehavior {
     const light = new THREE.PointLight(0xffffff, 5, radiusLight * 4)
     light.position.set(0, 1, 0);
     game.modelLoader.load("Herbe", "Herbe_Neutre.png").then((model) => {
-      model.scale.set(0.3, 0.3, 0.3);
+      model.scale.set(0.25, 0.25, 0.25);
       this.actor.threeObject.add(model);
       this.actor.threeObject.add(light);
     });
