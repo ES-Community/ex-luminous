@@ -72,7 +72,7 @@ async function createGameServer() {
   });
 
   gameWindow.webContents.openDevTools();
-  gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1:50051&name=${playerName}`);
+  gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1&name=${playerName}`);
 }
 
 function setupServerInfo(cp) {
@@ -145,7 +145,7 @@ function connectPlayerToServer() {
   const ipInputElement = document.getElementById("ip-to-join");
   let ipValue = ipInputElement.value.trim();
   if (ipValue === "") {
-    ipValue = "127.0.0.1:50051";
+    ipValue = "127.0.0.1";
   }
 
   if (errorTriggered) {

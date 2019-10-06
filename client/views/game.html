@@ -20,7 +20,7 @@
 
       // Retrieve server name and current player name
       const whatwgLocation = new URL(window.location.href);
-      const server = whatwgLocation.searchParams.get("server") || "127.0.0.1:50051";
+      const server = (whatwgLocation.searchParams.get("server") || "127.0.0.1") + ":50051";
       const name = whatwgLocation.searchParams.get("name") || "invite";
       fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
 
