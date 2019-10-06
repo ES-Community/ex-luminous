@@ -138,7 +138,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
       game.init(currentScene, camera);
       setTimeout(() => {
-        document.getElementById("fade").style.display = "none";
+        document.getElementById("fade").classList.add("hide");
       }, 500);
 
       return;

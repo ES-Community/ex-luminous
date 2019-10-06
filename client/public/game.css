@@ -1,9 +1,4 @@
 body {
-  background: rgb(51, 51, 51);
-  background: -moz-radial-gradient(center, ellipse cover, rgba(51, 51, 51, 1) 0%, rgba(28, 28, 28, 1) 100%);
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(51, 51, 51, 1) 0%, rgba(28, 28, 28, 1) 100%);
-  background: radial-gradient(ellipse at center, rgba(51, 51, 51, 1) 0%, rgba(28, 28, 28, 1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#333333', endColorstr='#1c1c1c',GradientType=1 );
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
 }
 
@@ -24,17 +19,36 @@ body {
   }
 }
 
-#fade {
-  background: rgba(20, 20, 20, 0.5);
+#game {
   width: 100%;
   height: 100%;
-  z-index: 9999;
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#fade {
+  background: rgb(51, 51, 51);
+  background: radial-gradient(ellipse at center, rgba(51, 51, 51, 1) 0%, rgba(28, 28, 28, 1) 100%);
+  width: 100%;
+  height: 100%;
+  z-index: 3;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   animation: fadeIn 0.5s;
+  transition: opacity 1s ease-in-out;
+  opacity: 1;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
+#fade.hide {
+  opacity: 0;
+}
+
 #fade > p {
   font-size: 20px;
   font-weight: bold;
