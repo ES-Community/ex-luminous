@@ -12,6 +12,14 @@ class Entity {
     this.healthPoints = healthPoints;
   }
 
+  toJSON() {
+    return {
+      id: this.id,
+      position: this.position,
+      healthPoints: this.healthPoints
+    };
+  }
+
   distanceTo(other) {
     return Math.hypot(this.x - other.x, this.y - other.y);
   }

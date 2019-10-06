@@ -15,6 +15,13 @@ class Orb extends Entity {
     this.interactingWith = null;
   }
 
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      name: this.name
+    };
+  }
+
   update(gameState) {}
 }
 

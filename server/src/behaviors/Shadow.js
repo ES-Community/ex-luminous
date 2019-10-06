@@ -13,7 +13,6 @@ const SHADOW_MAX_WAITING_TIME = 5;
 const SHADOW_MIN_WAITING_TIME = 2;
 
 class Shadow extends Entity {
-
   static Behavior = {
     WAITING: "WAITING",
     WANDERING: "WANDERING",
@@ -30,10 +29,17 @@ class Shadow extends Entity {
     this.remainingWaitingTicks = null;
   }
 
-  update (gameState) {
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      currentBehavior: this.currentBehavior
+    };
+  }
+
+  update(gameState) {
     switch (this.currentBehavior) {
       case Shadow.Behavior.WANDERING: {
-        if(this.remainingWanderingTicks === null && this.wanderingSteps === null) {
+        if (this.remainingWanderingTicks === null && this.wanderingSteps === null) {
           this.prepareWandering();
         }
         // move
@@ -63,27 +69,29 @@ class Shadow extends Entity {
     this.wanderingSteps = {
       x: deltaX / this.remainingWanderingTicks,
       z: deltaZ / this.remainingWanderingTicks
-    }
+    };
   }
 
   wander() {
     this.position.x += this.wanderingSteps.x;
     this.position.z += this.wanderingSteps.z;
     this.remainingWanderingTicks--;
-    if(this.remainingWanderingTicks <= 0) {
+    if (this.remainingWanderingTicks <= 0) {
       // reset wandering
       this.remainingWanderingTicks = null;
       this.wanderingSteps = null;
 
       // wait
-      this.remainingWaitingTicks = timeToTicks(Math.random() * (SHADOW_MAX_WAITING_TIME - SHADOW_MIN_WAITING_TIME) + SHADOW_MIN_WAITING_TIME);
+      this.remainingWaitingTicks = timeToTicks(
+        Math.random() * (SHADOW_MAX_WAITING_TIME - SHADOW_MIN_WAITING_TIME) + SHADOW_MIN_WAITING_TIME
+      );
       this.currentBehavior = Shadow.Behavior.WAITING;
     }
   }
 
   wait() {
     this.remainingWaitingTicks--;
-    if(this.remainingWaitingTicks <= 0) {
+    if (this.remainingWaitingTicks <= 0) {
       this.remainingWaitingTicks = null;
       this.currentBehavior = Shadow.Behavior.WANDERING;
     }

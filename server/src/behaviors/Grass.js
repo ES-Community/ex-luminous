@@ -30,6 +30,14 @@ class Grass extends Entity {
     this.lightTicks = 0;
   }
 
+  toJSON() {
+    return {
+      ...super.toJSON(),
+      state: this.state,
+      loading: this.loading
+    };
+  }
+
   update(gameState) {
     switch (this.state) {
       case Grass.State.NORMAL: {
