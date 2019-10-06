@@ -152,7 +152,7 @@ function connectPlayerToServer() {
     hideError();
   }
 
-  const client = grpc.createClient(ipValue);
+  const client = grpc.createClient(ipValue + ":50051");
   client.connect({ name: playerName }, function(err) {
     if (err) {
       showError(`<p>Connection to <b>${ipValue}</b> failed!</p>`);

@@ -9,9 +9,6 @@ const Player = require("./Player");
 class GameServer {
   constructor() {
     /** @type {Map<string, Player>} */
-    this.playersByIp = new Map();
-
-    /** @type {Map<string, Player>} */
     this.playersByName = new Map();
 
     this.game = new Game();
@@ -26,11 +23,11 @@ class GameServer {
   }
 
   players() {
-    return this.playersByIp.values();
+    return this.playersByName.values();
   }
 
   getPlayer(call) {
-    return this.playersByIp.get(getIp(call));
+    return this.playersByName.get(call.metadata.get("name")[0]);
   }
 
   enableReport() {
@@ -60,25 +57,12 @@ class GameServer {
   Connect(call, callback) {
     const clientIp = getIp(call);
     const name = call.request.name;
-    let player = this.playersByIp.get(clientIp);
+    let player = this.playersByName.get(name);
 
     if (!player) {
-      if (this.playersByName.has(name)) {
-        return callback(null, { ok: false, reason: `name ${name} is already in use` });
-      }
       player = new Player(clientIp, name);
-      this.playersByIp.set(clientIp, player);
       this.playersByName.set(name, player);
       this.game.addPlayer(name);
-    } else {
-      if (name !== player.name) {
-        if (this.playersByName.has(name)) {
-          return callback(null, { ok: false, reason: `name ${name} is already in use` });
-        }
-        this.playersByName.delete(player.name);
-        player.setName(name);
-        this.playersByName.set(name, player);
-      }
     }
     player.ping();
 

@@ -19,5 +19,6 @@ function createClient(address) {
 }
 
 module.exports = {
-  createClient
+  createClient,
+  Metadata: grpc.Metadata
 };

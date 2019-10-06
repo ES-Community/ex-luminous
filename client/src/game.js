@@ -47,7 +47,7 @@ function updateGrass(actor, state, grassTexture, scene) {
       break;
     }
     case "DEAD": {
-      scene.remove(actor.threeObject)
+      scene.remove(actor.threeObject);
       break;
     }
   }
@@ -93,7 +93,9 @@ async function start(server, name) {
     fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
 
     const { mapSize } = JSON.parse(connectionPayload.data);
-    const gameDataStream = grpcClient.gameData({}, { deadline: Infinity });
+    const meta = new grpc.Metadata();
+    meta.add("name", name);
+    const gameDataStream = grpcClient.gameData(meta, { deadline: Infinity });
     initializeGameRenderer(gameDataStream, mapSize, name);
   } else {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;

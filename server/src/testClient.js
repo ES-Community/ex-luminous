@@ -20,8 +20,11 @@ const client = new proto.Game("127.0.0.1:50051", grpc.credentials.createInsecure
 
 client.connect({ name: "Test" }, function(err, response) {
   console.log(response);
-  const gameDataStream = client.gameData({});
+  const meta = new grpc.Metadata();
+  meta.add("name", "Player name");
+  const gameDataStream = client.GameData(meta);
   gameDataStream.on("data", (data) => {
     console.log("got game data", data);
   });
+  gameDataStream.write({ type: "test", data: "xxxx" });
 });
