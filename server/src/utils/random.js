@@ -20,8 +20,8 @@ function randomIntInRange(min, max) {
 
 function randomPosition() {
   return {
-    x: randomFloat(MAP_SIZE_X),
-    z: randomFloat(MAP_SIZE_Z)
+    x: randomFloatInRange(1, MAP_SIZE_X - 1),
+    z: randomFloatInRange(1, MAP_SIZE_Z - 1)
   };
 }
 
