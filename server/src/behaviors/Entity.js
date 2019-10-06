@@ -21,7 +21,7 @@ class Entity {
   }
 
   distanceTo(other) {
-    return Math.hypot(this.x - other.x, this.y - other.y);
+    return Math.hypot(this.position.x - other.position.x, this.position.z - other.position.z);
   }
 
   isTouching(other) {

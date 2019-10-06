@@ -25,7 +25,7 @@ function generateShadows() {
     const shadow = new Shadow(randomCoordinates());
 
     while (coordinatesAreUsed(shadow, shadows)) {
-      Object.assign(shadow, randomCoordinates());
+      shadow.position = randomCoordinates();
     }
 
     shadows.push(shadow);
@@ -39,7 +39,7 @@ function generateGrass() {
     const grass = new Grass(randomCoordinates());
 
     while (coordinatesAreUsed(grass, grasses)) {
-      Object.assign(grass, randomCoordinates());
+      grass.position = randomCoordinates();
     }
 
     grasses.push(grass);
@@ -49,7 +49,7 @@ function generateGrass() {
 
 function coordinatesAreUsed(object, objects) {
   for (const other of objects) {
-    if (object.x === other.x && object.z === other.z) {
+    if (object.position.x === other.position.x && object.position.z === other.position.z) {
       return true;
     }
   }
