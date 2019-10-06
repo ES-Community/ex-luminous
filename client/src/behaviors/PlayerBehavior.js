@@ -7,15 +7,19 @@ const ScriptBehavior = require("../class/ScriptBehavior");
 const THREE = require("three");
 
 class PlayerBehavior extends ScriptBehavior {
-  static CreateMesh() {
+  static CreateMesh(color = 0xffff00) {
     const geometry = new THREE.SphereGeometry(2, 32, 32);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const material = new THREE.MeshBasicMaterial({ color });
 
     return new THREE.Mesh(geometry, material);
   }
 
+  static PosToVector3(pos) {
+    return new THREE.Vector3(pos.x, PlayerBehavior.Y_POSITION, pos.z);
+  }
+
   awake() {
-    this.actor.setGlobalPosition(new THREE.Vector3(0, 10, 0));
+    this.actor.setGlobalPosition(new THREE.Vector3(0, PlayerBehavior.Y_POSITION, 0));
     this.speed = 0.3;
     const sphere = PlayerBehavior.CreateMesh();
 
@@ -37,5 +41,7 @@ class PlayerBehavior extends ScriptBehavior {
     }
   }
 }
+
+PlayerBehavior.Y_POSITION = 3;
 
 module.exports = PlayerBehavior;

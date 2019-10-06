@@ -31,11 +31,34 @@ async function start(server, name) {
 
     const { mapSize } = JSON.parse(data.data);
     const gameDataStream = grpcClient.gameData({});
-    initializeGameRenderer(gameDataStream, mapSize);
+    initializeGameRenderer(gameDataStream, mapSize, name);
   });
 }
 
-function initializeGameRenderer(gameDataStream, mapSize) {
+function createOrb(currentScene, orbs) {
+  const orbsActor = new Actor(`orbs_${orbs.id}`);
+  const orbsColor = new THREE.Color(0xffffff);
+  orbsColor.setHex(Math.random() * 0xffffff);
+  const orbsMesh = PlayerBehavior.CreateMesh(orbsColor);
+
+  orbsMesh.position.set(orbs.position.x, PlayerBehavior.Y_POSITION, orbs.position.z);
+  orbsActor.threeObject.add(orbsMesh);
+  currentScene.add(orbsActor);
+
+  return orbsActor;
+}
+
+function createGrass(currentScene, grass) {
+  const grassActor = new Actor(`grass_${grass.id}`);
+  const grassPosition = new THREE.Vector2(grass.position.x, grass.position.z);
+
+  grassActor.addScriptedBehavior(new GrassBehavior(grassPosition));
+  currentScene.add(grassActor);
+
+  return grassActor;
+}
+
+function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let isFirstGameData = true;
 
   const game = new GameRenderer();
@@ -45,7 +68,6 @@ function initializeGameRenderer(gameDataStream, mapSize) {
   });
   window.game = game;
 
-  // Initialize Camera & Controls
   const Player = new Actor("Player");
   Player.addScriptedBehavior(new PlayerBehavior());
 
@@ -56,34 +78,57 @@ function initializeGameRenderer(gameDataStream, mapSize) {
 
   const mask = [];
   for (let i = 0; i < mapSize.x * mapSize.z; i++) {
-    // mask.push(Math.random() > 0.3 ? 1 : 0);
-    mask.push(0);
+    mask.push(Math.random() > 0.3 ? 1 : 0);
+    // mask.push(0);
   }
   let plane = FogBehavior.createOrUpdate(mask, mapSize.x * 4, mapSize.z * 4);
   currentScene.add(plane);
 
+  // Initialize Camera & Controls
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
   camera.name = "Camera";
   camera.position.set(50, 50, 0);
-
   camera.lookAt(Player.threeObject.position);
+
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
     if (isFirstGameData && type === "currentState") {
       isFirstGameData = false;
-      // TODO: init game state
-      const { grass: grassList } = payload;
-      for (const grass of grassList) {
-        const grassActor = new Actor(`grass_${grass.id}`);
-        const grassPosition = new THREE.Vector2(grass.position.x, grass.position.z);
 
-        grassActor.addScriptedBehavior(new GrassBehavior(grassPosition));
-        game.localCache.Grass.set(grass.id, grassActor);
-        currentScene.add(grassActor);
+      for (const grass of payload.grass) {
+        game.localCache.Grass.set(grass.id, createGrass(currentScene, grass));
       }
-      game.init(currentScene, camera);
+      for (const orbs of payload.orbs) {
+        if (orbs.name === playerName) {
+          game.localCache.Orbs.set(orbs.id, Player);
+          Player.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
+        } else {
+          game.localCache.Orbs.set(orbs.id, createOrb(currentScene, orbs));
+        }
+      }
 
-      return;
+      return game.init(currentScene, camera);
+    } else if (type === "currentState") {
+      for (const orbs of payload.orbs) {
+        if (game.localCache.Orbs.has(orbs.id)) {
+          if (orbs.name === playerName) {
+            continue;
+          }
+
+          /** @type {Actor} */
+          const orbActor = game.localCache.Orbs.get(orbs.id);
+          const newPosition = PlayerBehavior.PosToVector3(orbs.position);
+          orbActor.setGlobalPosition(newPosition);
+        } else {
+          game.localCache.Orbs.set(orbs.id, createOrb(currentScene, orbs));
+        }
+      }
+
+      for (const grass of payload.grass) {
+        if (!game.localCache.Grass.has(grass.id)) {
+          game.localCache.Grass.set(grass.id, createGrass(currentScene, grass));
+        }
+      }
     }
 
     // emit to the game renderer
