@@ -103,12 +103,7 @@ class Shadow extends Entity {
       } else if (orb == undefined) {
         if(this.currentMeal instanceof Orb && this.currentMeal != null)
         {
-          console.error(`Current meal before filter:`)
-          console.error(this.currentMeal)
-          let result = this.currentMeal.huntedBy.filter(shadow => shadow.id == this.id);
-          this.currentMeal.huntedBy = result;
-          console.error(`Current meal after filter:`)
-          console.error(this.currentMeal)
+          this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter(shadow => shadow.id == this.id);
         }
         this.currentMeal = null;
         this.currentBehavior = Shadow.Behavior.WANDERING;
