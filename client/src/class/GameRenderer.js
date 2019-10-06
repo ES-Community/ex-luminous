@@ -32,7 +32,8 @@ class GameRenderer extends events {
     this.framesPerSecond = 60;
     this.localCache = {
       Orbs: new Map(),
-      Grass: new Map()
+      Grass: new Map(),
+      Shadow: new Map()
     };
   }
 

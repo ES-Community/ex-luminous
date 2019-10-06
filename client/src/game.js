@@ -38,7 +38,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function(err, data = defaultData) {
+      grpcClient.connect({ name }, function (err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -81,6 +81,19 @@ function createOrb(currentScene, orbs) {
   currentScene.add(orbsActor);
 
   return orbsActor;
+}
+
+function createShadow(currentScene, shadows) {
+  const shadowsActor = new Actor(`shadows_${shadows.id}`);
+  console.log(shadows);
+  const shadowsColor = new THREE.Color("black");
+  const shadowsMesh = PlayerBehavior.CreateMesh(shadowsColor);
+
+  shadowsActor.setGlobalPosition(PlayerBehavior.PosToVector3(shadows.position));
+  shadowsActor.threeObject.add(shadowsMesh);
+  currentScene.add(shadowsActor);
+
+  return shadowsActor;
 }
 
 function createGrass(currentScene, grass) {
@@ -143,6 +156,9 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         } else {
           game.localCache.Orbs.set(orbs.id, createOrb(currentScene, orbs));
         }
+      }
+      for (const shadow of payload.shadows) {
+        game.localCache.Shadow.set(shadow.id, createShadow(currentScene, shadow));
       }
 
       game.init(currentScene, camera);
