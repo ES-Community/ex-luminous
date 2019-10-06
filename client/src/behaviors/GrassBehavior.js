@@ -13,11 +13,11 @@ class GrassBehavior extends ScriptBehavior {
   }
 
   awake() {
-    game.modelLoader.load("tree3", "tree3.png").then((model) => {
-      model.scale.set(2, 2, 2);
+    game.modelLoader.load("Herbe_Neutre", "Herbe_Neutre.png").then((model) => {
+      model.scale.set(0.3, 0.3, 0.3);
       this.actor.threeObject.add(model);
     });
-    this.actor.threeObject.position.set(this.defaultPos.x, 2, this.defaultPos.y);
+    this.actor.threeObject.position.set(this.defaultPos.x, 3, this.defaultPos.y);
   }
 
   update() {}

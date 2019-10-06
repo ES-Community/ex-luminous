@@ -14,6 +14,7 @@ class ModelLoader {
 
     this.textureLoader.setPath(options.texturePath);
     this.objLoader.setPath(options.modelsPath);
+    this.modelCache = new Map();
   }
 
   loadTexture(name) {
@@ -30,14 +31,18 @@ class ModelLoader {
   }
 
   async load(objName, textureName = objName) {
+    if (this.modelCache.has(objName)) {
+      return this.modelCache.get(objName);
+    }
     const [map, obj] = await Promise.all([this.loadTexture(textureName), this.loadObject(objName)]);
-    const material = new THREE.MeshPhongMaterial({ map });
+    const material = new THREE.MeshPhongMaterial({ map, transparent: true });
     obj.traverse((node) => {
       if (node.isMesh) {
         node.material = material;
       }
     });
 
+    this.modelCache.set(objName, obj);
     return obj;
   }
 }
