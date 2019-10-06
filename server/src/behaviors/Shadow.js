@@ -1,6 +1,7 @@
 "use strict";
 
 const Entity = require("./Entity");
+const Orb = require("./Orb");
 const { TICKS_PER_SECOND, SHADOW_NORMAL_VISION_RADIUS, SHADOW_HUNTING_VISION_RADIUS } = require("../config");
 
 const randomDirection = require("../utils/randomDirection");
@@ -106,6 +107,10 @@ class Shadow extends Entity {
       orb.entity.huntedBy.push(this);
       return;
     } else if (orb == undefined) {
+      if(this.currentMeal instanceof Orb)
+      {
+        // this.currentMeal.huntedBy.filter()
+      }
       this.currentMeal = null;
       this.currentBehavior = Shadow.Behavior.WANDERING;
       return;

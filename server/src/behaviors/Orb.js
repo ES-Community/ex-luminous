@@ -27,7 +27,7 @@ class Orb extends Entity {
       ...super.toJSON(),
       name: this.name,
       currentBehavior: this.currentBehavior,
-      isDead: this.isDead
+      isDead: this.isDead,
     };
   }
 
@@ -49,12 +49,15 @@ class Orb extends Entity {
     }
   }
   isHunted() {
-    if (this.isHunted.length > 0) {
+    if (this.huntedBy.length > 0) {
       this.currentBehavior = Orb.Behavior.HUNTED;
     } else {
       this.currentBehavior = Orb.Behavior.NORMAL;
     }
   }
+  // clearHunting(gameState){
+  // gameState.shadows.
+  // }
 }
 
 module.exports = Orb;

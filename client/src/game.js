@@ -145,6 +145,11 @@ function updateMeshTexture(actor, texture) {
     }
   });
 }
+function updateMesh3D(actor, newMesh) {
+  actor.threeObject.children.filter(children => children.type == "Group");
+  actor.threeObject.add(newMesh);
+}
+
 function updateLight(actor, type) {
   if (type == "remove") {
     if (actor.threeObject.children[1] instanceof THREE.PointLight) {
@@ -227,7 +232,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
   const Player = new Actor("Player");
   Player.addScriptedBehavior(new PlayerBehavior(true));
-  game.localCache.Orbs.set("Player", Player);
+  game.localCache.Orbs.set(60, Player);
   currentScene.add(Player);
 
   // Initialize Camera & Controls
@@ -248,7 +253,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
-    console.log(payload.orbs);
     if (isFirstGameData && type === "currentState") {
       isFirstGameData = false;
       for (const grass of payload.grass) {
@@ -277,13 +281,13 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "currentState") {
       for (const orbs of payload.orbs) {
         if (game.localCache.Orbs.has(orbs.id)) {
+          /** @type {Actor} */
           const orbActor = game.localCache.Orbs.get(orbs.id);
-          console.log(orbActor);
+          console.log(orbActor.threeObject);
           updatePlayer(orbActor, orbs.state, orbTexture);
           if (orbs.name === playerName) {
             continue;
           }
-          /** @type {Actor} */
           const newPosition = PlayerBehavior.PosToVector3(orbs.position);
           orbActor.setGlobalPosition(newPosition);
         } else {
