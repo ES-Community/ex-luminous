@@ -115,6 +115,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
   camera.name = "Camera";
   camera.position.set(50, 50, 0);
+<<<<<<< HEAD
   camera.lookAt(Player.threeObject.position);
 
   gameDataStream.on("data", ({ type, data }) => {
@@ -165,6 +166,21 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
     // emit to the game renderer
     game.emit("data", type, payload);
+=======
+  currentScene.add(camera);
+  // camera.rotation.x = -Math.PI / 4
+  camera.lookAt(Player.threeObject.position);
+  // console.log(camera.rotation)
+  // camera.rotateOnWorldAxis(new THREE.Vector3(1,0,0), -Math.PI / 4);
+  // camera.rotateOnWorldAxis(new THREE.Vector3(0,1,0), Math.PI/2);
+  Player.threeObject.add(camera);
+
+  game.init(currentScene, camera);
+  gameDataStream.on("data", (data) => {
+    const parsedData = JSON.parse(data.data);
+    console.log("received data from server", parsedData);
+    game.emit("server-data", data.type, parsedData);
+>>>>>>> feat: rotate camera, move by player angle & lerp cam
   });
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
@@ -173,13 +189,54 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     currentScene.add(cube);
   }
 
+  let rotationSpeed = 0.01;
+  let scrollRange = 50;
+  let timer = 0;
+  let lerpCam = false;
+  let lerpCamDuration = 60;
+  let cameraPosition = camera.position;
   game.on("update", () => {
+<<<<<<< HEAD
     const playerPos = Player.threeObject.position;
 
     gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
     const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);
     camera.position.set(newPos.x, newPos.y, newPos.z);
     camera.lookAt(Player.threeObject.position);
+=======
+    if (game.input.wasMouseButtonJustReleased(0)) {
+      currentScene.scene.remove(plane);
+      plane = FogBehavior.createOrUpdate(mask, gridSize * 4);
+      currentScene.add(plane);
+    }
+    if (game.input.isKeyDown("KeyM")) {
+      if (lerpCam === false) {
+        cameraPosition = camera.position.clone();
+        lerpCam = true;
+      }
+    }
+
+    if (lerpCam === true) {
+      const factor = timer / lerpCamDuration;
+      timer++;
+
+      const x = THREE.Math.lerp(cameraPosition.x, cameraPosition.x + 10, factor);
+      const y = THREE.Math.lerp(cameraPosition.y, cameraPosition.y + 10, factor);
+  
+      camera.position.set(x, y, 0);
+      if( timer === lerpCamDuration) {
+        lerpCam = false;
+        timer = 0;
+      }
+
+    }
+
+    if (game.input.isMouseButtonDown(2)) {
+      const mouseDelta = game.input.mouseDelta;
+      // rotationAngleY += mouseDelta.x * rotationSpeed;
+      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0,1,0), -mouseDelta.x * rotationSpeed);
+    }
+>>>>>>> feat: rotate camera, move by player angle & lerp cam
   });
 }
 
