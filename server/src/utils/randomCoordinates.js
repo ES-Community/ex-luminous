@@ -4,8 +4,8 @@ const { MAP_SIZE_X, MAP_SIZE_Z } = require("../config");
 
 function randomCoordinates() {
   return {
-    x: randomInt(MAP_SIZE_X),
-    z: randomInt(MAP_SIZE_Z)
+    x: randomInt(MAP_SIZE_X * 2 -2),
+    z: randomInt(MAP_SIZE_Z * 2 -2)
   };
 }
 
