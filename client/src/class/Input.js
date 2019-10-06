@@ -469,7 +469,6 @@ class Input extends EventEmitter {
   }
 
   onMouseWheel(event) {
-    event.preventDefault();
     this.newScrollDelta = event.wheelDelta > 0 || event.detail < 0 ? 1 : -1;
 
     return false;
