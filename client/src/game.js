@@ -116,6 +116,8 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   camera.name = "Camera";
   camera.position.set(50, 50, 0);
   camera.lookAt(Player.threeObject.position);
+  currentScene.add(camera);
+  Player.threeObject.add(camera);
 
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
@@ -165,19 +167,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
     // emit to the game renderer
     game.emit("data", type, payload);
-  currentScene.add(camera);
-  // camera.rotation.x = -Math.PI / 4
-  camera.lookAt(Player.threeObject.position);
-  // console.log(camera.rotation)
-  // camera.rotateOnWorldAxis(new THREE.Vector3(1,0,0), -Math.PI / 4);
-  // camera.rotateOnWorldAxis(new THREE.Vector3(0,1,0), Math.PI/2);
-  Player.threeObject.add(camera);
-
-  game.init(currentScene, camera);
-  gameDataStream.on("data", (data) => {
-    const parsedData = JSON.parse(data.data);
-    console.log("received data from server", parsedData);
-    game.emit("server-data", data.type, parsedData);
   });
 
   const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
@@ -187,7 +176,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   }
 
   let rotationSpeed = 0.01;
-  let scrollRange = 50;
+  let scrollRange = 10;
   let timer = 0;
   let lerpCam = false;
   let lerpCamDuration = 60;
@@ -215,8 +204,8 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       const factor = timer / lerpCamDuration;
       timer++;
 
-      const x = THREE.Math.lerp(cameraPosition.x, cameraPosition.x + 10, factor);
-      const y = THREE.Math.lerp(cameraPosition.y, cameraPosition.y + 10, factor);
+      const x = THREE.Math.lerp(cameraPosition.x, cameraPosition.x + scrollRange, factor);
+      const y = THREE.Math.lerp(cameraPosition.y, cameraPosition.y + scrollRange, factor);
   
       camera.position.set(x, y, 0);
       if( timer === lerpCamDuration) {

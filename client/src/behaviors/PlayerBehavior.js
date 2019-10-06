@@ -47,7 +47,7 @@ class PlayerBehavior extends ScriptBehavior {
     if (game.input.isKeyDown("KeyA" && !movementLock.left)) {
       this.actor.threeObject.translateZ(this.speed);
     }
-    if (game.input.isKeyDown("KeyD" && !movementLock.right))) {
+    if (game.input.isKeyDown("KeyD" && !movementLock.right)) {
       this.actor.threeObject.translateZ(-this.speed);
     }
   }
