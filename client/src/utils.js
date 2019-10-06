@@ -8,10 +8,9 @@ function updateMeshTexture(actor, texture) {
     if (obj instanceof THREE.Mesh) {
       if (obj.material.map == texture) {
         return;
-      } else {
-        obj.material.map = texture;
-        obj.material.needsUpdate = true;
       }
+      obj.material.map = texture;
+      obj.material.needsUpdate = true;
     }
   });
 }
@@ -22,15 +21,11 @@ function updateMesh3D(actor, newMesh) {
 }
 
 function updateLight(actor, type) {
-  if (type == "remove") {
-    if (actor.threeObject.children[1] instanceof THREE.PointLight) {
-      actor.threeObject.children[1].visible = false;
-    }
-  } else if (type == "add") {
-    if (actor.threeObject.children[1] instanceof THREE.PointLight) {
-      actor.threeObject.children[1].visible = true;
-    }
+  if (!(actor.threeObject.children[1] instanceof THREE.PointLight)) {
+    return;
   }
+
+  actor.threeObject.children[1].visible = type === "add";
 }
 
 module.exports = {

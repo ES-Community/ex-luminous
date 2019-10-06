@@ -31,11 +31,12 @@ class PlayerBehavior extends ScriptBehavior {
     const currentPos = this.actor.threeObject.position;
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
 
-    this.speed = 2;
-    this.radiusLight = 10;
-    const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4);
+    this.speed = 1;
+    this.radiusLight = 4;
+    const light = new THREE.PointLight(0xffffff, 6.5, this.radiusLight * game.cubeSize, 5);
     light.position.set(0, 1, 0);
     game.modelLoader.load("Orb", "Orb.png").then((model) => {
+      model.scale.set(1.5, 1.5, 1.5);
       this.actor.threeObject.add(model);
       this.actor.threeObject.add(light);
     });

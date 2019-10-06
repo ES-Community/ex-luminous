@@ -5,7 +5,7 @@ const getId = require("../utils/getId");
 const mandatory = require("../utils/mandatoryParam");
 
 class Entity {
-  static RADIUS = 2;
+  static RADIUS = 0.5;
 
   constructor(position = mandatory("position"), healthPoints = mandatory("healthPoints")) {
     this.id = getId();

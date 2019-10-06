@@ -49,6 +49,7 @@ class Shadow extends Entity {
         break;
       }
       case Shadow.Behavior.WAITING: {
+        this.lookForTarget(gameState);
         this.wait();
         break;
       }
@@ -79,33 +80,41 @@ class Shadow extends Entity {
   }
 
   lookForTarget(gameState) {
-    if (this.currentMeal instanceof Orb) {
-      this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter((shadow) => shadow.id == this.id);
-    }
     const visionRadius =
       this.currentBehavior === Shadow.Behavior.HUNTING ? SHADOW_NORMAL_VISION_RADIUS : SHADOW_HUNTING_VISION_RADIUS;
     function inVisionRadius(item) {
       return item.distance <= visionRadius;
     }
 
+
     const grassList = this.sortByDistance(gameState.grass.filter((grass) => grass.isLuminous()));
     const grass = grassList.find(inVisionRadius);
     if (grass) {
-      this.currentBehavior = Shadow.Behavior.EATING;
       this.currentMeal = grass.entity;
+      this.currentBehavior = Shadow.Behavior.EATING;
       return;
     }
 
     const orbList = this.sortByDistance(gameState.onlineOrbs());
     const orb = orbList.find(inVisionRadius);
+
+
     if (orb) {
-      this.currentBehavior = Shadow.Behavior.HUNTING;
       this.currentMeal = orb.entity;
+      this.currentBehavior = Shadow.Behavior.HUNTING;
       orb.entity.huntedBy.push(this);
       return;
     }
 
+    if (this.currentMeal instanceof Orb) {
+      this.currentMeal.huntedBy = this.currentMeal.huntedBy.filter((shadow) => this.id == shadow.id);
+    }
+
     if (this.currentMeal) {
+      if (this.currentMeal instanceof Orb) {
+        this.currentMeal.huntedBy = [];
+        console.error(this.currentMeal.huntedBy);
+      }
       this.currentMeal = null;
       this.setWandering();
       return;
