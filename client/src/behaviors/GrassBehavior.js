@@ -13,7 +13,7 @@ class GrassBehavior extends ScriptBehavior {
   }
 
   awake() {
-    game.modelLoader.load("Herbe_Neutre", "Herbe_Neutre.png").then((model) => {
+    game.modelLoader.load("Herbe", "Herbe_Neutre.png").then((model) => {
       model.scale.set(0.3, 0.3, 0.3);
       this.actor.threeObject.add(model);
     });
