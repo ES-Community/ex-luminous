@@ -101,6 +101,10 @@ class Grass extends Entity {
   isTouchingAnyShadow(gameState) {
     return gameState.shadows.some((shadow) => this.isTouching(shadow));
   }
+
+  isLuminous() {
+    return this.state !== Grass.State.NORMAL && this.state !== Grass.State.WOUNDED;
+  }
 }
 
 module.exports = Grass;

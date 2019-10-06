@@ -1,7 +1,7 @@
 "use strict";
 
 const Entity = require("./Entity");
-const { TICKS_PER_SECOND } = require("../config");
+const { TICKS_PER_SECOND, SHADOW_NORMAL_VISION_RADIUS, SHADOW_HUNTING_VISION_RADIUS } = require("../config");
 
 const randomDirection = require("../utils/randomDirection");
 const { timeToTicks } = require("../utils/convertTicks");
@@ -27,6 +27,8 @@ class Shadow extends Entity {
     this.wanderingSteps = null;
     this.remainingWanderingTicks = null;
     this.remainingWaitingTicks = null;
+    this.currentMeal = null;
+    this.currentHunt = null;
   }
 
   toJSON() {
@@ -45,16 +47,58 @@ class Shadow extends Entity {
         // move
         this.wander();
 
-        // look for orbs
+        this.lookForTarget(gameState);
         break;
       }
       case Shadow.Behavior.WAITING: {
         this.wait();
+
+        this.lookForTarget(gameState);
+        break;
+      }
+      case Shadow.Behavior.EATING: {
+        const grass = this.currentMeal;
+        const distance = this.distanceTo(grass);
+        const direction = Math.atan2(grass.position.z - this.position.z, grass.position.x - this.position.x);
+        if (distance <= SHADOW_SPEED) {
+          this.position.x = grass.position.x;
+          this.position.z = grass.position.z;
+        } else {
+          this.position.x += SHADOW_SPEED * Math.cos(direction);
+          this.position.z += SHADOW_SPEED * Math.sin(direction);
+        }
+        break;
+      }
+      case Shadow.Behavior.HUNTING: {
+        // todo
         break;
       }
       default: {
         throw new Error(`missing state implementation: ${this.state}`);
       }
+    }
+  }
+
+  lookForTarget(gameState) {
+    const visionRadius =
+      this.currentBehavior === Shadow.Behavior.HUNTING ? SHADOW_NORMAL_VISION_RADIUS : SHADOW_HUNTING_VISION_RADIUS;
+    function inVisionRadius(item) {
+      return item.distance <= visionRadius;
+    }
+    const grassList = this.sortByDistance(gameState.grass.filter((grass) => grass.isLuminous()));
+    const grass = grassList.find(inVisionRadius);
+    if (grass) {
+      this.currentBehavior = Shadow.Behavior.EATING;
+      this.currentMeal = grass.entity;
+      return;
+    }
+    const orbList = this.sortByDistance(gameState.orbs);
+    const orb = orbList.find(inVisionRadius);
+    if (orb) {
+      this.currentBehavior = Shadow.Behavior.HUNTING;
+      this.currentHunt = orb.entity;
+      orb.entity.huntedBy.push(this);
+      return;
     }
   }
 

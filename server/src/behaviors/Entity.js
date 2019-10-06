@@ -35,6 +35,11 @@ class Entity {
     return distance <= radii;
   }
 
+  sortByDistance(others) {
+    const list = others.map((entity) => ({ entity, distance: this.distanceTo(entity) }));
+    return list.sort((e1, e2) => e1 - e2);
+  }
+
   update() {
     throw new Error("Entities must implement the update(state) method");
   }

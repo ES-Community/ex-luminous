@@ -4,13 +4,13 @@ const { MAP_SIZE_X, MAP_SIZE_Z } = require("../config");
 
 function randomCoordinates() {
   return {
-    x: randomInt(MAP_SIZE_X * 2 -2),
-    z: randomInt(MAP_SIZE_Z * 2 -2)
+    x: randomFloat(MAP_SIZE_X),
+    z: randomFloat(MAP_SIZE_Z)
   };
 }
 
-function randomInt(max) {
-  return Math.floor(Math.random() * max);
+function randomFloat(max) {
+  return Math.random() * max;
 }
 
 module.exports = randomCoordinates;
