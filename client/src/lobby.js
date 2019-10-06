@@ -6,6 +6,7 @@ const { spawn } = require("child_process");
 
 // Require Third-party Dependencies
 const { remote, shell } = require("electron");
+const isDev = require("electron-is-dev");
 
 const grpc = require("../src/grpc");
 
@@ -27,9 +28,9 @@ async function createGameServer() {
   isServerStarted = true;
 
   const currentWindow = remote.getCurrentWindow();
-  const serverPath = join(__dirname, "..", "..", "server", "src", "server.js");
+  const serverPath = join(__dirname, isDev ? "../.." : "..", "server", "src", "server.js");
 
-  const cp = spawn("node", [serverPath], { stdio: ["ignore", "pipe", "pipe", "ipc"] });
+  const cp = spawn(isDev ? "node" : process.execPath, [serverPath], { stdio: ["ignore", "pipe", "pipe", "ipc"] });
   const stopServerBtn = setupServerInfo(cp);
 
   const closeWin = () => {

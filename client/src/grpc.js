@@ -1,9 +1,12 @@
 "use strict";
 
+const path = require("path");
+
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
+const isDev = require("electron-is-dev");
 
-const packageDefinition = protoLoader.loadSync("../protos/game.proto", {
+const packageDefinition = protoLoader.loadSync(path.join(__dirname, isDev ? "../.." : "..", "protos/game.proto"), {
   keepCase: true,
   enums: String,
   defaults: true,
