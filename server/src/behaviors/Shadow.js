@@ -7,7 +7,7 @@ const randomDirection = require("../utils/randomDirection");
 const { timeToTicks } = require("../utils/convertTicks");
 
 const SHADOW_MAX_HP = 3;
-const SHADOW_SPEED = 1.5 / TICKS_PER_SECOND;
+const SHADOW_SPEED = 8 / TICKS_PER_SECOND;
 const SHADOW_MAX_AMPLITUDE = 5;
 const SHADOW_MAX_WAITING_TIME = 5;
 const SHADOW_MIN_WAITING_TIME = 2;
@@ -51,7 +51,6 @@ class Shadow extends Entity {
       }
       case Shadow.Behavior.WAITING: {
         this.wait();
-
         break;
       }
       case Shadow.Behavior.EATING: {
