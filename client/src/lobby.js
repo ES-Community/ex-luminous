@@ -50,6 +50,8 @@ async function createGameServer() {
     }
   });
 
+  gameWindow.setFullScreen(true);
+
   cp.on("exit", () => {
     isServerStarted = false;
     if (gameWindow !== null && !gameWindow.isDestroyed()) {
