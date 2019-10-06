@@ -6,10 +6,10 @@ const THREE = require("three");
 const texture1 = new THREE.TextureLoader().load("../assets/textures/Ground-Grass.png");
 
 // Cube textures
-const material = new THREE.MeshBasicMaterial({
+const material = new THREE.MeshPhongMaterial({
   map: texture1
 });
-const material2 = new THREE.MeshBasicMaterial({
+const material2 = new THREE.MeshPhongMaterial({
   color: new THREE.Color(30, 100, 50),
   wireframe: true
 });

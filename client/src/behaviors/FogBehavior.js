@@ -10,7 +10,7 @@ const FogBehavior = {
     //copy mask into the typed array
     data.set(mask.map((v) => v * 255));
     //create the texture
-    const texture = new THREE.DataTexture(data, 8, 8, THREE.LuminanceFormat, THREE.UnsignedByteType);
+    const texture = new THREE.DataTexture(data, sizeX, sizeY, THREE.LuminanceFormat, THREE.UnsignedByteType);
 
     texture.flipY = true;
     texture.wrapS = THREE.ClampToEdgeWrapping;
@@ -22,7 +22,7 @@ const FogBehavior = {
     texture.magFilter = THREE.LinearFilter;
     texture.minFilter = THREE.LinearFilter;
 
-    const geometry = new THREE.PlaneBufferGeometry(sizeX, sizeY, 1, 1);
+    const geometry = new THREE.PlaneBufferGeometry(sizeX * 4, sizeY * 4, 1, 1);
     const material = new THREE.MeshBasicMaterial({
       color: "black",
       alphaMap: texture,
@@ -33,7 +33,7 @@ const FogBehavior = {
 
     // construct a mesh
     const plane = new THREE.Mesh(geometry, material);
-
+    plane.name = "Fog";
     plane.position.y = 3;
     plane.rotation.x = -Math.PI / 2;
     return plane;
