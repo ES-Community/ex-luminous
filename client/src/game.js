@@ -38,7 +38,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function(err, data = defaultData) {
+      grpcClient.connect({ name }, function (err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -69,6 +69,41 @@ async function start(server, name) {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
   }
 }
+function updateMeshTexture(actor, texture) {
+  actor.threeObject.traverse(function (obj) {
+    if (obj instanceof THREE.Mesh) {
+      obj.material.map = texture;
+      obj.material.needsUpdate = true;
+    }
+  })
+}
+async function updateGrassTexture(actor, state) {
+  switch (state) {
+    case "NORMAL": {
+      break;
+    }
+    case "LIGHT": {
+      const texture = await game.modelLoader.loadTexture("Herbe_Verte.png");
+      updateMeshTexture(actor, texture);
+    }
+    case "LOADING": {
+      break;
+    }
+    case "UNLOADING": {
+      break;
+    }
+    case "BLOOM": {
+      break;
+    }
+    case "WOUNDED": {
+      break;
+    }
+    case "DEAD": {
+      break;
+    }
+  }
+}
+
 
 function createOrb(currentScene, orbs) {
   const orbsActor = new Actor(`orbs_${orbs.id}`);
@@ -195,9 +230,15 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         }
       }
 
+
       for (const grass of payload.grass) {
         if (!game.localCache.Grass.has(grass.id)) {
           game.localCache.Grass.set(grass.id, createGrass(currentScene, grass));
+        }
+        if (game.localCache.Grass.has(grass.id)) {
+          /** @type {Actor} */
+          const grassActor = game.localCache.Grass.get(grass.id);
+          updateGrassTexture(grassActor, grass.state)
         }
       }
     }
