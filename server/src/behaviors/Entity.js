@@ -4,7 +4,7 @@ const getId = require("../utils/getId");
 const mandatory = require("../utils/mandatoryParam");
 
 class Entity {
-  static RADIUS = 0.125;
+  static RADIUS = 0.5;
 
   constructor(position = mandatory("position"), healthPoints = mandatory("healthPoints")) {
     this.id = getId();
@@ -26,7 +26,7 @@ class Entity {
 
   isTouching(other) {
     const distance = this.distanceTo(other);
-    const radii = this.constructor.radius + other.constructor.radius;
+    const radii = this.constructor.RADIUS + other.constructor.RADIUS;
     return distance <= radii;
   }
 
