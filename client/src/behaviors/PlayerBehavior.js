@@ -22,15 +22,17 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   static PosToVector3(pos) {
-    return new THREE.Vector3(pos.x * game.cubeSize, PlayerBehavior.Y_POSITION, pos.z * game.cubeSize);
+    const yPos = game.cubeSize + 1;
+
+    return new THREE.Vector3(pos.x * game.cubeSize, yPos, pos.z * game.cubeSize);
   }
 
   awake() {
     const currentPos = this.actor.threeObject.position;
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
 
-    this.speed = 0.3;
-    this.radiusLight = 20;
+    this.speed = 2;
+    this.radiusLight = 10;
     const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4);
     light.position.set(0, 1, 0);
     game.modelLoader.load("Orb", "Orb.png").then((model) => {
@@ -40,8 +42,9 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   update() {
-    const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
-    const mapSizeX = game.mapSize.x * game.cubeSize - 1;
+    const cubeMiddleSize = game.cubeSize / 2;
+    const mapSizeZ = game.mapSize.z * game.cubeSize;
+    const mapSizeX = game.mapSize.x * game.cubeSize;
     if (this.canMove) {
       if (game.input.isKeyDown("KeyW")) {
         this.actor.threeObject.translateX(-this.speed);
@@ -58,17 +61,19 @@ class PlayerBehavior extends ScriptBehavior {
     }
 
     const currentPos = this.actor.threeObject.position.clone();
-    if (currentPos.z < 0) {
-      this.actor.threeObject.position.z = 0;
+    const maxSizeZ = mapSizeZ - cubeMiddleSize;
+    const maxSizeX = mapSizeX - cubeMiddleSize;
+    if (currentPos.z < -cubeMiddleSize) {
+      this.actor.threeObject.position.z = -cubeMiddleSize;
     }
-    if (currentPos.z > mapSizeZ) {
-      this.actor.threeObject.position.z = mapSizeZ;
+    if (currentPos.z > maxSizeZ) {
+      this.actor.threeObject.position.z = maxSizeZ;
     }
-    if (currentPos.x < 0) {
-      this.actor.threeObject.position.x = 0;
+    if (currentPos.x < -cubeMiddleSize) {
+      this.actor.threeObject.position.x = -cubeMiddleSize;
     }
-    if (currentPos.x > mapSizeX) {
-      this.actor.threeObject.position.x = mapSizeX;
+    if (currentPos.x > maxSizeX) {
+      this.actor.threeObject.position.x = maxSizeX;
     }
 
     // currentPos.x -= currentPos.x % 4;

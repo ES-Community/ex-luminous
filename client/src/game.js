@@ -180,7 +180,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     texturePath: "../assets/textures/"
   });
   game.mapSize = mapSize;
-  game.cubeSize = 4;
+  game.cubeSize = 16;
   GridBehavior.cubeSize = game.cubeSize;
 
   const currentScene = new Scene();
@@ -193,7 +193,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   // Initialize Camera & Controls
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
   camera.name = "Camera";
-  camera.position.set(50, 50, 0);
+  camera.position.set(50, 120, 0);
   camera.lookAt(Player.threeObject.position);
   currentScene.add(camera);
   Player.threeObject.add(camera);
