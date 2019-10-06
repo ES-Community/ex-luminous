@@ -22,7 +22,7 @@ const GrassBehavior = require("./behaviors/GrassBehavior");
 // Variables
 const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
 
-function updateGrass(actor, state, grassTexture) {
+function updateGrass(actor, state, grassTexture, scene) {
   switch (state) {
     case "NORMAL": {
       updateMeshTexture(actor, grassTexture[0]);
@@ -31,7 +31,7 @@ function updateGrass(actor, state, grassTexture) {
     }
     case "LIGHT": {
       updateMeshTexture(actor, grassTexture[1]);
-      updateLight(actor, "add")
+      updateLight(actor, "add");
       break;
     }
     case "LOADING": {
@@ -68,7 +68,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function (err, data = defaultData) {
+      grpcClient.connect({ name }, function(err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -100,7 +100,7 @@ async function start(server, name) {
   }
 }
 function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function (obj) {
+  actor.threeObject.traverse(function(obj) {
     if (obj instanceof THREE.Mesh) {
       if (obj.material.map == texture) {
         return;
@@ -204,7 +204,8 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   Player.threeObject.add(camera);
   const grassTexture = [
     await game.modelLoader.loadTexture("Herbe_Neutre.png"),
-    await game.modelLoader.loadTexture("Herbe_Verte.png")];
+    await game.modelLoader.loadTexture("Herbe_Verte.png")
+  ];
 
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
@@ -226,14 +227,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         game.localCache.Shadows.set(shadow.id, createShadow(currentScene, shadow));
       }
 
-
       game.init(currentScene, camera);
       game.renderer.domElement.focus();
       // game.input.lockMouse();
       setTimeout(() => {
         document.getElementById("fade").classList.add("hide");
       }, 500);
-
 
       return;
     } else if (type === "currentState") {
@@ -270,13 +269,13 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
-          updateGrass(grassActor, grass.state, grassTexture)
+          updateGrass(grassActor, grass.state, grassTexture, currentScene.scene);
         }
       }
     } else if (type === "grass-dead") {
       /** @type {Actor} */
-      const grassActor = game.localCache.Grass.get(data.id);
-      updateGrass(grassActor, grass.state, grassTexture, currentScene.scene);
+      const grassActor = game.localCache.Grass.get(payload.id);
+      updateGrass(grassActor, "DEAD", grassTexture, currentScene.scene);
     }
 
     // emit to the game renderer
@@ -334,8 +333,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     }
   });
 }
-
-
 
 module.exports = {
   start

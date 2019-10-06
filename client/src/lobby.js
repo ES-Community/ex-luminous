@@ -50,6 +50,8 @@ async function createGameServer() {
     }
   });
 
+  gameWindow.setFullScreen(true);
+
   cp.on("exit", () => {
     isServerStarted = false;
     if (gameWindow !== null && !gameWindow.isDestroyed()) {
@@ -113,7 +115,7 @@ function setupServerInfo(cp) {
       li.innerText = `${player.name} (${player.ip})`;
       serverInfoPlayersElement.appendChild(li);
     }
-    serverInfoTimeElement.innerText = `${Math.round(msg.time * 100) / 100} seconds`;
+    serverInfoTimeElement.innerText = `${Math.round(msg.time)} seconds (${msg.ticks} ticks) | ${msg.tps} TPS`;
   });
 
   cp.on("exit", () => {
