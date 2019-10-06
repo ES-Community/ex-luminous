@@ -91,6 +91,9 @@ class GameRenderer extends events {
     gameLoop();
     this.resizeRenderer();
     window.onresize = () => this.resizeRenderer();
+    setImmediate(() => {
+      this.emit("init");
+    });
   }
 
   update(timestamp = 0) {
@@ -107,10 +110,10 @@ class GameRenderer extends events {
       return;
     }
 
+    this.emit("update");
     for (const actor of this.currentScene.actors) {
       actor.triggerBehaviorEvent("update");
     }
-    this.emit("update");
     this.renderer.render(this.currentScene.scene, this.camera);
   }
 

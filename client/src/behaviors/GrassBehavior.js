@@ -22,7 +22,7 @@ class GrassBehavior extends ScriptBehavior {
       this.actor.threeObject.add(light);
     });
     this.actor.threeObject.position.set(this.defaultPos.x, 3, this.defaultPos.z);
-    console.log(this.actor.threeObject.position);
+    // console.log(this.actor.threeObject.position);
   }
 
   update() {}

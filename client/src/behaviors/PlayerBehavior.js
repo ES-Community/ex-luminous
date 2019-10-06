@@ -26,7 +26,9 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   awake() {
-    this.actor.setGlobalPosition(new THREE.Vector3(0, PlayerBehavior.Y_POSITION, 0));
+    const currentPos = this.actor.threeObject.position;
+    this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
+
     this.speed = 0.3;
     this.radiusLight = 20;
     const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4);
@@ -54,8 +56,8 @@ class PlayerBehavior extends ScriptBehavior {
         this.actor.threeObject.translateZ(-this.speed);
       }
     }
+
     const currentPos = this.actor.threeObject.position.clone();
-    // console.log(currentPos);
     if (currentPos.z < 0) {
       this.actor.threeObject.position.z = 0;
     }

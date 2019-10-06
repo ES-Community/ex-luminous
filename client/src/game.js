@@ -68,14 +68,14 @@ function updatePlayer(actor, currentBehavior, orbTexture, scene) {
       break;
     }
     case "DEAD": {
-      const playerPosition = actor.threeObject.position;
-      scene.remove(actor.threeObject);
-      const orbsColor = new THREE.Color("grey");
-      const playerBehavior = new PlayerBehavior(false);
-      const orbsMesh = playerBehavior.CreateMesh(orbsColor);
-      orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
-      actor.threeObject.add(orbsMesh);
-      scene.add(actor);
+      // const playerPosition = actor.threeObject.position;
+      // scene.remove(actor.threeObject);
+      // const orbsColor = new THREE.Color("grey");
+      // const playerBehavior = new PlayerBehavior(false);
+      // const orbsMesh = playerBehavior.CreateMesh(orbsColor);
+      // orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
+      // actor.threeObject.add(orbsMesh);
+      // scene.add(actor);
       break;
     }
     case "RESPAWN": {
@@ -132,6 +132,7 @@ async function start(server, name) {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
   }
 }
+
 function updateMeshTexture(actor, texture) {
   actor.threeObject.traverse(function(obj) {
     if (obj instanceof THREE.Mesh) {
@@ -144,6 +145,7 @@ function updateMeshTexture(actor, texture) {
     }
   });
 }
+
 function updateMesh3D(actor, newMesh) {
   actor.threeObject.children.filter((children) => children.type == "Group");
   actor.threeObject.add(newMesh);
@@ -215,8 +217,11 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   currentScene.background = new THREE.Color("black");
 
   const Player = new Actor("Player");
+  Player.isInitialized = false;
+  game.on("init", () => {
+    Player.isInitialized = true;
+  });
   Player.addScriptedBehavior(new PlayerBehavior(true));
-  game.localCache.Orbs.set(60, Player);
   currentScene.add(Player);
 
   // Initialize Camera & Controls
@@ -255,12 +260,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         game.localCache.Shadows.set(shadow.id, createShadow(currentScene, shadow));
       }
 
-      game.init(currentScene, camera);
       game.renderer.domElement.focus();
+      game.init(currentScene, camera);
       // game.input.lockMouse();
       setTimeout(() => {
         document.getElementById("fade").classList.add("hide");
-      }, 500);
+      }, 200);
 
       return;
     } else if (type === "currentState") {
@@ -271,6 +276,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
           if (orb.name === playerName) {
             continue;
           }
+
           /** @type {Actor} */
           const newPosition = PlayerBehavior.PosToVector3(orb.position);
           orbActor.setGlobalPosition(newPosition);
@@ -320,9 +326,13 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let lerpCamDuration = 60;
   let cameraPosition = camera.position;
   game.on("update", () => {
-    const playerPos = Player.threeObject.position;
-
-    gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
+    if (Player.isInitialized === true) {
+      const playerPos = Player.threeObject.position.clone();
+      gameDataStream.write({
+        type: "player-moved",
+        data: JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize })
+      });
+    }
     camera.lookAt(Player.threeObject.position);
 
     if (game.input.isKeyDown("KeyM") && !lerpCam) {
