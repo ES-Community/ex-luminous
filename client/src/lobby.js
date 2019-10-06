@@ -18,6 +18,7 @@ async function createGameServer() {
   if (playerName === "") {
     return showError("<p>player name <b>must not</b> be empty!</p>");
   }
+  sessionStorage.setItem("cachedPlayerName", playerName);
 
   if (isServerStarted) {
     return;
@@ -129,6 +130,8 @@ function connectPlayerToServer() {
     if (err) {
       showError(`<p>Connection to <b>${ipValue}</b> failed!</p>`);
     } else {
+      sessionStorage.setItem("cachedPlayerName", playerName);
+
       const currentWindow = remote.getCurrentWindow();
       currentWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}`);
     }
@@ -153,6 +156,12 @@ function hideError() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const localName = sessionStorage.getItem("cachedPlayerName");
+  if (localName !== null) {
+    const nickNameInput = document.getElementById("nickname");
+    nickNameInput.value = localName;
+  }
+
   document.getElementById("host-game").addEventListener("click", createGameServer);
   document.getElementById("join-game").addEventListener("submit", connectPlayerToServer);
 });
