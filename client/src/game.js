@@ -22,17 +22,43 @@ const GrassBehavior = require("./behaviors/GrassBehavior");
 const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
 
 async function start(server, name) {
+  const fadeTxt = document.getElementById("fade-txt");
+  const fadeSpan = document.getElementById("fade-span");
   const grpcClient = grpc.createClient(server);
-  grpcClient.connect({ name }, function(err, data = defaultData) {
-    if (err) {
-      // TODO: retry connection ?
-      // console.log(data.reason);
+
+  let connectionPayload = null;
+
+  // eslint-disable-next-line
+  while (1) {
+    connectionPayload = await new Promise((resolve) => {
+      grpcClient.connect({ name }, function(err, data = defaultData) {
+        if (err) {
+          fadeTxt.innerHTML = `💀 ${err.message}`;
+          fadeSpan.style.display = "block";
+          resolve(null);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+    if (connectionPayload !== null) {
+      break;
     }
 
-    const { mapSize } = JSON.parse(data.data);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    fadeSpan.style.display = "none";
+    fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
+  }
+
+  if (connectionPayload.ok) {
+    fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
+
+    const { mapSize } = JSON.parse(connectionPayload.data);
     const gameDataStream = grpcClient.gameData({});
     initializeGameRenderer(gameDataStream, mapSize, name);
-  });
+  } else {
+    fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
+  }
 }
 
 function createOrb(currentScene, orbs) {
@@ -107,7 +133,12 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         }
       }
 
-      return game.init(currentScene, camera);
+      game.init(currentScene, camera);
+      setTimeout(() => {
+        document.getElementById("fade").style.display = "none";
+      }, 500);
+
+      return;
     } else if (type === "currentState") {
       for (const orbs of payload.orbs) {
         if (game.localCache.Orbs.has(orbs.id)) {
