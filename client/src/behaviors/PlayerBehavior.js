@@ -7,11 +7,15 @@ const ScriptBehavior = require("../class/ScriptBehavior");
 const THREE = require("three");
 
 class PlayerBehavior extends ScriptBehavior {
+  constructor(canMove) {
+    super(canMove);
+    this.canMove = canMove;
+  }
   static CreateMesh(color = 0xffff00) {
     const geometry = new THREE.SphereGeometry(2, 32, 32);
     const material = new THREE.MeshBasicMaterial({
       color,
-      transparent: true,
+      transparent: false,
       opacity: 0.5
     });
     return new THREE.Mesh(geometry, material);
@@ -27,7 +31,7 @@ class PlayerBehavior extends ScriptBehavior {
     this.radiusLight = 5;
     const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4);
     light.position.set(0, 1, 0);
-    game.modelLoader.load("Orb", "Orb_Dark.png").then((model) => {
+    game.modelLoader.load("Orb", "Orb.png").then((model) => {
       this.actor.threeObject.add(model);
       this.actor.threeObject.add(light);
     });
@@ -36,20 +40,20 @@ class PlayerBehavior extends ScriptBehavior {
   update() {
     const mapSizeZ = game.mapSize.z * 2 - 1;
     const mapSizeX = game.mapSize.x * 2 - 1;
-
-    if (game.input.isKeyDown("KeyW")) {
-      this.actor.threeObject.translateX(-this.speed);
+    if (this.canMove) {
+      if (game.input.isKeyDown("KeyW")) {
+        this.actor.threeObject.translateX(-this.speed);
+      }
+      if (game.input.isKeyDown("KeyS")) {
+        this.actor.threeObject.translateX(this.speed);
+      }
+      if (game.input.isKeyDown("KeyA")) {
+        this.actor.threeObject.translateZ(this.speed);
+      }
+      if (game.input.isKeyDown("KeyD")) {
+        this.actor.threeObject.translateZ(-this.speed);
+      }
     }
-    if (game.input.isKeyDown("KeyS")) {
-      this.actor.threeObject.translateX(this.speed);
-    }
-    if (game.input.isKeyDown("KeyA")) {
-      this.actor.threeObject.translateZ(this.speed);
-    }
-    if (game.input.isKeyDown("KeyD")) {
-      this.actor.threeObject.translateZ(-this.speed);
-    }
-
     const currentPos = this.actor.threeObject.position.clone();
     if (currentPos.z < 0) {
       this.actor.threeObject.position.z = 0;

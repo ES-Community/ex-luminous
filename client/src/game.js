@@ -15,12 +15,13 @@ const grpc = require("./grpc.js");
 
 // Require Behaviors
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
-const FogBehavior = require("./behaviors/FogBehavior");
 const GridBehavior = require("./behaviors/GridBehavior");
 const GrassBehavior = require("./behaviors/GrassBehavior");
 
 // Variables
 const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
+
+const colorOfOrbs = [];
 
 function updateGrass(actor, state, grassTexture, scene) {
   switch (state) {
@@ -53,6 +54,37 @@ function updateGrass(actor, state, grassTexture, scene) {
   }
 }
 
+function updatePlayer(actor, state, orbTexture) {
+  switch (state) {
+    case "NORMAL": {
+      updateMeshTexture(actor, colorOfOrbs[0]);
+      break;
+    }
+    case "HUNTED": {
+      console.log("Is Hunted !");
+      updateMeshTexture(actor, orbTexture[1])
+      break;
+    }
+    case "WOUNDED": {
+      break;
+    }
+    case "DEAD": {
+      const playerPosition = actor.threeObject.position;
+      scene.remove(actor.threeObject)
+      const orbsColor = new THREE.Color('grey');
+      const playerBehavior = new PlayerBehavior(false);
+      const orbsMesh = playerBehavior.CreateMesh(orbsColor);
+      orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
+      actor.threeObject.add(orbsMesh);
+      scene.add(actor);
+      break;
+    }
+    case "RESPAWN": {
+      break;
+    }
+  }
+}
+
 async function start(server, name) {
   const fadeTxt = document.getElementById("fade-txt");
   const fadeSpan = document.getElementById("fade-span");
@@ -68,7 +100,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function(err, data = defaultData) {
+      grpcClient.connect({ name }, function (err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -102,7 +134,7 @@ async function start(server, name) {
   }
 }
 function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function(obj) {
+  actor.threeObject.traverse(function (obj) {
     if (obj instanceof THREE.Mesh) {
       if (obj.material.map == texture) {
         return;
@@ -129,6 +161,7 @@ function createOrb(currentScene, orbs) {
   const orbsActor = new Actor(`orbs_${orbs.id}`);
   const orbsColor = new THREE.Color(0xffffff);
   orbsColor.setHex(Math.random() * 0xffffff);
+  colorOfOrbs.push(orbsColor);
   const orbsMesh = PlayerBehavior.CreateMesh(orbsColor);
 
   orbsActor.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
@@ -193,8 +226,8 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   // currentScene.add(plane);
 
   const Player = new Actor("Player");
-  Player.addScriptedBehavior(new PlayerBehavior());
-
+  Player.addScriptedBehavior(new PlayerBehavior(true));
+  game.localCache.Orbs.set("Player", Player);
   currentScene.add(Player);
 
   // Initialize Camera & Controls
@@ -208,12 +241,16 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     await game.modelLoader.loadTexture("Herbe_Neutre.png"),
     await game.modelLoader.loadTexture("Herbe_Verte.png")
   ];
+  const orbTexture = [
+    await game.modelLoader.loadTexture("Orb.png"),
+    await game.modelLoader.loadTexture("Orb_Detect.png")
+  ]
 
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
+    console.log(payload.orbs);
     if (isFirstGameData && type === "currentState") {
       isFirstGameData = false;
-
       for (const grass of payload.grass) {
         game.localCache.Grass.set(grass.id, createGrass(currentScene, grass));
       }
@@ -240,12 +277,13 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "currentState") {
       for (const orbs of payload.orbs) {
         if (game.localCache.Orbs.has(orbs.id)) {
+          const orbActor = game.localCache.Orbs.get(orbs.id);
+          console.log(orbActor);
+          updatePlayer(orbActor, orbs.state, orbTexture);
           if (orbs.name === playerName) {
             continue;
           }
-
           /** @type {Actor} */
-          const orbActor = game.localCache.Orbs.get(orbs.id);
           const newPosition = PlayerBehavior.PosToVector3(orbs.position);
           orbActor.setGlobalPosition(newPosition);
         } else {

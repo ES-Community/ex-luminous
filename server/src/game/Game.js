@@ -36,9 +36,12 @@ class Game extends EventEmitter {
   update() {
     this.state.shadows.forEach((shadow) => shadow.update(this.state, this));
     this.state.shadows = this.state.shadows.filter(notDeleted);
-
+    
     this.state.grass.forEach((grass) => grass.update(this.state, this));
     this.state.grass = this.state.grass.filter(notDeleted);
+
+    this.state.orbs.forEach((orb) => orb.update(this.state, this));
+    this.state.orbs = this.state.orbs.filter(notDeleted);
 
     this.state.gameTicks += 1;
     this.emit("change", "currentState", this.state);
