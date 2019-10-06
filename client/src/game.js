@@ -18,9 +18,6 @@ const PlayerBehavior = require("./behaviors/PlayerBehavior");
 const GridBehavior = require("./behaviors/GridBehavior");
 const GrassBehavior = require("./behaviors/GrassBehavior");
 
-// Variables
-const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
-
 const colorOfOrbs = [];
 
 function updateGrass(actor, currentBehavior, grassTexture, scene) {
@@ -84,40 +81,21 @@ function updatePlayer(actor, currentBehavior, orbTexture, scene) {
   }
 }
 
-async function start(server, name) {
-  const fadeTxt = document.getElementById("fade-txt");
-  const fadeSpan = document.getElementById("fade-span");
+async function start() {
+  window.grpcClient = grpc.createClient(server);
+
+  // Setup close button
   const closeWindowBtn = document.getElementById("close-window");
-  const grpcClient = grpc.createClient(server);
-  let connectionPayload = null;
   const closeListener = () => {
     const currentWindow = remote.getCurrentWindow();
     currentWindow.close();
   };
   closeWindowBtn.addEventListener("click", closeListener);
 
-  // eslint-disable-next-line
-  while (1) {
-    connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function(err, data = defaultData) {
-        if (err) {
-          fadeTxt.innerHTML = `💀 ${err.message}`;
-          fadeSpan.style.display = "block";
-          resolve(null);
-        } else {
-          resolve(data);
-        }
-      });
-    });
-    if (connectionPayload !== null) {
-      break;
-    }
+  // Attempt to connect on the server
+  const connectionPayload = await grpc.lobbyConnectionAttempt(grpcClient);
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    fadeSpan.style.display = "none";
-    fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
-  }
-
+  const fadeTxt = document.getElementById("fade-txt");
   if (connectionPayload.ok) {
     closeWindowBtn.removeEventListener("click", closeListener);
     closeWindowBtn.classList.add("hide");
@@ -125,12 +103,35 @@ async function start(server, name) {
 
     const { mapSize } = JSON.parse(connectionPayload.data);
     const meta = new grpc.Metadata();
-    meta.add("name", name);
+    meta.add("name", playerName);
+
     const gameDataStream = grpcClient.gameData(meta, { deadline: Infinity });
-    initializeGameRenderer(gameDataStream, mapSize, name);
+    gameDataStream.on("error", reconnectAndResetGame);
+    gameDataStream.on("end", reconnectAndResetGame);
+
+    initializeGameRenderer(gameDataStream, mapSize, playerName);
   } else {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
   }
+}
+
+async function reconnectAndResetGame() {
+  const fadeTxt = document.getElementById("fade-txt");
+  fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
+  document.getElementById("fade").classList.remove("hide");
+  document.getElementById("close-window").classList.remove("hide");
+
+  if (game instanceof GameRenderer) {
+    if (typeof game.currentScene !== "undefined") {
+      game.currentScene.clear();
+    }
+
+    game.renderer.clear();
+    game = null;
+    document.getElementById("game").innerHTML = "";
+  }
+
+  await start();
 }
 
 function updateMeshTexture(actor, texture) {
@@ -315,6 +316,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     // emit to the game renderer
     game.emit("data", type, payload);
   });
+
   for (const cube of GridBehavior.generateGridEx(mapSize.x, mapSize.z)) {
     currentScene.add(cube);
   }

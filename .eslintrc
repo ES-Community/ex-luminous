@@ -21,6 +21,9 @@
     "strict": ["error", "global"]
   },
   "globals": {
-    "game": true
+    "game": true,
+    "playerName": true,
+    "server": true,
+    "grpcClient": true
   }
 }

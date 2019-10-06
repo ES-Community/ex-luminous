@@ -20,14 +20,11 @@
 
       // Retrieve server name and current player name
       const whatwgLocation = new URL(window.location.href);
-      const server = (whatwgLocation.searchParams.get("server") || "127.0.0.1") + ":50051";
-      const name = whatwgLocation.searchParams.get("name") || "invite";
+      window.server = (whatwgLocation.searchParams.get("server") || "127.0.0.1") + ":50051";
+      window.playerName = whatwgLocation.searchParams.get("name") || "invite";
       fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
 
-      // console.log(`remote server ip: ${server}`);
-      // console.log(`player name: ${name}`);
-
-      start(server, name).catch(console.error);
+      start().catch(console.error);
     </script>
   </body>
 </html>
