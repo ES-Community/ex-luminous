@@ -85,7 +85,7 @@ function createOrb(currentScene, orbs) {
 
 function createShadow(currentScene, shadows) {
   const shadowsActor = new Actor(`shadows_${shadows.id}`);
-  const shadowsColor = new THREE.Color("black");
+  const shadowsColor = new THREE.Color("red");
   const shadowsMesh = PlayerBehavior.CreateMesh(shadowsColor);
 
   shadowsActor.setGlobalPosition(PlayerBehavior.PosToVector3(shadows.position));
