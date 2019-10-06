@@ -22,14 +22,16 @@ const GrassBehavior = require("./behaviors/GrassBehavior");
 // Variables
 const defaultData = { data: JSON.stringify({ mapSize: { x: 64, z: 64 } }) };
 
-function updateGrassTexture(actor, state, grassTexture) {
+function updateGrass(actor, state, grassTexture) {
   switch (state) {
     case "NORMAL": {
       updateMeshTexture(actor, grassTexture[0]);
+      updateLight(actor, "remove");
       break;
     }
     case "LIGHT": {
       updateMeshTexture(actor, grassTexture[1]);
+      updateLight(actor, "add")
       break;
     }
     case "LOADING": {
@@ -65,7 +67,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function(err, data = defaultData) {
+      grpcClient.connect({ name }, function (err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -97,7 +99,7 @@ async function start(server, name) {
   }
 }
 function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function(obj) {
+  actor.threeObject.traverse(function (obj) {
     if (obj instanceof THREE.Mesh) {
       if (obj.material.map == texture) {
         return;
@@ -107,6 +109,23 @@ function updateMeshTexture(actor, texture) {
       }
     }
   });
+}
+function updateLight(actor, type) {
+  if (type == "remove") {
+    if (actor.threeObject.children[1] instanceof THREE.PointLight) {
+      actor.threeObject.children[1].visible = false;
+    }
+
+  } else if (type == "add") {
+    if (actor.threeObject.children[1] instanceof THREE.PointLight) {
+      actor.threeObject.children[1].visible = true;
+    } else {
+      const radiusLight = 5;
+      const light = new THREE.PointLight(0xffffff, 5, radiusLight * 4)
+      light.position.set(0, 0, 0);
+      actor.threeObject.add(light);
+    }
+  }
 }
 
 function createOrb(currentScene, orbs) {
@@ -211,7 +230,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       for (const shadow of payload.shadows) {
         game.localCache.Shadows.set(shadow.id, createShadow(currentScene, shadow));
       }
-    
+
 
       game.init(currentScene, camera);
       game.renderer.domElement.focus();
@@ -256,7 +275,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
-          updateGrassTexture(grassActor, grass.state, grassTexture)
+          updateGrass(grassActor, grass.state, grassTexture)
         }
       }
     }
