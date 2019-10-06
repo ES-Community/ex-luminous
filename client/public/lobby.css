@@ -84,7 +84,38 @@ input[type="submit"]:not(:disabled):hover {
   padding: 10px;
   box-shadow: 1px 1px 10px rgba(29, 35, 39, 0.322);
   color: #fff;
+  position: relative;
 }
+#server-info span.warning {
+  border: 2px solid #ffee58;
+  padding: 5px;
+  color: #ffee58;
+  border-radius: 4px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  top: -60px;
+  text-shadow: 1px 1px 4px rgba(28, 28, 28, 0.4);
+}
+#server-info div.ip {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: -30px;
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 16px;
+  color: #ebe8d3cc;
+}
+#server-info div.ip b {
+  color: #26c6da;
+  font-weight: bold;
+}
+#server-info span.warning b {
+  color: #fff;
+}
+
 #server-info > h1 {
   border-bottom: 2px solid #5d6e7754;
   margin-bottom: 10px;

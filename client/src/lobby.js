@@ -7,6 +7,7 @@ const { spawn } = require("child_process");
 // Require Third-party Dependencies
 const { remote, shell } = require("electron");
 const isDev = require("electron-is-dev");
+const ip = require("ip");
 
 const grpc = require("../src/grpc");
 
@@ -76,6 +77,11 @@ function setupServerInfo(cp) {
   const serverInfoPlayersElement = document.getElementById("server-info-players");
   const serverInfoTimeElement = document.getElementById("server-info-time");
   const stopServerBtn = document.getElementById("stop-server");
+
+  const internetIp = ip.address();
+  const ipv4 = ip.address("Ethernet", "ipv4");
+  document.getElementById("ip-internet").innerHTML = `<b>ip</b> ${internetIp}`;
+  document.getElementById("ip-ipv4").innerHTML = `<b>ipv4</b> ${ipv4}`;
 
   mainElement.style.display = "none";
   serverInfoElement.style.display = "flex";
