@@ -50,7 +50,7 @@ async function createGameServer() {
     }
   });
 
-  gameWindow.setFullScreen(true);
+  // gameWindow.setFullScreen(true);
 
   cp.on("exit", () => {
     isServerStarted = false;
