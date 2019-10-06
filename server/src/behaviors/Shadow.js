@@ -95,19 +95,25 @@ class Shadow extends Entity {
       this.currentMeal = grass.entity;
       return;
     } else if (grass == undefined) {
-    if (orb) {
-      this.currentBehavior = Shadow.Behavior.HUNTING;
-      this.currentMeal = orb.entity;
-      orb.entity.huntedBy.push(this);
-      return;
-    } else if (orb == undefined) {
-      if(this.currentMeal instanceof Orb)
-      {
-        // this.currentMeal.huntedBy.filter()
+      if (orb) {
+        this.currentBehavior = Shadow.Behavior.HUNTING;
+        this.currentMeal = orb.entity;
+        orb.entity.huntedBy.push(this);
+        return;
+      } else if (orb == undefined) {
+        if(this.currentMeal instanceof Orb && this.currentMeal != null)
+        {
+          console.error(`Current meal before filter:`)
+          console.error(this.currentMeal)
+          let result = this.currentMeal.huntedBy.filter(shadow => shadow.id == this.id);
+          this.currentMeal.huntedBy = result;
+          console.error(`Current meal after filter:`)
+          console.error(this.currentMeal)
+        }
+        this.currentMeal = null;
+        this.currentBehavior = Shadow.Behavior.WANDERING;
+        return;
       }
-      this.currentMeal = null;
-      this.currentBehavior = Shadow.Behavior.WANDERING;
-      return;
     }
   }
 

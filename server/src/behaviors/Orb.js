@@ -54,9 +54,6 @@ class Orb extends Entity {
       this.currentBehavior = Orb.Behavior.NORMAL;
     }
   }
-  // clearHunting(gameState){
-  // gameState.shadows.
-  // }
 }
 
 module.exports = Orb;
