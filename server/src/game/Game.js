@@ -34,8 +34,12 @@ class Game extends EventEmitter {
   }
 
   update() {
-    this.state.shadows.forEach((shadow) => shadow.update(this.state));
-    this.state.grass.forEach((grass) => grass.update(this.state));
+    this.state.shadows.forEach((shadow) => shadow.update(this.state, this));
+    this.state.shadows = this.state.shadows.filter(notDeleted);
+
+    this.state.grass.forEach((grass) => grass.update(this.state, this));
+    this.state.grass = this.state.grass.filter(notDeleted);
+
     this.state.gameTicks += 1;
     this.emit("change", "currentState", this.state);
   }
@@ -61,6 +65,10 @@ class Game extends EventEmitter {
   getTicks() {
     return this.state.gameTicks;
   }
+}
+
+function notDeleted(entity) {
+  return !entity.deleted;
 }
 
 module.exports = Game;

@@ -10,6 +10,7 @@ class Entity {
     this.id = getId();
     this.position = position;
     this.healthPoints = healthPoints;
+    this.deleted = false;
   }
 
   toJSON() {
@@ -18,6 +19,10 @@ class Entity {
       position: this.position,
       healthPoints: this.healthPoints
     };
+  }
+
+  delete() {
+    this.deleted = true;
   }
 
   distanceTo(other) {

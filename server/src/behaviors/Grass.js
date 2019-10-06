@@ -16,8 +16,7 @@ class Grass extends Entity {
     LOADING: "LOADING",
     UNLOADING: "UNLOADING",
     BLOOM: "BLOOM",
-    WOUNDED: "WOUNDED",
-    DEAD: "DEAD"
+    WOUNDED: "WOUNDED"
   };
 
   constructor(position) {
@@ -38,7 +37,7 @@ class Grass extends Entity {
     };
   }
 
-  update(gameState) {
+  update(gameState, game) {
     switch (this.state) {
       case Grass.State.NORMAL: {
         if (this.isTouchingAnyOrb(gameState)) {
@@ -81,6 +80,8 @@ class Grass extends Entity {
         this.healthPoints--;
         if (this.healthPoints === 0) {
           this.state = Grass.State.DEAD;
+          game.emit("change", "grass-dead", { id: this.id });
+          this.delete();
         }
         break;
       }
