@@ -248,7 +248,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
-    console.log(payload.orbs);
     if (isFirstGameData && type === "currentState") {
       isFirstGameData = false;
       for (const grass of payload.grass) {
