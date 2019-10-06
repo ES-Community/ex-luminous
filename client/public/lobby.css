@@ -34,10 +34,10 @@ input {
   padding: 0 10px;
 }
 input#nickname {
-  width: 70%;
-  margin-left: 15%;
+  width: 80%;
+  margin-left: 10%;
   text-align: center;
-  height: 40px;
+  height: 44px;
   font-size: 26px;
   background: none;
   margin-bottom: 20px;

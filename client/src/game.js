@@ -147,7 +147,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
       game.init(currentScene, camera);
       game.renderer.domElement.focus();
-      game.input.lockMouse();
+      // game.input.lockMouse();
       setTimeout(() => {
         document.getElementById("fade").classList.add("hide");
       }, 500);
