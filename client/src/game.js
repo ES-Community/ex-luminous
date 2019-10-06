@@ -38,7 +38,7 @@ async function start(server, name) {
   // eslint-disable-next-line
   while (1) {
     connectionPayload = await new Promise((resolve) => {
-      grpcClient.connect({ name }, function (err, data = defaultData) {
+      grpcClient.connect({ name }, function(err, data = defaultData) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
           fadeSpan.style.display = "block";
@@ -63,7 +63,7 @@ async function start(server, name) {
     fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
 
     const { mapSize } = JSON.parse(connectionPayload.data);
-    const gameDataStream = grpcClient.gameData({});
+    const gameDataStream = grpcClient.gameData({}, { deadline: Infinity });
     initializeGameRenderer(gameDataStream, mapSize, name);
   } else {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
