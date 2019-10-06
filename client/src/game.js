@@ -169,8 +169,6 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     game.emit("data", type, payload);
   });
 
-  const offsetCam = new THREE.Vector3(0).add(camera.position).sub(Player.threeObject.position);
-
   for (const cube of GridBehavior.generateGridEx(mapSize.x, mapSize.z)) {
     currentScene.add(cube);
   }
@@ -185,12 +183,10 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     const playerPos = Player.threeObject.position;
 
     gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
-    const newPos = new THREE.Vector3(0).add(playerPos).add(offsetCam);
-    camera.position.set(newPos.x, newPos.y, newPos.z);
     camera.lookAt(Player.threeObject.position);
     if (game.input.wasMouseButtonJustReleased(0)) {
       currentScene.scene.remove(plane);
-      plane = FogBehavior.createOrUpdate(mask, gridSize * 4);
+      plane = FogBehavior.createOrUpdate(mask, mapSize.x * 4, mapSize.z * 4);
       currentScene.add(plane);
     }
     if (game.input.isKeyDown("KeyM")) {
