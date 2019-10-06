@@ -85,7 +85,6 @@ function createOrb(currentScene, orbs) {
 
 function createShadow(currentScene, shadows) {
   const shadowsActor = new Actor(`shadows_${shadows.id}`);
-  console.log(shadows);
   const shadowsColor = new THREE.Color("black");
   const shadowsMesh = PlayerBehavior.CreateMesh(shadowsColor);
 
@@ -158,7 +157,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         }
       }
       for (const shadow of payload.shadows) {
-        game.localCache.Shadow.set(shadow.id, createShadow(currentScene, shadow));
+        game.localCache.Shadows.set(shadow.id, createShadow(currentScene, shadow));
       }
 
       game.init(currentScene, camera);
@@ -182,6 +181,17 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
           orbActor.setGlobalPosition(newPosition);
         } else {
           game.localCache.Orbs.set(orbs.id, createOrb(currentScene, orbs));
+        }
+      }
+
+      for (const shadows of payload.shadows) {
+        if (game.localCache.Shadows.has(shadows.id)) {
+          /** @type {Actor} */
+          const shadowActor = game.localCache.Shadows.get(shadows.id);
+          const newPosition = PlayerBehavior.PosToVector3(shadows.position);
+          shadowActor.setGlobalPosition(newPosition);
+        } else {
+          game.localCache.Shadows.set(shadows.id, createShadow(currentScene, shadows));
         }
       }
 
