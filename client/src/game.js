@@ -92,6 +92,7 @@ function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     modelsPath: "../assets/models/",
     texturePath: "../assets/textures/"
   });
+  game.mapSize = mapSize;
   window.game = game;
 
   const Player = new Actor("Player");
