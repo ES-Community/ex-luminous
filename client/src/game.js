@@ -145,7 +145,7 @@ function updateMeshTexture(actor, texture) {
   });
 }
 function updateMesh3D(actor, newMesh) {
-  actor.threeObject.children.filter(children => children.type == "Group");
+  actor.threeObject.children.filter((children) => children.type == "Group");
   actor.threeObject.add(newMesh);
 }
 
@@ -189,7 +189,8 @@ function createShadow(currentScene, shadows) {
 
 function createGrass(currentScene, grass) {
   const grassActor = new Actor(`grass_${grass.id}`);
-  const grassPosition = new THREE.Vector2(grass.position.x, grass.position.z);
+  // console.log(grass.position);
+  const grassPosition = PlayerBehavior.PosToVector3(grass.position);
 
   grassActor.addScriptedBehavior(new GrassBehavior(grassPosition));
   currentScene.add(grassActor);
@@ -206,28 +207,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     texturePath: "../assets/textures/"
   });
   game.mapSize = mapSize;
+  game.cubeSize = 4;
+  GridBehavior.cubeSize = game.cubeSize;
   window.game = game;
 
   const currentScene = new Scene();
-  const color = 0xff0000;
-  const intensity = 0;
-  // const light = new THREE.AmbientLight(color, intensity);
-  // currentScene.add(new THREE.AmbientLight(0x606060));
   currentScene.background = new THREE.Color("black");
-  // currentScene.add(light);
-
-  // let mask = [];
-  // for (let i = 0; i < mapSize.x; i++) {
-  //   // mask.push(Math.random() > 0.3 ? 1 : 0);
-  //   const col = [];
-  //   for (let j = 0; j < mapSize.z; j++) {
-  //     col.push(1);
-  //   }
-  //   mask.push(col);
-  // }
-  // window.mask = mask;
-  // let plane = FogBehavior.createOrUpdate(mask.flat(), mapSize.x, mapSize.z);
-  // currentScene.add(plane);
 
   const Player = new Actor("Player");
   Player.addScriptedBehavior(new PlayerBehavior(true));
@@ -241,6 +226,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   camera.lookAt(Player.threeObject.position);
   currentScene.add(camera);
   Player.threeObject.add(camera);
+
   const grassTexture = [
     await game.modelLoader.loadTexture("Herbe_Neutre.png"),
     await game.modelLoader.loadTexture("Herbe_Verte.png")
@@ -335,20 +321,13 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let cameraPosition = camera.position;
   game.on("update", () => {
     const playerPos = Player.threeObject.position;
-    // const maxPos
 
     gameDataStream.write({ type: "player-moved", data: JSON.stringify({ x: playerPos.x, z: playerPos.z }) });
     camera.lookAt(Player.threeObject.position);
-    // if (game.input.wasMouseButtonJustReleased(0)) {
-    // currentScene.scene.remove(plane);
-    // plane = FogBehavior.createOrUpdate(mask.flat(), mapSize.x, mapSize.z);
-    // currentScene.add(plane);
-    // }
-    if (game.input.isKeyDown("KeyM")) {
-      if (lerpCam === false) {
-        cameraPosition = camera.position.clone();
-        lerpCam = true;
-      }
+
+    if (game.input.isKeyDown("KeyM") && !lerpCam) {
+      cameraPosition = camera.position.clone();
+      lerpCam = true;
     }
 
     if (lerpCam === true) {

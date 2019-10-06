@@ -84,7 +84,6 @@ function setupServerInfo(cp) {
 
   lookup(hostname(), "ipv4")
     .then((ip) => {
-      console.log(ip);
       document.getElementById("ip-ipv4").innerHTML = `<b>local</b> ${ip.address}`;
     })
     .catch(console.error);

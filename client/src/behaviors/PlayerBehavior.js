@@ -22,13 +22,13 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   static PosToVector3(pos) {
-    return new THREE.Vector3(pos.x, PlayerBehavior.Y_POSITION, pos.z);
+    return new THREE.Vector3(pos.x * game.cubeSize, PlayerBehavior.Y_POSITION, pos.z * game.cubeSize);
   }
 
   awake() {
     this.actor.setGlobalPosition(new THREE.Vector3(0, PlayerBehavior.Y_POSITION, 0));
     this.speed = 0.3;
-    this.radiusLight = 5;
+    this.radiusLight = 20;
     const light = new THREE.PointLight(0xffffff, 5, this.radiusLight * 4);
     light.position.set(0, 1, 0);
     game.modelLoader.load("Orb", "Orb.png").then((model) => {
@@ -38,8 +38,8 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   update() {
-    const mapSizeZ = game.mapSize.z * 2 - 1;
-    const mapSizeX = game.mapSize.x * 2 - 1;
+    const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
+    const mapSizeX = game.mapSize.x * game.cubeSize - 1;
     if (this.canMove) {
       if (game.input.isKeyDown("KeyW")) {
         this.actor.threeObject.translateX(-this.speed);
@@ -55,6 +55,7 @@ class PlayerBehavior extends ScriptBehavior {
       }
     }
     const currentPos = this.actor.threeObject.position.clone();
+    // console.log(currentPos);
     if (currentPos.z < 0) {
       this.actor.threeObject.position.z = 0;
     }
