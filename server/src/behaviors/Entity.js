@@ -1,5 +1,6 @@
 "use strict";
 
+const { MAP_SIZE_X, MAP_SIZE_Z } = require("../config");
 const getId = require("../utils/getId");
 const mandatory = require("../utils/mandatoryParam");
 
@@ -25,6 +26,11 @@ class Entity {
     this.deleted = true;
   }
 
+  moveTo(newPosition) {
+    this.position.x = Math.max(0, Math.min(MAP_SIZE_X, newPosition.x));
+    this.position.z = Math.max(0, Math.min(MAP_SIZE_Z, newPosition.z));
+  }
+
   distanceTo(other) {
     return Math.hypot(this.position.x - other.position.x, this.position.z - other.position.z);
   }
@@ -41,7 +47,7 @@ class Entity {
   }
 
   update() {
-    throw new Error("Entities must implement the update(state) method");
+    throw new Error("Entities must implement the update(gameState) method");
   }
 }
 

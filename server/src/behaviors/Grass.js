@@ -10,7 +10,7 @@ const grassLoadDelayTicks = Math.round(timeToTicks(GRASS_LOAD_DELAY));
 const grassBloomTimeTicks = Math.round(timeToTicks(GRASS_BLOOM_TIME));
 
 class Grass extends Entity {
-  static State = {
+  static Behavior = {
     NORMAL: "NORMAL",
     LIGHT: "LIGHT",
     LOADING: "LOADING",
@@ -22,7 +22,7 @@ class Grass extends Entity {
   constructor(position) {
     super(position, GRASS_MAX_HP);
 
-    this.state = Grass.State.NORMAL;
+    this.currentBehavior = Grass.Behavior.NORMAL;
     this.bloomTicks = 0;
     this.loading = 0;
     this.orbContact = 0;
@@ -32,64 +32,64 @@ class Grass extends Entity {
   toJSON() {
     return {
       ...super.toJSON(),
-      state: this.state,
+      currentBehavior: this.currentBehavior,
       loading: this.loading
     };
   }
 
   update(gameState, game) {
-    switch (this.state) {
-      case Grass.State.NORMAL: {
+    switch (this.currentBehavior) {
+      case Grass.Behavior.NORMAL: {
         if (this.isTouchingAnyOrb(gameState)) {
-          this.state = Grass.State.LIGHT;
+          this.currentBehavior = Grass.Behavior.LIGHT;
           this.lightTicks = grassLightTimeoutTicks;
         }
         break;
       }
-      case Grass.State.LIGHT: {
+      case Grass.Behavior.LIGHT: {
         if (!this.isTouchingAnyOrb(gameState) && --this.lightTicks === 0) {
-          this.state = Grass.State.NORMAL;
+          this.currentBehavior = Grass.Behavior.NORMAL;
         } else if (this.isTouchingAnyShadow(gameState)) {
-          this.state = Grass.State.WOUNDED;
+          this.currentBehavior = Grass.Behavior.WOUNDED;
         } else if (this.isTouchingAnyOrb(gameState)) {
           this.lightTicks = grassLightTimeoutTicks;
           if (++this.orbContact === grassLoadDelayTicks) {
             this.orbContact = 0;
-            this.state = Grass.State.LOADING;
+            this.currentBehavior = Grass.Behavior.LOADING;
           }
         }
         break;
       }
-      case Grass.State.LOADING: {
+      case Grass.Behavior.LOADING: {
         if (!this.isTouchingAnyOrb(gameState)) {
-          this.state = Grass.State.UNLOADING;
+          this.currentBehavior = Grass.Behavior.UNLOADING;
         } else if (++this.bloomTicks === grassBloomTimeTicks) {
-          this.state = Grass.State.BLOOM;
+          this.currentBehavior = Grass.Behavior.BLOOM;
         } else if (this.isTouchingAnyShadow(gameState)) {
-          this.state = Grass.State.WOUNDED;
+          this.currentBehavior = Grass.Behavior.WOUNDED;
         }
         break;
       }
-      case Grass.State.UNLOADING: {
+      case Grass.Behavior.UNLOADING: {
         if (--this.bloomTicks === 0) {
-          this.state = Grass.State.LIGHT;
+          this.currentBehavior = Grass.Behavior.LIGHT;
         }
         break;
       }
-      case Grass.State.WOUNDED: {
+      case Grass.Behavior.WOUNDED: {
         this.healthPoints--;
         if (this.healthPoints === 0) {
-          this.state = Grass.State.DEAD;
+          this.currentBehavior = Grass.Behavior.DEAD;
           game.emit("change", "grass-dead", { id: this.id });
           this.delete();
         }
         break;
       }
-      case Grass.State.BLOOM: {
+      case Grass.Behavior.BLOOM: {
         break;
       }
       default: {
-        throw new Error(`missing state implementation: ${this.state}`);
+        throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
       }
     }
   }
@@ -103,7 +103,7 @@ class Grass extends Entity {
   }
 
   isLuminous() {
-    return this.state !== Grass.State.NORMAL && this.state !== Grass.State.WOUNDED;
+    return this.currentBehavior !== Grass.Behavior.NORMAL && this.currentBehavior !== Grass.Behavior.WOUNDED;
   }
 }
 

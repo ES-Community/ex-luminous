@@ -57,31 +57,25 @@ class Shadow extends Entity {
       case Shadow.Behavior.EATING: {
         const grass = this.currentMeal;
         const distance = this.distanceTo(grass);
-        const direction = Math.atan2(grass.position.z - this.position.z, grass.position.x - this.position.x);
         if (distance <= SHADOW_SPEED) {
-          this.position.x = grass.position.x;
-          this.position.z = grass.position.z;
+          this.moveTo(grass.position);
         } else {
-          this.position.x += SHADOW_SPEED * Math.cos(direction);
-          this.position.z += SHADOW_SPEED * Math.sin(direction);
+          this.moveTowards(grass);
         }
         break;
       }
       case Shadow.Behavior.HUNTING: {
         const orb = this.currentMeal;
         const distance = this.distanceTo(orb);
-        const direction = Math.atan2(orb.position.z - this.position.z, orb.position.x - this.position.x);
         if (distance <= SHADOW_SPEED) {
-          this.position.x = orb.position.x;
-          this.position.z = orb.position.z;
+          this.moveTo(orb.position);
         } else {
-          this.position.x += SHADOW_SPEED * Math.cos(direction);
-          this.position.z += SHADOW_SPEED * Math.sin(direction);
+          this.moveTowards(orb);
         }
         break;
       }
       default: {
-        throw new Error(`missing state implementation: ${this.state}`);
+        throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
       }
     }
   }
@@ -116,7 +110,6 @@ class Shadow extends Entity {
       return;
     }
   }
-  }
 
   prepareWandering() {
     const selectedDirection = randomDirection();
@@ -133,8 +126,10 @@ class Shadow extends Entity {
   }
 
   wander() {
-    this.position.x += this.wanderingSteps.x;
-    this.position.z += this.wanderingSteps.z;
+    this.moveTo({
+      x: this.position.x + this.wanderingSteps.x,
+      z: this.position.z + this.wanderingSteps.z
+    });
     this.remainingWanderingTicks--;
     if (this.remainingWanderingTicks <= 0) {
       // reset wandering
@@ -155,6 +150,14 @@ class Shadow extends Entity {
       this.remainingWaitingTicks = null;
       this.currentBehavior = Shadow.Behavior.WANDERING;
     }
+  }
+
+  moveTowards(entity) {
+    const direction = Math.atan2(entity.position.z - this.position.z, entity.position.x - this.position.x);
+    this.moveTo({
+      x: this.position.x + SHADOW_SPEED * Math.cos(direction),
+      z: this.position.z + SHADOW_SPEED * Math.sin(direction)
+    });
   }
 }
 
