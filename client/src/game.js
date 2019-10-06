@@ -47,7 +47,7 @@ function updateGrass(actor, state, grassTexture, scene) {
       break;
     }
     case "DEAD": {
-      scene.remove(actor);
+      scene.remove(actor.threeObject)
       break;
     }
   }
