@@ -66,17 +66,31 @@ class Grass extends Entity {
       case Grass.Behavior.LOADING: {
         if (!this.orb) {
           this.currentBehavior = Grass.Behavior.UNLOADING;
-        } else if (++this.bloomTicks === grassBloomTimeTicks) {
-          this.currentBehavior = Grass.Behavior.BLOOM;
-        } else if (this.isTouchingAnyShadow(gameState)) {
-          this.currentBehavior = Grass.Behavior.WOUNDED;
+          break;
         }
+
+        this.bloomTicks++;
+        this.loading = this.bloomTicks / grassBloomTimeTicks;
+        if (this.bloomTicks === grassBloomTimeTicks) {
+          this.currentBehavior = Grass.Behavior.BLOOM;
+          break;
+        }
+
+        if (this.isTouchingAnyShadow(gameState)) {
+          this.currentBehavior = Grass.Behavior.WOUNDED;
+          break;
+        }
+
         break;
       }
       case Grass.Behavior.UNLOADING: {
-        if (--this.bloomTicks === 0) {
+        this.bloomTicks--;
+        this.loading = this.bloomTicks / grassBloomTimeTicks;
+        if (this.bloomTicks === 0) {
           this.currentBehavior = Grass.Behavior.LIGHT;
+          break;
         }
+
         break;
       }
       case Grass.Behavior.WOUNDED: {
