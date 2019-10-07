@@ -22,6 +22,7 @@ const grpc = require("./grpc.js");
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
 const GridBehavior = require("./behaviors/GridBehavior");
 const GrassBehavior = require("./behaviors/GrassBehavior");
+const LightBehavior = require("./behaviors/LightBehavior");
 
 // Variables
 const modelsPath = "../assets/models/";
@@ -123,7 +124,7 @@ function updatePlayer(actor, currentBehavior) {
       // const orbsColor = new THREE.Color("grey");
       // const playerBehavior = new PlayerBehavior(false);
       // const orbsMesh = playerBehavior.CreateMesh(orbsColor);
-      // orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
+      // orbsActor.setGlobalPosition(playerBehavior.PosToVector3Ex(playerPosition));
       // actor.threeObject.add(orbsMesh);
       // scene.add(actor);
       break;
@@ -233,9 +234,11 @@ function createOrb(currentScene, orbs) {
   orbsColor.setHex(Math.random() * 0xffffff);
   const orbsMesh = PlayerBehavior.CreateMesh(orbsColor);
 
-  orbsActor.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
+  orbsActor.setGlobalPosition(PlayerBehavior.PosToVector3Ex(orbs.position));
   orbsActor.threeObject.add(orbsMesh);
-  orbsActor.threeObject.add(PlayerBehavior.CreateLight(4));
+  // orbsActor.threeObject.add(PlayerBehavior.CreateLight(4));
+  orbsActor.addScriptedBehavior(new LightBehavior());
+  orbsActor.getBehaviorByName("LightBehavior").awake();
   console.log(orbsActor);
   currentScene.add(orbsActor);
 
@@ -247,8 +250,9 @@ function createShadow(currentScene, shadows) {
   const shadowsColor = new THREE.Color("red");
   const shadowsMesh = PlayerBehavior.CreateMesh(shadowsColor);
 
-  shadowsActor.setGlobalPosition(PlayerBehavior.PosToVector3(shadows.position));
+  shadowsActor.setGlobalPosition(PlayerBehavior.PosToVector3Ex(shadows.position));
   shadowsActor.threeObject.add(shadowsMesh);
+  shadowsActor.addScriptedBehavior(new LightBehavior(void 0, 100, 0.5, 10));
   currentScene.add(shadowsActor);
 
   return shadowsActor;
@@ -256,7 +260,7 @@ function createShadow(currentScene, shadows) {
 
 function createGrass(currentScene, grass) {
   const grassActor = new Actor(`grass_${grass.id}`);
-  grassActor.addScriptedBehavior(new GrassBehavior(PlayerBehavior.PosToVector3(grass.position)));
+  grassActor.addScriptedBehavior(new GrassBehavior(PlayerBehavior.PosToVector3Ex(grass.position)));
   currentScene.add(grassActor);
 
   return grassActor;
@@ -308,9 +312,9 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   globalAudio.masterVolume = 0.3;
   const bgSound = await SoundPlayer.loadSoundAsset(globalAudio, "back-ambient-void.ogg", {
     loop: true,
-    volume: 0.5
+    volume: 0.35
   });
-  const chaseSound = await SoundPlayer.loadSoundAsset(globalAudio, "hon-won.wav", { volume: 0.8 });
+  const chaseSound = await SoundPlayer.loadSoundAsset(globalAudio, "hon-won.wav", { volume: 0.6 });
   const herbeSound = await SoundPlayer.loadSoundAsset(globalAudio, "giling.ogg", { volume: 0.3 });
   const deathSound = await SoundPlayer.loadSoundAsset(globalAudio, "death.wav", { volume: 0.5 });
 
@@ -364,7 +368,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       for (const orbs of payload.orbs) {
         if (orbs.name === playerName) {
           game.localCache.Orbs.set(orbs.id, Player);
-          Player.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
+          Player.setGlobalPosition(PlayerBehavior.PosToVector3Ex(orbs.position));
         } else {
           game.localCache.Orbs.set(orbs.id, createOrb(currentScene, orbs));
         }
@@ -402,7 +406,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
             continue;
           }
 
-          const newPosition = PlayerBehavior.PosToVector3(orb.position);
+          const newPosition = PlayerBehavior.PosToVector3Ex(orb.position);
           orbActor.setGlobalPosition(newPosition);
         } else {
           game.localCache.Orbs.set(orb.id, createOrb(currentScene, orb));
@@ -412,7 +416,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       for (const shadows of payload.shadows) {
         if (game.localCache.Shadows.has(shadows.id)) {
           const shadowActor = game.localCache.Shadows.get(shadows.id);
-          const newPosition = PlayerBehavior.PosToVector3(shadows.position);
+          const newPosition = PlayerBehavior.PosToVector3Ex(shadows.position);
           shadowActor.setGlobalPosition(newPosition);
         } else {
           game.localCache.Shadows.set(shadows.id, createShadow(currentScene, shadows));

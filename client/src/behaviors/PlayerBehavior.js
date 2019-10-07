@@ -38,9 +38,13 @@ class PlayerBehavior extends ScriptBehavior {
     return new THREE.Vector3(pos.x * game.cubeSize, yPos, pos.z * game.cubeSize);
   }
 
+  static PosToVector3Ex(pos) {
+    return new THREE.Vector3(pos.x * game.cubeSize, 2, pos.z * game.cubeSize);
+  }
+
   awake() {
     const currentPos = this.actor.threeObject.position;
-    this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
+    this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, 2, currentPos.z));
 
     this.speed = 0.45;
 
@@ -105,6 +109,6 @@ class PlayerBehavior extends ScriptBehavior {
   }
 }
 
-PlayerBehavior.Y_POSITION = 3;
+PlayerBehavior.Y_POSITION = 1;
 
 module.exports = PlayerBehavior;
