@@ -19,17 +19,17 @@ $ cd ludum-dare-45
 
 And then install the **client** and the **server**.
 
-Client:
-
-```bash
-$ cd client
-$ npm ci
-```
-
 Server:
 
 ```bash
 $ cd server
+$ npm ci
+```
+
+Client:
+
+```bash
+$ cd ../client
 $ npm ci
 ```
 
