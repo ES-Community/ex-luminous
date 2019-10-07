@@ -7,20 +7,16 @@ const ScriptBehavior = require("../class/ScriptBehavior");
 const THREE = require("three");
 
 class PlayerBehavior extends ScriptBehavior {
-  constructor(canMove) {
-    super(canMove);
-    this.canMove = canMove;
-  }
   static CreateMesh(color = 0xc4c2ad) {
     const geometry = new THREE.SphereBufferGeometry(1.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({
       color,
       roughness: 0.5,
       metalness: 1,
-      side: THREE.BackSide,
+      side: THREE.BackSide
     });
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(0,2,0);
+    mesh.position.set(0, 2, 0);
     return mesh;
   }
 
@@ -42,7 +38,7 @@ class PlayerBehavior extends ScriptBehavior {
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
 
     this.speed = 0.3;
-  
+
     this.radiusLight = 20;
     this.light = new THREE.PointLight(0x282208, 2, this.radiusLight * 4, 1);
     // this.light.castShadow = true;
@@ -60,10 +56,9 @@ class PlayerBehavior extends ScriptBehavior {
   }
 
   update() {
-
     const speedMove = 0.01;
     const range = 0.5;
-    this.light.intensity = Math.cos(this.timer * speedMove *  2) * range + 4;
+    this.light.intensity = Math.cos(this.timer * speedMove * 2) * range + 4;
     // this.light.position.y = Math.cos(this.timer * speedMove ) + 2
     // this.light.position.x = Math.cos(this.timer * speedMove) * range
     // this.light.position.z = Math.sin(this.timer * speedMove) * range
@@ -71,19 +66,17 @@ class PlayerBehavior extends ScriptBehavior {
     const cubeMiddleSize = game.cubeSize / 2;
     const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
     const mapSizeX = game.mapSize.x * game.cubeSize - 1;
-    if (this.canMove) {
-      if (game.input.isKeyDown("KeyW")) {
-        this.actor.threeObject.translateX(-this.speed);
-      }
-      if (game.input.isKeyDown("KeyS")) {
-        this.actor.threeObject.translateX(this.speed);
-      }
-      if (game.input.isKeyDown("KeyA")) {
-        this.actor.threeObject.translateZ(this.speed);
-      }
-      if (game.input.isKeyDown("KeyD")) {
-        this.actor.threeObject.translateZ(-this.speed);
-      }
+    if (game.input.isKeyDown("KeyW")) {
+      this.actor.threeObject.translateX(-this.speed);
+    }
+    if (game.input.isKeyDown("KeyS")) {
+      this.actor.threeObject.translateX(this.speed);
+    }
+    if (game.input.isKeyDown("KeyA")) {
+      this.actor.threeObject.translateZ(this.speed);
+    }
+    if (game.input.isKeyDown("KeyD")) {
+      this.actor.threeObject.translateZ(-this.speed);
     }
 
     const currentPos = this.actor.threeObject.position.clone();
@@ -101,8 +94,8 @@ class PlayerBehavior extends ScriptBehavior {
     if (currentPos.x > maxSizeX) {
       this.actor.threeObject.position.x = maxSizeX;
     }
-    
-    this.timer ++;
+
+    this.timer++;
   }
 }
 

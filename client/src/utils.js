@@ -21,11 +21,21 @@ function updateMesh3D(actor, newMesh) {
 }
 
 function updateLight(actor, type) {
-  if (!(actor.threeObject.children[1] instanceof THREE.PointLight)) {
+  let light = null;
+  for (const children of actor.threeObject.children) {
+    if (children instanceof THREE.PointLight) {
+      light = children;
+      break;
+    }
+  }
+  if (light === null) {
     return;
   }
 
-  actor.threeObject.children[1].visible = type === "add";
+  const isVisible = type === "add";
+  if (light.visible !== isVisible) {
+    light.visible = isVisible;
+  }
 }
 
 module.exports = {

@@ -24,6 +24,7 @@ const GrassBehavior = require("./behaviors/GrassBehavior");
 // Variables
 const modelsPath = "../assets/models/";
 const texturePath = "../assets/textures/";
+const texturesAssets = ["Herbe_Neutre.png", "Herbe_Verte.png", "Orb.png", "Orb_Detect.png"];
 
 function updateGrass(actor, currentBehavior, grassTexture, scene) {
   switch (currentBehavior) {
@@ -188,9 +189,7 @@ function createShadow(currentScene, shadows) {
 
 function createGrass(currentScene, grass) {
   const grassActor = new Actor(`grass_${grass.id}`);
-  const grassPosition = PlayerBehavior.PosToVector3(grass.position);
-
-  grassActor.addScriptedBehavior(new GrassBehavior(grassPosition));
+  grassActor.addScriptedBehavior(new GrassBehavior(PlayerBehavior.PosToVector3(grass.position)));
   currentScene.add(grassActor);
 
   return grassActor;
@@ -199,6 +198,7 @@ function createGrass(currentScene, grass) {
 async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let isFirstGameData = true;
 
+  // Setup GameRenderer
   window.game = new GameRenderer(mapSize);
   game.modelLoader = new ModelLoader({ modelsPath, texturePath });
   game.gameDataStream;
@@ -209,10 +209,10 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   //   mySound.play();
   // });
 
+  // Setup all Scenes default items
   const currentScene = new Scene();
-
   const Player = new Actor("Player");
-  Player.addScriptedBehavior(new PlayerBehavior(true));
+  Player.addScriptedBehavior(new PlayerBehavior());
   currentScene.add(Player);
 
   const camera = new Camera(Player);
@@ -223,25 +223,23 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     currentScene.add(cube);
   }
 
+  // Local GameRenderer Update
   game.on("update", () => {
     const playerPos = Player.threeObject.position.clone();
-    gameDataStream.write({
-      type: "player-moved",
-      data: JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize })
-    });
+
+    // Send our position to the server
+    const data = JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize });
+    gameDataStream.write({ type: "player-moved", data });
 
     camera.update(game, playerPos, Player);
   });
 
-  const grassTexture = [
-    await game.modelLoader.loadTexture("Herbe_Neutre.png"),
-    await game.modelLoader.loadTexture("Herbe_Verte.png")
-  ];
-  const orbTexture = [
-    await game.modelLoader.loadTexture("Orb.png"),
-    await game.modelLoader.loadTexture("Orb_Detect.png")
-  ];
+  // Load textures that we need
+  const textures = await Promise.all(texturesAssets.map((name) => game.modelLoader.loadTexture(name)));
+  const grassTexture = [textures[0], textures[1]];
+  const orbTexture = [textures[2], textures[3]];
 
+  // Server state & events
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
     if (isFirstGameData && type === "currentState") {
