@@ -49,6 +49,7 @@ jobs:
           npm ci
         displayName: "Install dependencies"
       - script: |
+          cd client
           npm run package-win
           ls dist
           Compress-Archive dist/ExLuminous-win32-x64 dist/ExLuminous-win32-x64.zip
