@@ -10,11 +10,14 @@ const { remote, shell } = require("electron");
 const isDev = require("electron-is-dev");
 const { get } = require("httpie");
 const { lookup } = require("dns").promises;
+const Store = require("electron-store");
 
 // Require Internal Dependencies
 const grpc = require("../src/grpc");
 const Audio = require("../src/class/Audio");
 const SoundPlayer = require("../src/class/SoundPlayer");
+
+const store = new Store();
 
 // Variables & Loaders
 let isServerStarted = false;
@@ -28,7 +31,7 @@ async function createGameServer() {
   if (playerName === "") {
     return showError("<p>player name <b>must not</b> be empty!</p>");
   }
-  sessionStorage.setItem("cachedPlayerName", playerName);
+  store.set("cachedPlayerName", playerName);
 
   if (isServerStarted) {
     return;
@@ -176,7 +179,7 @@ function connectPlayerToServer() {
       submitBtn.disabled = false;
       connectTriggered = false;
     } else {
-      sessionStorage.setItem("cachedPlayerName", playerName);
+      store.set("cachedPlayerName", playerName);
 
       const currentWindow = remote.getCurrentWindow();
       currentWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}&isHost=0`);
@@ -208,8 +211,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   ambient.play();
 
-  const localName = sessionStorage.getItem("cachedPlayerName");
-  if (localName !== null) {
+  const localName = store.get("cachedPlayerName");
+  if (localName) {
     const nickNameInput = document.getElementById("nickname");
     nickNameInput.value = localName;
   }
