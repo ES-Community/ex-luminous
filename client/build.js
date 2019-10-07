@@ -19,7 +19,7 @@ async function bundleElectronApp() {
     asar: true,
     out: path.join(__dirname, "dist"),
     overwrite: true,
-    ignore: [/node_modules.grpc.deps/, /node_modules.three.examples/]
+    ignore: [/node_modules.grpc.deps.grpc.(src|third_party)/, /node_modules.three.examples/]
   };
   const result = await packager(options);
   console.log("build done", result);
@@ -32,6 +32,8 @@ async function copyExternal(buildPath, electronVersion, arch, platform, callback
 
   await fs.copy(serverPath, path.join(buildPath, "server"));
   await fs.copy(protoPath, path.join(buildPath, "protos"));
+  await fs.remove(path.join(serverPath, "node_modules/grpc/deps/grpc/src"));
+  await fs.remove(path.join(serverPath, "node_modules/grpc/deps/grpc/third_party"));
   callback();
 }
 
