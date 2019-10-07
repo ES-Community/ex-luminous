@@ -11,12 +11,17 @@ const isDev = require("electron-is-dev");
 const { get } = require("httpie");
 const { lookup } = require("dns").promises;
 
+// Require Internal Dependencies
 const grpc = require("../src/grpc");
+const Audio = require("../src/class/Audio");
+const SoundPlayer = require("../src/class/SoundPlayer");
 
 // Variables & Loaders
 let isServerStarted = false;
 let connectTriggered = false;
 let errorTriggered = null;
+const audioContext = new Audio();
+audioContext.masterVolume = 0.3;
 
 async function createGameServer() {
   const playerName = document.getElementById("nickname").value.trim();
@@ -55,6 +60,9 @@ async function createGameServer() {
   // gameWindow.setFullScreen(true);
 
   cp.on("exit", () => {
+    if (ambient.getState() !== SoundPlayer.State.Playing) {
+      ambient.play();
+    }
     isServerStarted = false;
     if (gameWindow !== null && !gameWindow.isDestroyed()) {
       gameWindow.close();
@@ -63,6 +71,9 @@ async function createGameServer() {
   });
 
   const stopServer = () => {
+    if (ambient.getState() !== SoundPlayer.State.Playing) {
+      ambient.play();
+    }
     gameWindow.close();
   };
   stopServerBtn.addEventListener("click", stopServer);
@@ -73,6 +84,7 @@ async function createGameServer() {
     stopServerBtn.removeEventListener("click", stopServer);
   });
 
+  ambient.stop();
   gameWindow.webContents.openDevTools();
   gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1&name=${playerName}&isHost=1`);
 }
@@ -189,7 +201,13 @@ function hideError() {
   errorTriggered = null;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  window.ambient = await SoundPlayer.loadSoundAsset(audioContext, "back-ambient-sound.mp3", {
+    loop: true,
+    volume: 0.3
+  });
+  ambient.play();
+
   const localName = sessionStorage.getItem("cachedPlayerName");
   if (localName !== null) {
     const nickNameInput = document.getElementById("nickname");

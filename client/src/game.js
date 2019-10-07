@@ -311,8 +311,8 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     volume: 0.5
   });
   const chaseSound = await SoundPlayer.loadSoundAsset(globalAudio, "hon-won.wav", { volume: 0.8 });
-  const herbeSound = await SoundPlayer.loadSoundAsset(globalAudio, "giling.ogg", { volume: 0.8 });
-  const deathSound = await SoundPlayer.loadSoundAsset(globalAudio, "death.wav", { volume: 0.8 });
+  const herbeSound = await SoundPlayer.loadSoundAsset(globalAudio, "giling.ogg", { volume: 0.3 });
+  const deathSound = await SoundPlayer.loadSoundAsset(globalAudio, "death.wav", { volume: 0.5 });
 
   game.localCache.Sounds.set("background", bgSound);
   game.localCache.Sounds.set("chased", chaseSound);

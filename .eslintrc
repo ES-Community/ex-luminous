@@ -26,6 +26,7 @@
     "server": true,
     "grpcClient": true,
     "isHost": true,
-    "CraftStudio": true
+    "CraftStudio": true,
+    "ambient": true
   }
 }
