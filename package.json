@@ -1,6 +1,6 @@
 {
   "name": "ludum-dare-45",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "- https://grpc.io/docs/quickstart/node/\r - https://grpc.io/docs/tutorials/basic/node/\r - https://grpc.io/docs/guides/\r - https://grpc.github.io/grpc/node/",
   "main": "index.js",
   "scripts": {
