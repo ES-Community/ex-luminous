@@ -59,7 +59,13 @@ Z,Q,S,D for movement and right click to rotate the camera.
 
 ## Credits
 
-TBC
+- STOUDER Xavier - [Xstoudi](https://github.com/Xstoudi) (Developer)
+- CROQUET Mickaël - [Haze](https://github.com/CroquetMickael) (Developer)
+- ZASSO Michaël - [Targos](https://github.com/targos) (Developer)
+- MALAJ Alexandre - [Aleksander](https://www.linkedin.com/in/alexandre-malaj-6062b0a6/) (Developer)
+- GENTILHOMME Thomas - [Fraxken](https://github.com/fraxken) (Developer)
+- VENNET Adrien - [demogia](https://www.deviantart.com/demogia?offset=60) (Textures & Models).
+- MONTES Irvin - [captainfive](https://www.linkedin.com/in/irvin-montes-54a546a6/) (Developer & searching sounds)
 
 ## License
 
