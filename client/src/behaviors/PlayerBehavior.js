@@ -68,6 +68,7 @@ class PlayerBehavior extends ScriptBehavior {
     // this.light.position.x = Math.cos(this.timer * speedMove) * range
     // this.light.position.z = Math.sin(this.timer * speedMove) * range
 
+    const cubeMiddleSize = game.cubeSize / 2;
     const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
     const mapSizeX = game.mapSize.x * game.cubeSize - 1;
     if (this.canMove) {
