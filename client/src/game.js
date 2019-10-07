@@ -28,11 +28,13 @@ const LightBehavior = require("./behaviors/LightBehavior");
 const modelsPath = __dirname + "/../assets/models/";
 const texturePath = __dirname + "/../assets/textures/";
 const texturesAssets = ["Herbe_Neutre.png", "Herbe_Verte.png", "Orb.png", "Orb_Detect.png"];
-const uselessData = JSON.stringify({ useless: true });
+const dummyData = "null";
 const globalAudio = new Audio();
 let isGuiButtonsSetup = false;
+let connectedOnce = false;
+let mapSize;
 
-function updateGrass(actor, currentBehavior, grassTexture, scene) {
+function updateGrass(actor, currentBehavior, grassTexture) {
   switch (currentBehavior) {
     case "NORMAL": {
       updateMeshTexture(actor, grassTexture[0]);
@@ -121,7 +123,7 @@ function updatePlayer(actor, currentBehavior) {
       break;
     }
     case "RESPAWN": {
-      var color = new THREE.Color(0xc4c2ad);
+      let color = new THREE.Color(0xc4c2ad);
       if (actor.behaviors.length > 0) {
         actor.behaviors[0].canMove = true;
         actor.behaviors[0].light.color = color;
@@ -149,6 +151,7 @@ async function start() {
   window.grpcClient = grpc.createClient(server);
 
   const backToLobbyBtn = document.getElementById("back-lobby");
+  const restartBtn = document.getElementById("restart");
 
   let lobbyListener;
   if (!isHost) {
@@ -168,47 +171,52 @@ async function start() {
   };
   closeWindowBtn.addEventListener("click", closeListener);
 
-  // Attempt to connect on the server
-  const connectionPayload = await grpc.lobbyConnectionAttempt(grpcClient);
-
   const fadeTxt = document.getElementById("fade-txt");
-  if (connectionPayload.ok) {
-    setupGuiButtons();
-    closeWindowBtn.removeEventListener("click", closeListener);
-    closeWindowBtn.classList.add("hide");
-    if (!isHost) {
-      backToLobbyBtn.classList.add("hide");
-      backToLobbyBtn.removeEventListener("click", lobbyListener);
+  if (!connectedOnce) {
+    // Attempt to connect on the server
+    const connectionPayload = await grpc.lobbyConnectionAttempt(grpcClient);
+
+    if (!connectionPayload.ok) {
+      fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
+      return;
     }
-    fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
 
-    const { mapSize } = JSON.parse(connectionPayload.data);
-    const meta = new grpc.Metadata();
-    meta.add("name", playerName);
-
-    const gameDataStream = grpcClient.gameData(meta, { deadline: Infinity });
-    gameDataStream.on("error", ({ type, data }) => {
-      const payload = JSON.parse(data);
-      if(type == "playerOffline"){
-        const id = payload.id;
-        const orbActor = game.localCache.Orbs.get(id);
-        updatePlayer(orbActor, "OFFLINE");
-      }
-      reconnectAndResetGame
-    });
-    gameDataStream.on("end", ({ type, data }) => {
-      const payload = JSON.parse(data);
-      if(type == "playerOffline"){
-        const id = payload.id;
-        const orbActor = game.localCache.Orbs.get(id);
-        updatePlayer(orbActor, "OFFLINE");
-      }
-      reconnectAndResetGame
-    });
-    initializeGameRenderer(gameDataStream, mapSize, playerName);
-  } else {
-    fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
+    ({ mapSize } = JSON.parse(connectionPayload.data));
+    connectedOnce = true;
   }
+  setupGuiButtons();
+  restartBtn.classList.add("hide");
+  closeWindowBtn.removeEventListener("click", closeListener);
+  closeWindowBtn.classList.add("hide");
+  if (!isHost) {
+    backToLobbyBtn.classList.add("hide");
+    backToLobbyBtn.removeEventListener("click", lobbyListener);
+  }
+  fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
+
+  const meta = new grpc.Metadata();
+  meta.add("name", playerName);
+
+  const gameDataStream = grpcClient.gameData(meta, { deadline: Infinity });
+  gameDataStream.on("error", ({ type, data }) => {
+    const payload = JSON.parse(data);
+    if (type == "playerOffline") {
+      const id = payload.id;
+      const orbActor = game.localCache.Orbs.get(id);
+      updatePlayer(orbActor, "OFFLINE");
+    }
+    reconnectAndResetGame();
+  });
+  gameDataStream.on("end", ({ type, data }) => {
+    const payload = JSON.parse(data);
+    if (type == "playerOffline") {
+      const id = payload.id;
+      const orbActor = game.localCache.Orbs.get(id);
+      updatePlayer(orbActor, "OFFLINE");
+    }
+    reconnectAndResetGame();
+  });
+  initializeGameRenderer(gameDataStream, mapSize, playerName);
 }
 
 async function reconnectAndResetGame() {
@@ -233,7 +241,6 @@ async function reconnectAndResetGame() {
 
   await start();
 }
-
 
 async function gameOver(gameDataStream) {
   const fadeTxt = document.getElementById("fade-txt");
@@ -263,8 +270,7 @@ async function gameOver(gameDataStream) {
         document.getElementById("game").innerHTML = "";
       }
       await start();
-      gameDataStream.write({ type: "restart", data: uselessData });
-
+      gameDataStream.write({ type: "restart", data: dummyData });
     };
     restartBtn.addEventListener("click", restartListener);
   }
@@ -326,7 +332,6 @@ function setupGuiButtons() {
 
   backToLobby.addEventListener("click", () => {
     const currentWindow = remote.getCurrentWindow();
-    console.log(`isHost: ${isHost}`);
     if (isHost) {
       currentWindow.close();
     } else {
@@ -397,7 +402,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   // Load textures that we need
   const textures = await Promise.all(texturesAssets.map((name) => game.modelLoader.loadTexture(name)));
   const grassTexture = [textures[0], textures[1]];
-  const orbTexture = [textures[2], textures[3]];
 
   // Get charge bar & mask
   const chargeBar = document.getElementById("charge-bar");
@@ -429,7 +433,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       setTimeout(() => {
         gameDataStream.write({
           type: "player-loaded",
-          data: uselessData
+          data: dummyData
         });
 
         const fade = document.getElementById("fade");
@@ -512,7 +516,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       updatePlayer(playerActor, "RESPAWN");
       gameDataStream.write({
         type: "player-hasRespawn",
-        data: uselessData
+        data: dummyData
       });
     } else if (type === "player-dead") {
       const playerActor = game.localCache.Orbs.get(payload.id);
@@ -521,7 +525,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         updatePlayer(playerActor, "DEAD");
       }
     } else if (type === "gameOver") {
-      console.log("game over")
+      console.log("game over");
       gameOver(gameDataStream);
     }
   });
