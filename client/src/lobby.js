@@ -96,7 +96,10 @@ async function createGameServer() {
   });
 
   ambient.stop();
-  gameWindow.webContents.openDevTools();
+
+  if (isDev) {
+    gameWindow.webContents.openDevTools();
+  }
   gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1&name=${playerName}&isHost=1`);
 }
 
