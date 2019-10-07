@@ -1,0 +1,863 @@
+{
+  "title": "Herbe Verte",
+  "tree": [
+    {
+      "name": "base",
+      "position": [ 0, 0, 0 ],
+      "offsetFromPivot": [ 0, 1, 0 ],
+      "size": [ 258, 1, 258 ],
+      "rotation": [ 0, 0, 0 ],
+      "texOffset": [ -365, -290 ],
+      "children": []
+    },
+    {
+      "name": "Tige grande feuille",
+      "position": [ 0, 12, 0 ],
+      "offsetFromPivot": [ 0, 8, 0 ],
+      "size": [ 16, 16, 16 ],
+      "rotation": [ 0, 0, 0 ],
+      "texOffset": [ 0, 0 ],
+      "children": [
+        {
+          "name": "grande Feuille",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -62.54179, 0, 0 ],
+          "texOffset": [ 257, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 257, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 257, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 257, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 2",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -65.63905, 81.02757, 13.91096 ],
+          "texOffset": [ 317, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 316, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 317, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 317, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 3",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -65.00185, -180, 8.614837E-14 ],
+          "texOffset": [ 377, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 377, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 377, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 377, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 4",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -66.71113, -89.99996, -1.504802E-05 ],
+          "texOffset": [ 437, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 437, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 437, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 437, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tige grande feuille 2",
+      "position": [ 0, 13, 0 ],
+      "offsetFromPivot": [ 0, 8, 0 ],
+      "size": [ 16, 16, 16 ],
+      "rotation": [ 0, 124.8836, 0 ],
+      "texOffset": [ 0, 0 ],
+      "children": [
+        {
+          "name": "grande Feuille",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -62.54179, 0, 0 ],
+          "texOffset": [ 257, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 257, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 257, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 257, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 2",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -65.63905, 81.02757, 13.91096 ],
+          "texOffset": [ 317, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 316, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 317, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 317, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 3",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -55.3735, 157.7555, 32.13336 ],
+          "texOffset": [ 377, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -16.23073, 0, 0 ],
+              "texOffset": [ 377, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -41.30016, 0, 0 ],
+                  "texOffset": [ 377, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ 10.37274, 0, 0 ],
+                      "texOffset": [ 377, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 4",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -66.71113, -89.99996, -1.504802E-05 ],
+          "texOffset": [ 437, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -14.98363, 0, 0 ],
+              "texOffset": [ 437, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -12.62381, 0, 0 ],
+                  "texOffset": [ 437, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -24.46356, 0, 0 ],
+                      "texOffset": [ 437, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tige grande feuille 3",
+      "position": [ 0, 12, 0 ],
+      "offsetFromPivot": [ 0, 8, 0 ],
+      "size": [ 16, 16, 16 ],
+      "rotation": [ 0, -113.52, 0 ],
+      "texOffset": [ 0, 0 ],
+      "children": [
+        {
+          "name": "grande Feuille",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -35.99524, 0, 0 ],
+          "texOffset": [ 257, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -33.03248, 0, 0 ],
+              "texOffset": [ 257, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -26.76569, 0, 0 ],
+                  "texOffset": [ 257, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -36.13001, 0, 0 ],
+                      "texOffset": [ 257, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 2",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -35.93726, 89.59948, -6.711465 ],
+          "texOffset": [ 317, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -29.93907, 0, 0 ],
+              "texOffset": [ 316, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -26.17821, 0, 0 ],
+                  "texOffset": [ 317, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ -32.47821, 0, 0 ],
+                      "texOffset": [ 317, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 3",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -41.70529, -180, 7.065584E-16 ],
+          "texOffset": [ 377, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -36.86642, 0, 0 ],
+              "texOffset": [ 377, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -47.92003, 0, 0 ],
+                  "texOffset": [ 377, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ 17.6774, 0, 0 ],
+                      "texOffset": [ 377, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "grande Feuille 4",
+          "position": [ 0, -16, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -50.6953, -89.99998, -9.79232E-06 ],
+          "texOffset": [ 437, 119 ],
+          "children": [
+            {
+              "name": "Grande Feu",
+              "position": [ 0, 20, 0 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -36.16495, 0, 0 ],
+              "texOffset": [ 437, 79 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 7.152557E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -31.52151, 0, 0 ],
+                  "texOffset": [ 437, 39 ],
+                  "children": [
+                    {
+                      "name": "Grande Feuille",
+                      "position": [ 0, 20, 3.404526E-07 ],
+                      "offsetFromPivot": [ 0, 20, 0 ],
+                      "size": [ 60, 40, 1 ],
+                      "rotation": [ 12.23626, 0, 0 ],
+                      "texOffset": [ 437, -1 ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Courbe",
+      "position": [ 18, -28, -16 ],
+      "offsetFromPivot": [ 0, 20, 0 ],
+      "size": [ 60, 40, 1 ],
+      "rotation": [ 0, 150.4801, 0 ],
+      "texOffset": [ 255, 279 ],
+      "children": [
+        {
+          "name": "Grande Feu",
+          "position": [ 0, 20, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -29.93907, 0, 0 ],
+          "texOffset": [ 255, 239 ],
+          "children": [
+            {
+              "name": "Grande Feuille",
+              "position": [ 0, 20, 7.152557E-07 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -26.17821, 0, 0 ],
+              "texOffset": [ 255, 199 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 3.404526E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -32.47821, 0, 0 ],
+                  "texOffset": [ 255, 159 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Courbe 2",
+      "position": [ 5, 15, 4 ],
+      "offsetFromPivot": [ 0, 20, 0 ],
+      "size": [ 60, 40, 1 ],
+      "rotation": [ 0, -57.56523, 0 ],
+      "texOffset": [ 315, 279 ],
+      "children": [
+        {
+          "name": "Grande Feu",
+          "position": [ 0, 20, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -29.93907, 0, 0 ],
+          "texOffset": [ 315, 239 ],
+          "children": [
+            {
+              "name": "Grande Feuille",
+              "position": [ 0, 20, 7.152557E-07 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -26.17821, 0, 0 ],
+              "texOffset": [ 315, 199 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 3.404526E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -32.47821, 0, 0 ],
+                  "texOffset": [ 314, 159 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tige",
+      "position": [ -14, -2, -2 ],
+      "offsetFromPivot": [ 0, 20, 0 ],
+      "size": [ 60, 40, 1 ],
+      "rotation": [ 0, 0, 0 ],
+      "texOffset": [ 375, 279 ],
+      "children": [
+        {
+          "name": "Grande Feu",
+          "position": [ 0, 20, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -29.93907, 0, 0 ],
+          "texOffset": [ 375, 239 ],
+          "children": [
+            {
+              "name": "Grande Feuille",
+              "position": [ 0, 20, 7.152557E-07 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -26.17821, 0, 0 ],
+              "texOffset": [ 375, 199 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 3.404526E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -32.47821, 0, 0 ],
+                  "texOffset": [ 375, 158 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Moyenne feuille",
+      "position": [ 0, -4, 0 ],
+      "offsetFromPivot": [ 0, 20, 0 ],
+      "size": [ 60, 40, 1 ],
+      "rotation": [ -12.14736, -77.53123, -1.344686E-07 ],
+      "texOffset": [ 435, 279 ],
+      "children": [
+        {
+          "name": "Grande Feu",
+          "position": [ 0, 20, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -55.24507, 0, 0 ],
+          "texOffset": [ 435, 239 ],
+          "children": [
+            {
+              "name": "Grande Feuille",
+              "position": [ 0, 20, 7.152557E-07 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -31.48889, 0, 0 ],
+              "texOffset": [ 435, 199 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 3.404526E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -32.47821, 0, 0 ],
+                  "texOffset": [ 435, 159 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Moyenne feuille 2",
+      "position": [ -14, -4, -5 ],
+      "offsetFromPivot": [ 0, 20, 0 ],
+      "size": [ 60, 40, 1 ],
+      "rotation": [ 0, 41.32011, 0 ],
+      "texOffset": [ 435, 279 ],
+      "children": [
+        {
+          "name": "Grande Feu",
+          "position": [ 0, 20, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -55.24507, 0, 0 ],
+          "texOffset": [ 435, 239 ],
+          "children": [
+            {
+              "name": "Grande Feuille",
+              "position": [ 0, 20, 7.152557E-07 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -31.48889, 0, 0 ],
+              "texOffset": [ 435, 199 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 3.404526E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -32.47821, 0, 0 ],
+                  "texOffset": [ 435, 159 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Moyenne feuille 3",
+      "position": [ -10, 0, 16 ],
+      "offsetFromPivot": [ 0, 20, 0 ],
+      "size": [ 60, 40, 1 ],
+      "rotation": [ -16.85303, 165.2141, 0.3934547 ],
+      "texOffset": [ 435, 279 ],
+      "children": [
+        {
+          "name": "Grande Feu",
+          "position": [ 0, 20, 0 ],
+          "offsetFromPivot": [ 0, 20, 0 ],
+          "size": [ 60, 40, 1 ],
+          "rotation": [ -55.24507, 0, 0 ],
+          "texOffset": [ 435, 239 ],
+          "children": [
+            {
+              "name": "Grande Feuille",
+              "position": [ 0, 20, 7.152557E-07 ],
+              "offsetFromPivot": [ 0, 20, 0 ],
+              "size": [ 60, 40, 1 ],
+              "rotation": [ -31.48889, 0, 0 ],
+              "texOffset": [ 435, 199 ],
+              "children": [
+                {
+                  "name": "Grande Feuille",
+                  "position": [ 0, 20, 3.404526E-07 ],
+                  "offsetFromPivot": [ 0, 20, 0 ],
+                  "size": [ 60, 40, 1 ],
+                  "rotation": [ -32.47821, 0, 0 ],
+                  "texOffset": [ 435, 159 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Feuille",
+      "position": [ -3, 37, -1 ],
+      "offsetFromPivot": [ 0, 10, 0 ],
+      "size": [ 41, 20, 3 ],
+      "rotation": [ -51.91804, -3.032357, -6.621942 ],
+      "texOffset": [ 197, 297 ],
+      "children": [
+        {
+          "name": "Feuille",
+          "position": [ 0, 9, 0 ],
+          "offsetFromPivot": [ 0, 10, 0 ],
+          "size": [ 32, 20, 3 ],
+          "rotation": [ -13.99393, 0, 0 ],
+          "texOffset": [ 201, 277 ],
+          "children": [
+            {
+              "name": "Feuille",
+              "position": [ 0, 9, 0 ],
+              "offsetFromPivot": [ 0, 10, 0 ],
+              "size": [ 24, 20, 3 ],
+              "rotation": [ -24.67822, 0, 0 ],
+              "texOffset": [ 205, 257 ],
+              "children": [
+                {
+                  "name": "Feuille",
+                  "position": [ 0, 9, 0 ],
+                  "offsetFromPivot": [ 0, 10, 0 ],
+                  "size": [ 18, 20, 3 ],
+                  "rotation": [ -28.86531, 0, 0 ],
+                  "texOffset": [ 208, 237 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Feuille 2",
+      "position": [ 0, 39, 0 ],
+      "offsetFromPivot": [ 0, 10, 0 ],
+      "size": [ 41, 20, 3 ],
+      "rotation": [ -55.84667, -144.0518, 4.369516E-08 ],
+      "texOffset": [ 197, 297 ],
+      "children": [
+        {
+          "name": "Feuille",
+          "position": [ 0, 9, 0 ],
+          "offsetFromPivot": [ 0, 10, 0 ],
+          "size": [ 32, 20, 3 ],
+          "rotation": [ -13.99393, 0, 0 ],
+          "texOffset": [ 201, 277 ],
+          "children": [
+            {
+              "name": "Feuille",
+              "position": [ 0, 9, 0 ],
+              "offsetFromPivot": [ 0, 10, 0 ],
+              "size": [ 24, 20, 3 ],
+              "rotation": [ -24.67822, 0, 0 ],
+              "texOffset": [ 205, 257 ],
+              "children": [
+                {
+                  "name": "Feuille",
+                  "position": [ 0, 9, 0 ],
+                  "offsetFromPivot": [ 0, 10, 0 ],
+                  "size": [ 18, 20, 3 ],
+                  "rotation": [ -28.86531, 0, 0 ],
+                  "texOffset": [ 208, 237 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Feuille 3",
+      "position": [ -3, 39, 0 ],
+      "offsetFromPivot": [ 0, 10, 0 ],
+      "size": [ 41, 20, 3 ],
+      "rotation": [ -66.77151, 116.3829, -3.80448E-06 ],
+      "texOffset": [ 197, 297 ],
+      "children": [
+        {
+          "name": "Feuille",
+          "position": [ 0, 9, 0 ],
+          "offsetFromPivot": [ 0, 10, 0 ],
+          "size": [ 32, 20, 3 ],
+          "rotation": [ -13.99393, 0, 0 ],
+          "texOffset": [ 201, 277 ],
+          "children": [
+            {
+              "name": "Feuille",
+              "position": [ 0, 9, 0 ],
+              "offsetFromPivot": [ 0, 10, 0 ],
+              "size": [ 24, 20, 3 ],
+              "rotation": [ -24.67822, 0, 0 ],
+              "texOffset": [ 205, 257 ],
+              "children": [
+                {
+                  "name": "Feuille",
+                  "position": [ 0, 9, 0 ],
+                  "offsetFromPivot": [ 0, 10, 0 ],
+                  "size": [ 18, 20, 3 ],
+                  "rotation": [ -28.86531, 0, 0 ],
+                  "texOffset": [ 208, 237 ],
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
