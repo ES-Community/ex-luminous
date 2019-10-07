@@ -2,7 +2,7 @@
 
 // Require Node.js Dependencies
 const { join } = require("path");
-const { spawn, fork } = require("child_process");
+const { spawn, fork, execSync } = require("child_process");
 const { hostname } = require("os");
 
 // Require Third-party Dependencies
@@ -235,4 +235,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("host-game").addEventListener("click", createGameServer);
   document.getElementById("join-game").addEventListener("submit", connectPlayerToServer);
+  document.getElementById("info-version").innerText = `Version ${gameVersion()}`;
 });
+
+function gameVersion() {
+  if (isDev) {
+    const sha = execSync("git rev-parse HEAD").toString();
+    return `dev-${sha.slice(0, 10)}`;
+  } else {
+    return require("../package.json").version;
+  }
+}
