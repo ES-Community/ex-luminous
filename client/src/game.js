@@ -31,6 +31,7 @@ const texturesAssets = ["Herbe_Neutre.png", "Herbe_Verte.png", "Orb.png", "Orb_D
 const dummyData = "null";
 const globalAudio = new Audio();
 let isGuiButtonsSetup = false;
+let isRestartButtonSetup = false;
 let connectedOnce = false;
 let mapSize;
 
@@ -254,25 +255,28 @@ async function gameOver(gameDataStream) {
     const restartBtn = document.getElementById("restart");
     restartBtn.classList.remove("hide");
     document.getElementById("close-window").classList.remove("hide");
-    let restartListener;
-    restartListener = async () => {
-      if (game instanceof GameRenderer) {
-        if (typeof game.currentScene !== "undefined") {
-          game.currentScene.clear();
+    if(!isRestartButtonSetup){
+      let restartListener;
+      restartListener = async () => {
+        if (game instanceof GameRenderer) {
+          if (typeof game.currentScene !== "undefined") {
+            game.currentScene.clear();
+          }
+          game.renderer.clear();
+          gameDataStream.removeAllListeners("data");
+          gameDataStream.removeAllListeners("end");
+          gameDataStream.removeAllListeners("error");
+          game.removeAllListeners("update");
+          game.removeAllListeners("init");
+          game = null;
+          document.getElementById("game").innerHTML = "";
         }
-        game.renderer.clear();
-        gameDataStream.removeAllListeners("data");
-        gameDataStream.removeAllListeners("end");
-        gameDataStream.removeAllListeners("error");
-        game.removeAllListeners("update");
-        game.removeAllListeners("init");
-        game = null;
-        document.getElementById("game").innerHTML = "";
-      }
-      await start();
-      gameDataStream.write({ type: "restart", data: dummyData });
-    };
-    restartBtn.addEventListener("click", restartListener);
+        await start();
+        gameDataStream.write({ type: "restart", data: dummyData });
+      };
+      restartBtn.addEventListener("click", restartListener);
+      isRestartButtonSetup = true;
+    }
   }
 }
 
@@ -282,12 +286,13 @@ async function win(gameDataStream) {
   const fade = document.getElementById("fade");
   fade.style.display = "flex";
   fade.classList.remove("hide");
-
   // setup restart button
   if (isHost) {
     const restartBtn = document.getElementById("restart");
     restartBtn.classList.remove("hide");
     document.getElementById("close-window").classList.remove("hide");
+    if(!isRestartButtonSetup){
+
     let restartListener;
     restartListener = async () => {
       if (game instanceof GameRenderer) {
@@ -307,6 +312,8 @@ async function win(gameDataStream) {
       gameDataStream.write({ type: "restart", data: dummyData });
     };
     restartBtn.addEventListener("click", restartListener);
+    isRestartButtonSetup = true;
+  }
   }
 }
 
