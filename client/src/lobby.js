@@ -2,7 +2,7 @@
 
 // Require Node.js Dependencies
 const { join } = require("path");
-const { spawn } = require("child_process");
+const { spawn, fork } = require("child_process");
 const { hostname } = require("os");
 
 // Require Third-party Dependencies
@@ -41,7 +41,13 @@ async function createGameServer() {
   const currentWindow = remote.getCurrentWindow();
   const serverPath = join(__dirname, isDev ? "../.." : "..", "server", "src", "server.js");
 
-  const cp = spawn(isDev ? "node" : process.execPath, [serverPath], { stdio: ["ignore", "pipe", "pipe", "ipc"] });
+  let cp;
+  const cpOptions = { stdio: ["ignore", "pipe", "pipe", "ipc"] };
+  if (isDev) {
+    cp = spawn("node", [serverPath], cpOptions);
+  } else {
+    cp = fork(serverPath, cpOptions);
+  }
   const stopServerBtn = setupServerInfo(cp);
 
   const closeWin = () => {
@@ -60,7 +66,9 @@ async function createGameServer() {
     }
   });
 
-  // gameWindow.setFullScreen(true);
+  if (!isDev) {
+    gameWindow.setFullScreen(true);
+  }
 
   cp.on("exit", () => {
     if (ambient.getState() !== SoundPlayer.State.Playing) {

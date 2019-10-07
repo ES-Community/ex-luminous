@@ -10,12 +10,12 @@
     "package-linux": "node build.js linux",
     "package-mac": "node build.js darwin",
     "package-win": "node build.js win32",
-    "postinstall": "npm rebuild grpc --target=5.0.0 --runtime=electron --dist-url=https://atom.io/download/electron"
+    "postinstall": "npm rebuild grpc --target=6.0.11 --runtime=electron --dist-url=https://atom.io/download/electron"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",
     "@types/three": "^0.103.2",
-    "electron": "^5.0.11",
+    "electron": "^6.0.11",
     "electron-packager": "^14.0.6",
     "fs-extra": "^8.1.0",
     "which": "^2.0.1"
@@ -24,7 +24,7 @@
     "@grpc/proto-loader": "^0.5.2",
     "electron-is-dev": "^1.1.0",
     "electron-store": "^5.0.0",
-    "grpc": "^1.24.0",
+    "grpc": "1.23.4",
     "httpie": "^1.1.2",
     "three": "^0.109.0"
   }
