@@ -37,6 +37,8 @@ module.exports = {
    */
   GRASS_BLOOM_TIME: 8,
 
+  GRASS_WOUND_TIME: 1,
+
   GRASS_MAX_HP: 3,
 
   GRASS_RADIUS: 0.5,

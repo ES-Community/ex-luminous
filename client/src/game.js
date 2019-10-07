@@ -62,6 +62,7 @@ function updateGrass(actor, currentBehavior, grassTexture) {
       break;
     }
     case "WOUNDED": {
+      updateLight(actor, "remove");
       break;
     }
     case "DEAD": {

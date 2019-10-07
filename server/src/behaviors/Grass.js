@@ -1,6 +1,12 @@
 "use strict";
 
-const { GRASS_LIGHT_TIMEOUT, GRASS_LOAD_DELAY, GRASS_MAX_HP, GRASS_BLOOM_TIME } = require("../config");
+const {
+  GRASS_LIGHT_TIMEOUT,
+  GRASS_LOAD_DELAY,
+  GRASS_MAX_HP,
+  GRASS_BLOOM_TIME,
+  GRASS_WOUND_TIME
+} = require("../config");
 const { timeToTicks } = require("../utils/convertTicks");
 
 const Entity = require("./Entity");
@@ -8,6 +14,7 @@ const Entity = require("./Entity");
 const grassLightTimeoutTicks = Math.round(timeToTicks(GRASS_LIGHT_TIMEOUT));
 const grassLoadDelayTicks = Math.round(timeToTicks(GRASS_LOAD_DELAY));
 const grassBloomTimeTicks = Math.round(timeToTicks(GRASS_BLOOM_TIME));
+const grassWoundTimeTicks = Math.round(timeToTicks(GRASS_WOUND_TIME));
 
 class Grass extends Entity {
   static Behavior = {
@@ -53,7 +60,7 @@ class Grass extends Entity {
           this.orbContactTicks = 0;
           this.currentBehavior = Grass.Behavior.NORMAL;
         } else if (this.isTouchingAnyShadow(gameState)) {
-          this.currentBehavior = Grass.Behavior.WOUNDED;
+          this.wound(game);
         } else if (this.orb) {
           this.lightTicks = grassLightTimeoutTicks;
           if (++this.orbContactTicks === grassLoadDelayTicks) {
@@ -80,7 +87,7 @@ class Grass extends Entity {
 
         if (this.isTouchingAnyShadow(gameState)) {
           this.orb.loadingGrass = null;
-          this.currentBehavior = Grass.Behavior.WOUNDED;
+          this.wound(game);
           break;
         }
 
@@ -103,11 +110,9 @@ class Grass extends Entity {
         break;
       }
       case Grass.Behavior.WOUNDED: {
-        this.healthPoints--;
-        if (this.healthPoints === 0) {
-          this.currentBehavior = Grass.Behavior.DEAD;
-          game.emit("change", "grass-dead", { id: this.id });
-          this.delete();
+        this.woundTicks++;
+        if (this.woundTicks === grassWoundTimeTicks) {
+          this.currentBehavior = Grass.Behavior.NORMAL;
         }
         break;
       }
@@ -148,6 +153,18 @@ class Grass extends Entity {
 
   isLuminous() {
     return this.currentBehavior !== Grass.Behavior.NORMAL && this.currentBehavior !== Grass.Behavior.WOUNDED;
+  }
+
+  wound(game) {
+    this.healthPoints--;
+    if (this.healthPoints === 0) {
+      this.currentBehavior = Grass.Behavior.DEAD;
+      game.emit("change", "grass-dead", { id: this.id });
+      this.delete();
+    } else {
+      this.currentBehavior = Grass.Behavior.WOUNDED;
+      this.woundTicks = 0;
+    }
   }
 }
 
