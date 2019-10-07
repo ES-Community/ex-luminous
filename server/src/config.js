@@ -14,12 +14,12 @@ module.exports = {
   /**
    * Time during which the grass emits light after it lost contact with a player.
    */
-  GRASS_LIGHT_TIMEOUT: 3,
+  GRASS_LIGHT_TIMEOUT: 4,
 
   /**
    * Time that a player must be in contact with a grass until it starts loading.
    */
-  GRASS_LOAD_DELAY: 4,
+  GRASS_LOAD_DELAY: 3,
 
   /**
    * Time that a player must be in contact with a player until it starts loading the respawn.
