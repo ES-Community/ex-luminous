@@ -136,6 +136,12 @@ function updatePlayer(actor, currentBehavior) {
       updateMeshTexture(actor, null, material);
       break;
     }
+    case "OFFLINE": {
+      console.log(actor);
+      actor.threeObject.children[1].intensity = 0;
+      actor.threeObject.remove(actor.threeObject.children[0]);
+      break;
+    }
   }
 }
 
@@ -181,8 +187,24 @@ async function start() {
     meta.add("name", playerName);
 
     const gameDataStream = grpcClient.gameData(meta, { deadline: Infinity });
-    gameDataStream.on("error", reconnectAndResetGame);
-    gameDataStream.on("end", reconnectAndResetGame);
+    gameDataStream.on("error", ({ type, data }) => {
+      const payload = JSON.parse(data);
+      if(type == "playerOffline"){
+        const id = payload.id;
+        const orbActor = game.localCache.Orbs.get(id);
+        updatePlayer(orbActor, "OFFLINE");
+      }
+      reconnectAndResetGame
+    });
+    gameDataStream.on("end", ({ type, data }) => {
+      const payload = JSON.parse(data);
+      if(type == "playerOffline"){
+        const id = payload.id;
+        const orbActor = game.localCache.Orbs.get(id);
+        updatePlayer(orbActor, "OFFLINE");
+      }
+      reconnectAndResetGame
+    });
     initializeGameRenderer(gameDataStream, mapSize, playerName);
   } else {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;

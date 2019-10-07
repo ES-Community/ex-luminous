@@ -123,12 +123,20 @@ class GameServer {
     });
     stream.on("end", () => {
       console.log(`Player ${name} disconnected`);
+      const clientPlayerData = this.game.state.orbs.find((orb) => orb.name == player.name);
+      this.makeClientPlayerOffline(clientPlayerData, stream);
       this.setPlayerOffline(player);
     });
     stream.on("error", (err) => {
       console.error("Server GameData stream error", name, err);
+      const clientPlayerData = this.game.state.orbs.find((orb) => orb.name == player.name);
+      this.makeClientPlayerOffline(clientPlayerData, stream);
       this.setPlayerOffline(player);
     });
+  }
+
+  makeClientPlayerOffline(player, stream) {
+    stream.emit("change", "playerOffline", player);
   }
 }
 
