@@ -1,5 +1,6 @@
 body {
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  position: relative;
 }
 
 @-webkit-keyframes fadeIn {
@@ -26,6 +27,35 @@ body {
   position: absolute;
   left: 0;
   top: 0;
+}
+
+div#charge-bar {
+  width: 280px;
+  height: 20px;
+  background: none;
+  position: fixed;
+  left: calc(50% - 140px);
+  bottom: 20px;
+  z-index: 3;
+  border-radius: 4px;
+  border: 3px solid rgb(255, 255, 255);
+  display: none;
+  transform: rotate(180deg);
+}
+div#charge-bar > div#charge-mask {
+  width: 100%;
+  height: 20px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+div#charge-bar > div.progression {
+  background: rgb(0, 255, 72);
+  background: linear-gradient(to right, rgba(0, 255, 72, 1) 0%, rgba(237, 0, 0, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ff48', endColorstr='#ed0000',GradientType=1 );
+
+  width: 100%;
 }
 
 #fade {

@@ -262,12 +262,14 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       for (const orb of payload.orbs) {
         if (game.localCache.Orbs.has(orb.id)) {
           const orbActor = game.localCache.Orbs.get(orb.id);
-          updatePlayer(orbActor, orb.currentBehavior, orbTexture, currentScene.scene);
+          if (orbActor.currentBehavior !== orb.currentBehavior) {
+            orbActor.currentBehavior = orb.currentBehavior;
+            updatePlayer(orbActor, orb.currentBehavior, orbTexture, currentScene.scene);
+          }
           if (orb.name === playerName) {
             continue;
           }
 
-          /** @type {Actor} */
           const newPosition = PlayerBehavior.PosToVector3(orb.position);
           orbActor.setGlobalPosition(newPosition);
         } else {
@@ -277,7 +279,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
 
       for (const shadows of payload.shadows) {
         if (game.localCache.Shadows.has(shadows.id)) {
-          /** @type {Actor} */
           const shadowActor = game.localCache.Shadows.get(shadows.id);
           const newPosition = PlayerBehavior.PosToVector3(shadows.position);
           shadowActor.setGlobalPosition(newPosition);
@@ -287,13 +288,16 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       }
 
       for (const grass of payload.grass) {
-        if (!game.localCache.Grass.has(grass.id)) {
-          game.localCache.Grass.set(grass.id, createGrass(currentScene, grass));
-        }
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
-          updateGrass(grassActor, grass.currentBehavior, grassTexture, currentScene.scene);
+
+          if (grassActor.currentBehavior !== grass.currentBehavior) {
+            grassActor.currentBehavior = grass.currentBehavior;
+            updateGrass(grassActor, grass.currentBehavior, grassTexture, currentScene.scene);
+          }
+        } else {
+          game.localCache.Grass.set(grass.id);
         }
       }
     } else if (type === "grass-dead") {
