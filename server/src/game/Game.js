@@ -10,9 +10,10 @@ const GameState = require("./GameState");
 const waitBetweenTicks = Math.round(1000 / TICKS_PER_SECOND);
 
 class Game extends EventEmitter {
-  constructor() {
+  constructor(server) {
     super();
 
+    this.server = server;
     this.timeout = null;
     this.state = new GameState();
   }
@@ -32,6 +33,28 @@ class Game extends EventEmitter {
     gameLoop();
   }
 
+  pause() {
+    clearTimeout(this.timeout);
+    this.timeout = null;
+    this.state.isPaused = true;
+    this.emitChange();
+  }
+
+  restart() {
+    if (this.state.gameStep !== 0) {
+      throw new Error("can only restart if game is over (gameStep = 0)");
+    }
+    this.state = new GameState();
+    for (const player of this.server.onlinePlayers.keys()) {
+      this.addPlayer(player);
+    }
+    for (const player of this.server.offlinePlayers.keys()) {
+      const orb = this.addPlayer(player);
+      orb.currentBehavior = Orb.Behavior.OFFLINE;
+    }
+    this.start();
+  }
+
   update() {
     this.state.shadows.forEach((shadow) => shadow.update(this.state, this));
     this.state.shadows = this.state.shadows.filter(notDeleted);
@@ -43,11 +66,17 @@ class Game extends EventEmitter {
     this.state.orbs = this.state.orbs.filter(notDeleted);
 
     this.state.gameTicks += 1;
+    this.emitChange();
+  }
+
+  emitChange() {
     this.emit("change", "currentState", this.state);
   }
 
   addPlayer(name) {
-    this.state.orbs.push(new Orb(name));
+    const orb = new Orb(name);
+    this.state.orbs.push(orb);
+    return orb;
   }
 
   receiveData(player, type, data) {
@@ -101,12 +130,6 @@ class Game extends EventEmitter {
 
   getTicks() {
     return this.state.gameTicks;
-  }
-
-  pause() {
-    clearTimeout(this.timeout);
-    this.timeout = null;
-    this.state.isPaused = true;
   }
 }
 

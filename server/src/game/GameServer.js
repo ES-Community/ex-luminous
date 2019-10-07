@@ -14,7 +14,7 @@ class GameServer {
     /** @type {Map<string, Player>} */
     this.offlinePlayers = new Map();
 
-    this.game = new Game();
+    this.game = new Game(this);
 
     this.game.on("change", (type, data) => {
       for (const player of this.players()) {
