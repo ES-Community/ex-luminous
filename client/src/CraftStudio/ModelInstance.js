@@ -8,6 +8,26 @@
 // Require Third-party Dependencies
 const THREE = require("three");
 
+// Variables
+const leftTopBack = new THREE.Vector3();
+const rightTopBack = new THREE.Vector3();
+const rightBottomBack = new THREE.Vector3();
+const leftBottomBack = new THREE.Vector3();
+const rightTopFront = new THREE.Vector3();
+const leftTopFront = new THREE.Vector3();
+const leftBottomFront = new THREE.Vector3();
+const rightBottomFront = new THREE.Vector3();
+
+const v1 = new THREE.Vector3();
+const v2 = new THREE.Vector3();
+
+const frontNormal = new THREE.Vector3();
+const backNormal = new THREE.Vector3();
+const rightNormal = new THREE.Vector3();
+const bottomNormal = new THREE.Vector3();
+const leftNormal = new THREE.Vector3();
+const topNormal = new THREE.Vector3();
+
 class ModelInstance {
   constructor(model) {
     this.model = model;
@@ -20,24 +40,6 @@ class ModelInstance {
       transparent: model.transparent === true,
       blending: THREE.NormalBlending
     });
-    this.leftTopBack = new THREE.Vector3();
-    this.rightTopBack = new THREE.Vector3();
-    this.rightBottomBack = new THREE.Vector3();
-    this.leftBottomBack = new THREE.Vector3();
-    this.rightTopFront = new THREE.Vector3();
-    this.leftTopFront = new THREE.Vector3();
-    this.leftBottomFront = new THREE.Vector3();
-    this.rightBottomFront = new THREE.Vector3();
-
-    this.v1 = new THREE.Vector3();
-    this.v2 = new THREE.Vector3();
-
-    this.frontNormal = new THREE.Vector3();
-    this.backNormal = new THREE.Vector3();
-    this.rightNormal = new THREE.Vector3();
-    this.bottomNormal = new THREE.Vector3();
-    this.leftNormal = new THREE.Vector3();
-    this.topNormal = new THREE.Vector3();
     this.ResetPose();
   }
 
@@ -116,11 +118,7 @@ class ModelInstance {
   }
 
   createGeometry(boxCount) {
-    let i;
-    let asc, end;
-    let asc1, end1;
     const geometry = new THREE.BufferGeometry();
-    // geometry.dynamic = true;
 
     {
       const indexAttribute = new THREE.BufferAttribute(new Uint16Array(boxCount * 36), 1);
@@ -147,7 +145,8 @@ class ModelInstance {
     const indices = geometry.getIndex().array;
 
     const quads = boxCount * 6;
-    for (i = 0, end = quads, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+    const asc = 0 <= quads;
+    for (let i = 0; asc ? i < quads : i > quads; asc ? i++ : i--) {
       indices[i * 6 + 0] = (i * 4 + 0) % (bufChunkSize * bufChunkDivider);
       indices[i * 6 + 1] = (i * 4 + 1) % (bufChunkSize * bufChunkDivider);
       indices[i * 6 + 2] = (i * 4 + 2) % (bufChunkSize * bufChunkDivider);
@@ -160,7 +159,8 @@ class ModelInstance {
     const triangles = quads * 2;
     const offsets = (triangles * 3) / (((bufChunkSize * bufChunkDivider) / 4) * 6);
 
-    for (i = 0, end1 = offsets, asc1 = 0 <= end1; asc1 ? i < end1 : i > end1; asc1 ? i++ : i--) {
+    const asc1 = 0 <= offsets;
+    for (let i = 0; asc1 ? i < offsets : i > offsets; asc1 ? i++ : i--) {
       const materialIndex = i * bufChunkSize * bufChunkDivider;
       const start = ((i * bufChunkSize * bufChunkDivider) / 4) * 6;
       const count = Math.min(
@@ -194,51 +194,33 @@ class ModelInstance {
     boxMatrix.multiplyMatrices(parentMatrix, boxMatrix);
 
     // Vertex positions
-    this.leftTopBack.copy(box.vertexCoords[0]).applyMatrix4(boxMatrix);
-    this.rightTopBack.copy(box.vertexCoords[1]).applyMatrix4(boxMatrix);
-    this.rightBottomBack.copy(box.vertexCoords[2]).applyMatrix4(boxMatrix);
-    this.leftBottomBack.copy(box.vertexCoords[3]).applyMatrix4(boxMatrix);
-    this.rightTopFront.copy(box.vertexCoords[4]).applyMatrix4(boxMatrix);
-    this.leftTopFront.copy(box.vertexCoords[5]).applyMatrix4(boxMatrix);
-    this.leftBottomFront.copy(box.vertexCoords[6]).applyMatrix4(boxMatrix);
-    this.rightBottomFront.copy(box.vertexCoords[7]).applyMatrix4(boxMatrix);
+    leftTopBack.copy(box.vertexCoords[0]).applyMatrix4(boxMatrix);
+    rightTopBack.copy(box.vertexCoords[1]).applyMatrix4(boxMatrix);
+    rightBottomBack.copy(box.vertexCoords[2]).applyMatrix4(boxMatrix);
+    leftBottomBack.copy(box.vertexCoords[3]).applyMatrix4(boxMatrix);
+    rightTopFront.copy(box.vertexCoords[4]).applyMatrix4(boxMatrix);
+    leftTopFront.copy(box.vertexCoords[5]).applyMatrix4(boxMatrix);
+    leftBottomFront.copy(box.vertexCoords[6]).applyMatrix4(boxMatrix);
+    rightBottomFront.copy(box.vertexCoords[7]).applyMatrix4(boxMatrix);
 
     // Face normals
-    this.frontNormal
-      .crossVectors(
-        this.v1.subVectors(this.leftBottomFront, this.leftTopFront),
-        this.v2.subVectors(this.rightTopFront, this.leftTopFront)
-      )
+    frontNormal
+      .crossVectors(v1.subVectors(leftBottomFront, leftTopFront), v2.subVectors(rightTopFront, leftTopFront))
       .normalize();
-    this.backNormal
-      .crossVectors(
-        this.v1.subVectors(this.rightBottomBack, this.rightTopBack),
-        this.v2.subVectors(this.leftTopBack, this.rightTopBack)
-      )
+    backNormal
+      .crossVectors(v1.subVectors(rightBottomBack, rightTopBack), v2.subVectors(leftTopBack, rightTopBack))
       .normalize();
-    this.rightNormal
-      .crossVectors(
-        this.v1.subVectors(this.rightBottomFront, this.rightTopFront),
-        this.v2.subVectors(this.rightTopBack, this.rightTopFront)
-      )
+    rightNormal
+      .crossVectors(v1.subVectors(rightBottomFront, rightTopFront), v2.subVectors(rightTopBack, rightTopFront))
       .normalize();
-    this.bottomNormal
-      .crossVectors(
-        this.v1.subVectors(this.leftBottomBack, this.leftBottomFront),
-        this.v2.subVectors(this.rightBottomFront, this.leftBottomFront)
-      )
+    bottomNormal
+      .crossVectors(v1.subVectors(leftBottomBack, leftBottomFront), v2.subVectors(rightBottomFront, leftBottomFront))
       .normalize();
-    this.leftNormal
-      .crossVectors(
-        this.v1.subVectors(this.leftBottomBack, this.leftTopBack),
-        this.v2.subVectors(this.leftTopFront, this.leftTopBack)
-      )
+    leftNormal
+      .crossVectors(v1.subVectors(leftBottomBack, leftTopBack), v2.subVectors(leftTopFront, leftTopBack))
       .normalize();
-    this.topNormal
-      .crossVectors(
-        this.v1.subVectors(this.leftTopFront, this.leftTopBack),
-        this.v2.subVectors(this.rightTopBack, this.leftTopBack)
-      )
+    topNormal
+      .crossVectors(v1.subVectors(leftTopFront, leftTopBack), v2.subVectors(rightTopBack, leftTopBack))
       .normalize();
 
     // Setup faces
@@ -246,17 +228,17 @@ class ModelInstance {
     const normals = geometry.attributes.normal.array;
 
     // prettier-ignore
-    this.setupFace(positions, normals, boxIndex * 24 + 0 * 4, this.rightTopFront, this.leftTopFront, this.leftBottomFront, this.rightBottomFront, this.frontNormal); // Front
+    this.setupFace(positions, normals, boxIndex * 24 + 0 * 4, rightTopFront, leftTopFront, leftBottomFront, rightBottomFront, frontNormal); // Front
     // prettier-ignore
-    this.setupFace(positions, normals, boxIndex * 24 + 1 * 4, this.leftTopBack, this.rightTopBack, this.rightBottomBack, this.leftBottomBack, this.backNormal); // Back
+    this.setupFace(positions, normals, boxIndex * 24 + 1 * 4, leftTopBack, rightTopBack, rightBottomBack, leftBottomBack, backNormal); // Back
     // prettier-ignore
-    this.setupFace(positions, normals, boxIndex * 24 + 2 * 4, this.rightTopBack, this.rightTopFront, this.rightBottomFront, this.rightBottomBack, this.rightNormal ); // Right
+    this.setupFace(positions, normals, boxIndex * 24 + 2 * 4, rightTopBack, rightTopFront, rightBottomFront, rightBottomBack, rightNormal ); // Right
     // prettier-ignore
-    this.setupFace(positions, normals, boxIndex * 24 + 3 * 4, this.rightBottomFront, this.leftBottomFront, this.leftBottomBack, this.rightBottomBack, this.bottomNormal); // Bottom
+    this.setupFace(positions, normals, boxIndex * 24 + 3 * 4, rightBottomFront, leftBottomFront, leftBottomBack, rightBottomBack, bottomNormal); // Bottom
     // prettier-ignore
-    this.setupFace(positions, normals, boxIndex * 24 + 4 * 4, this.leftTopFront, this.leftTopBack, this.leftBottomBack, this.leftBottomFront, this.leftNormal); // Left
+    this.setupFace(positions, normals, boxIndex * 24 + 4 * 4, leftTopFront, leftTopBack, leftBottomBack, leftBottomFront, leftNormal); // Left
     // prettier-ignore
-    this.setupFace(positions, normals, boxIndex * 24 + 5 * 4, this.rightTopBack, this.leftTopBack, this.leftTopFront, this.rightTopFront, this.topNormal); // Top
+    this.setupFace(positions, normals, boxIndex * 24 + 5 * 4, rightTopBack, leftTopBack, leftTopFront, rightTopFront, topNormal); // Top
 
     // UVs
     const faceOffsets = [

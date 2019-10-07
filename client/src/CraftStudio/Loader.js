@@ -45,7 +45,7 @@ async function loadCraftStudioModel(modelName, loadAnimation = false) {
 
   const model = new ModelInstance(new Model(modelDef, texture));
   const mesh = new THREE.Mesh(model.geometry, model.material);
-  mesh.scale.set(1.0 / 16.0, 1.0 / 16.0, 1.0 / 16.0);
+  mesh.scale.set(1, 1, 1);
 
   // TODO: load many animations ? (not only one...);
   const result = { model, mesh, animation: null };
