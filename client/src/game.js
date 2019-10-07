@@ -26,6 +26,7 @@ const GrassBehavior = require("./behaviors/GrassBehavior");
 const modelsPath = "../assets/models/";
 const texturePath = "../assets/textures/";
 const texturesAssets = ["Herbe_Neutre.png", "Herbe_Verte.png", "Orb.png", "Orb_Detect.png"];
+const uselessData = JSON.stringify({ useless: true });
 
 function updateGrass(actor, currentBehavior, grassTexture, scene) {
   switch (currentBehavior) {
@@ -341,8 +342,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       // game.input.lockMouse();
       setTimeout(() => {
         document.getElementById("fade").classList.add("hide");
+        gameDataStream.write({
+          type: "player-loaded",
+          data: uselessData
+        });
       }, 200);
-
+      
       return;
     } else if (type === "currentState") {
       for (const orb of payload.orbs) {
@@ -396,7 +401,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);
       updatePlayer(playerActor, "RESPAWN");
-      const uselessData = JSON.stringify({ useless: true });
+     
       gameDataStream.write({
         type: "player-hasRespawn",
         data: uselessData
