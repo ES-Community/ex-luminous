@@ -5,17 +5,21 @@ const THREE = require("three");
 
 // Grass textures
 const GroundGrass = new THREE.TextureLoader().load("../assets/textures/Ground-Grass.png");
+const GroundGrassNormale = new THREE.TextureLoader().load("../assets/textures/Ground-Grass-Normale.png");
 const GroundGrass2 = new THREE.TextureLoader().load("../assets/textures/Ground-Grass_v2.png");
+const GroundGrassNormale2 = new THREE.TextureLoader().load("../assets/textures/Ground-Grass-Normale_v2.png");
 
 // Cube textures
 const material = new THREE.MeshStandardMaterial({
   map: GroundGrass,
+  normalMap: GroundGrassNormale,
   metalness: 0
 });
 material.needsUpdate = true;
 
 const material2 = new THREE.MeshStandardMaterial({
   map: GroundGrass2,
+  normalMap: GroundGrassNormale2,
   metalness: 0
 });
 material2.needsUpdate = true;
