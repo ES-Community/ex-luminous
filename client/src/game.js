@@ -75,6 +75,10 @@ function updatePlayer(actor, currentBehavior, orbTexture) {
       break;
     }
     case "RESPAWN": {
+      // do some animation for the respawn and then emit a gameStream
+      gameDataStream.write({
+        type: "player-hasRespawn"
+      });
       break;
     }
   }
@@ -274,6 +278,10 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       /** @type {Actor} */
       const grassActor = game.localCache.Grass.get(payload.id);
       updateGrass(grassActor, "DEAD", grassTexture, currentScene.scene);
+    } else if (type === "player-respawn") {
+      /** @type {Actor} */
+      const playerActor = game.localCache.Orbs.get(payload.id);
+      updatePlayer(playerActor, "RESPAWN", orbTexture);
     }
 
     // emit to the game renderer
