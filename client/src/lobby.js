@@ -44,7 +44,7 @@ async function createGameServer() {
   let cp;
   const cpOptions = { stdio: ["ignore", "pipe", "pipe", "ipc"] };
   if (isDev) {
-    cp = spawn("node", [serverPath], cpOptions);
+    cp = spawn("node", ["--inspect", serverPath], cpOptions);
   } else {
     cp = fork(serverPath, cpOptions);
   }
