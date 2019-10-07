@@ -20,6 +20,8 @@ const Orb = require("./Orb");
 const effectiveShadowSpeed = SHADOW_SPEED / TICKS_PER_SECOND;
 
 class Shadow extends Entity {
+  static RADIUS = 0.1;
+
   static Behavior = {
     WAITING: "WAITING",
     WANDERING: "WANDERING",

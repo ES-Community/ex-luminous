@@ -12,6 +12,8 @@ const playerRespawnTimeTicks = Math.round(timeToTicks(PLAYER_RESPAWN_TIME));
 const ORB_MAX_HP = 1;
 
 class Orb extends Entity {
+  static RADIUS = 0.2;
+
   static Behavior = {
     NORMAL: "NORMAL",
     HUNTED: "HUNTED",
