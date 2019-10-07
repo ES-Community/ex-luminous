@@ -44,15 +44,7 @@ jobs:
         inputs:
           versionSpec: "12.x"
         displayName: "Install Node.js"
-      - script: |
-          cd client
-          npm ci
-        displayName: "Install dependencies"
-      - script: |
-          cd client
-          npm run package-win
-          ls dist
-          Compress-Archive dist/ExLuminous-win32-x64 dist/ExLuminous-win32-x64.zip
+      - powershell: .\client\build-win.ps1
         displayName: "Build for Windows"
       - publish: $(System.DefaultWorkingDirectory)/client/dist/ExLuminous-win32-x64.zip
         artifact: ExLuminousWindows
