@@ -1,6 +1,6 @@
 "use strict";
 
-let id = 0;
+let id = 1;
 
 function getId() {
   return id++;

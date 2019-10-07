@@ -24,6 +24,9 @@ class Orb extends Entity {
     RESPAWN: "RESPAWN",
     OFFLINE: "OFFLINE"
   };
+
+  static LiveBehaviors = ["NORMAL", "HUNTED", "WOUNDED"];
+
   constructor(name) {
     super(randomPosition(), ORB_MAX_HP);
     this.name = name;
@@ -32,18 +35,20 @@ class Orb extends Entity {
     this.currentBehavior = Orb.Behavior.NORMAL;
     this.respawnTicks = 0;
     this.orbContact = 0;
+    this.loadingGrass = null;
   }
 
   toJSON() {
     return {
       ...super.toJSON(),
       name: this.name,
-      currentBehavior: this.currentBehavior
+      currentBehavior: this.currentBehavior,
+      loadingGrass: this.loadingGrass ? this.loadingGrass.id : null
     };
   }
 
   update(gameState, game) {
-    if (this.currentBehavior === "OFFLINE") {
+    if (this.currentBehavior === Orb.Behavior.OFFLINE) {
       return;
     }
     switch (this.currentBehavior) {

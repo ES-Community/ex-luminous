@@ -25,7 +25,8 @@ class Grass extends Entity {
     this.currentBehavior = Grass.Behavior.NORMAL;
     this.bloomTicks = 0;
     this.loading = 0;
-    this.orbContact = 0;
+    this.orbContactTicks = 0;
+    this.orb = null;
     this.lightTicks = 0;
   }
 
@@ -38,30 +39,32 @@ class Grass extends Entity {
   }
 
   update(gameState, game) {
+    this.checkOrbs(gameState);
     switch (this.currentBehavior) {
       case Grass.Behavior.NORMAL: {
-        if (this.isTouchingAnyOrb(gameState)) {
+        if (this.orb) {
           this.currentBehavior = Grass.Behavior.LIGHT;
           this.lightTicks = grassLightTimeoutTicks;
         }
         break;
       }
       case Grass.Behavior.LIGHT: {
-        if (!this.isTouchingAnyOrb(gameState) && --this.lightTicks === 0) {
+        if (!this.orb && --this.lightTicks === 0) {
+          this.orbContactTicks = 0;
           this.currentBehavior = Grass.Behavior.NORMAL;
         } else if (this.isTouchingAnyShadow(gameState)) {
           this.currentBehavior = Grass.Behavior.WOUNDED;
-        } else if (this.isTouchingAnyOrb(gameState)) {
+        } else if (this.orb) {
           this.lightTicks = grassLightTimeoutTicks;
-          if (++this.orbContact === grassLoadDelayTicks) {
-            this.orbContact = 0;
+          if (++this.orbContactTicks === grassLoadDelayTicks) {
+            this.orbContactTicks = 0;
             this.currentBehavior = Grass.Behavior.LOADING;
           }
         }
         break;
       }
       case Grass.Behavior.LOADING: {
-        if (!this.isTouchingAnyOrb(gameState)) {
+        if (!this.orb) {
           this.currentBehavior = Grass.Behavior.UNLOADING;
         } else if (++this.bloomTicks === grassBloomTimeTicks) {
           this.currentBehavior = Grass.Behavior.BLOOM;
@@ -91,6 +94,33 @@ class Grass extends Entity {
       default: {
         throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
       }
+    }
+  }
+
+  checkOrbs(gameState) {
+    if (!this.isTouchingAnyOrb(gameState)) {
+      this.clearOrb();
+      return;
+    }
+    const orbs = this.sortByDistance(gameState.liveOrbs()).filter((orb) => !orb.loadingGrass);
+    if (orbs.length === 0) {
+      this.clearOrb();
+      return;
+    }
+    const closestOrb = orbs[0].entity;
+    if (this.isTouching(closestOrb)) {
+      if (closestOrb !== this.orb) {
+        this.clearOrb();
+        this.orb = closestOrb;
+        this.orb.loadingGrass = this;
+      }
+    }
+  }
+
+  clearOrb() {
+    if (this.orb) {
+      this.orb.loadingGrass = null;
+      this.orb = null;
     }
   }
 

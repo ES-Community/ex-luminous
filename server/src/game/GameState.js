@@ -2,6 +2,7 @@
 
 const { MAP_SIZE_X, MAP_SIZE_Z, INIT_SHADOW_COUNT, INIT_GRASS_COUNT } = require("../config");
 const Grass = require("../behaviors/Grass");
+const Orb = require("../behaviors/Orb");
 const Shadow = require("../behaviors/Shadow");
 const { randomPosition } = require("../utils/random");
 
@@ -20,10 +21,10 @@ class GameState {
   }
 
   /**
-   * Returns orbs that are neither DEAD, nor OFFLINE
+   * Returns orbs that are alive in game.
    */
   liveOrbs() {
-    return this.orbs.filter((orb) => orb.currentBehavior !== "OFFLINE" && orb.currentBehavior !== "DEAD");
+    return this.orbs.filter((orb) => Orb.LiveBehaviors.includes(orb.currentBehavior));
   }
 }
 
