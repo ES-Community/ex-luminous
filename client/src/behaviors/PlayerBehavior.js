@@ -11,14 +11,17 @@ class PlayerBehavior extends ScriptBehavior {
     super(canMove);
     this.canMove = canMove;
   }
-
-  static CreateMesh(color = 0xffff00) {
-    const geometry = new THREE.SphereGeometry(3, 32, 32);
-    const material = new THREE.MeshBasicMaterial({
+  static CreateMesh(color = 0xc4c2ad) {
+    const geometry = new THREE.SphereBufferGeometry(1.5, 32, 32);
+    const material = new THREE.MeshStandardMaterial({
       color,
-      transparent: false
+      roughness: 0.5,
+      metalness: 1,
+      side: THREE.BackSide,
     });
-    return new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0,2,0);
+    return mesh;
   }
 
   static CreateLight(radius = 4) {
@@ -38,18 +41,35 @@ class PlayerBehavior extends ScriptBehavior {
     const currentPos = this.actor.threeObject.position;
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
 
-    this.speed = 1;
-    game.modelLoader.load("Orb", "Orb.png").then((model) => {
-      model.scale.set(1.5, 1.5, 1.5);
-      this.actor.threeObject.add(model);
-      this.actor.threeObject.add(PlayerBehavior.CreateLight(4));
-    });
+    this.speed = 0.3;
+  
+    this.radiusLight = 20;
+    this.light = new THREE.PointLight(0x282208, 2, this.radiusLight * 4, 1);
+    // this.light.castShadow = true;
+    // this.light.power = 100;
+    this.light.position.set(0, 2, 0);
+    this.actor.threeObject.add(this.light);
+    // game.modelLoader.load("Orb", "Orb.png").then((model) => {
+    //   this.actor.threeObject.add(model);
+    //   this.actor.threeObject.add(this.light);
+    // });
+    const player = PlayerBehavior.CreateMesh();
+    this.actor.threeObject.add(player);
+    this.timer = 0;
+    this.lightPulseDuration = 120;
   }
 
   update() {
-    const cubeMiddleSize = game.cubeSize / 2;
-    const mapSizeZ = game.mapSize.z * game.cubeSize;
-    const mapSizeX = game.mapSize.x * game.cubeSize;
+
+    const speedMove = 0.01;
+    const range = 0.5;
+    this.light.intensity = Math.cos(this.timer * speedMove *  2) * range + 4;
+    // this.light.position.y = Math.cos(this.timer * speedMove ) + 2
+    // this.light.position.x = Math.cos(this.timer * speedMove) * range
+    // this.light.position.z = Math.sin(this.timer * speedMove) * range
+
+    const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
+    const mapSizeX = game.mapSize.x * game.cubeSize - 1;
     if (this.canMove) {
       if (game.input.isKeyDown("KeyW")) {
         this.actor.threeObject.translateX(-this.speed);
@@ -80,6 +100,8 @@ class PlayerBehavior extends ScriptBehavior {
     if (currentPos.x > maxSizeX) {
       this.actor.threeObject.position.x = maxSizeX;
     }
+    
+    this.timer ++;
   }
 }
 

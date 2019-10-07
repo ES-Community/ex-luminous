@@ -54,11 +54,11 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
 function updatePlayer(actor, currentBehavior, orbTexture) {
   switch (currentBehavior) {
     case "NORMAL": {
-      updateMeshTexture(actor, orbTexture[0]);
+      // updateMeshTexture(actor, orbTexture[0]);
       break;
     }
     case "HUNTED": {
-      updateMeshTexture(actor, orbTexture[1]);
+      // updateMeshTexture(actor, orbTexture[1]);
       break;
     }
     case "WOUNDED": {
@@ -217,7 +217,11 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   // Initialize Camera & Controls
   const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
   camera.name = "Camera";
+<<<<<<< HEAD
   camera.position.set(50, 120, 0);
+=======
+  camera.position.set(20, 20, 0);
+>>>>>>> new orb design
   camera.lookAt(Player.threeObject.position);
   currentScene.add(camera);
   Player.threeObject.add(camera);

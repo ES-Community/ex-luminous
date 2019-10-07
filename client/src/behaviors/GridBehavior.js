@@ -8,11 +8,12 @@ const GroundGrass = new THREE.TextureLoader().load("../assets/textures/Ground-Gr
 const GroundGrass2 = new THREE.TextureLoader().load("../assets/textures/Ground-Grass_v2.png");
 
 // Cube textures
-const material = new THREE.MeshPhongMaterial({
+const material = new THREE.MeshStandardMaterial({
   map: GroundGrass
 });
-const material2 = new THREE.MeshPhongMaterial({
-  map: GroundGrass2
+const material2 = new THREE.MeshStandardMaterial({
+  color: GroundGrass2,
+  metalness: 0
 });
 
 const Grid = {
