@@ -28,6 +28,7 @@ class Game extends EventEmitter {
     const gameLoop = () => {
       this.timeout = setTimeout(gameLoop, waitBetweenTicks);
       this.update();
+      this.checkGameOver();
     };
 
     gameLoop();
@@ -69,6 +70,18 @@ class Game extends EventEmitter {
     this.emitChange();
   }
 
+  checkGameOver() {
+    if (this.state.orbs.length > 0) {
+      const isAllDead = this.state.orbs.every((orb) => orb.currentBehavior == Orb.Behavior.DEAD);
+      if (isAllDead) {
+        this.pause();
+        this.state.gameStep = 0;
+        this.emit("change", "gameOver", this.state)
+      }
+    }
+  }
+
+
   emitChange() {
     this.emit("change", "currentState", this.state);
   }
@@ -98,6 +111,10 @@ class Game extends EventEmitter {
         player.goingOnline = setTimeout(() => {
           orb.currentBehavior = orb.previousBehavior || Orb.Behavior.NORMAL;
         }, 1000);
+        break;
+      }
+      case "restart": {
+        this.restart();
         break;
       }
       default:

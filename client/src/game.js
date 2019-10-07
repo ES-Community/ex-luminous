@@ -118,15 +118,6 @@ function updatePlayer(actor, currentBehavior) {
       });
       material.needsUpdate = true;
       updateMeshTexture(actor, null, material);
-
-      // const playerPosition = actor.threeObject.position;
-      // scene.remove(actor.threeObject);
-      // const orbsColor = new THREE.Color("grey");
-      // const playerBehavior = new PlayerBehavior(false);
-      // const orbsMesh = playerBehavior.CreateMesh(orbsColor);
-      // orbsActor.setGlobalPosition(playerBehavior.PosToVector3Ex(playerPosition));
-      // actor.threeObject.add(orbsMesh);
-      // scene.add(actor);
       break;
     }
     case "RESPAWN": {
@@ -143,12 +134,6 @@ function updatePlayer(actor, currentBehavior) {
       });
       material.needsUpdate = true;
       updateMeshTexture(actor, null, material);
-      gameData.on("update", () => {
-        gameData.write({
-          type: "player-hasRespawn",
-          data: null
-        });
-      });
       break;
     }
   }
@@ -158,6 +143,7 @@ async function start() {
   window.grpcClient = grpc.createClient(server);
 
   const backToLobbyBtn = document.getElementById("back-lobby");
+
   let lobbyListener;
   if (!isHost) {
     backToLobbyBtn.classList.remove("hide");
@@ -168,7 +154,6 @@ async function start() {
     };
     backToLobbyBtn.addEventListener("click", lobbyListener);
   }
-
   // Setup close button
   const closeWindowBtn = document.getElementById("close-window");
   const closeListener = () => {
@@ -198,7 +183,6 @@ async function start() {
     const gameDataStream = grpcClient.gameData(meta, { deadline: Infinity });
     gameDataStream.on("error", reconnectAndResetGame);
     gameDataStream.on("end", reconnectAndResetGame);
-
     initializeGameRenderer(gameDataStream, mapSize, playerName);
   } else {
     fadeTxt.innerHTML = `❌ ${connectionPayload.reason}`;
@@ -226,6 +210,42 @@ async function reconnectAndResetGame() {
   }
 
   await start();
+}
+
+
+async function gameOver(gameDataStream) {
+  const fadeTxt = document.getElementById("fade-txt");
+  fadeTxt.innerHTML = `💀 The world is nothing now 💀`;
+  const fade = document.getElementById("fade");
+  fade.style.display = "flex";
+  fade.classList.remove("hide");
+
+  // setup restart button
+  if (isHost) {
+    const restartBtn = document.getElementById("restart");
+    restartBtn.classList.remove("hide");
+    document.getElementById("close-window").classList.remove("hide");
+    let restartListener;
+    restartListener = async () => {
+      if (game instanceof GameRenderer) {
+        if (typeof game.currentScene !== "undefined") {
+          game.currentScene.clear();
+        }
+        game.renderer.clear();
+        gameDataStream.removeAllListeners("data");
+        gameDataStream.removeAllListeners("end");
+        gameDataStream.removeAllListeners("error");
+        game.removeAllListeners("update");
+        game.removeAllListeners("init");
+        game = null;
+        document.getElementById("game").innerHTML = "";
+      }
+      await start();
+      gameDataStream.write({ type: "restart", data: uselessData });
+
+    };
+    restartBtn.addEventListener("click", restartListener);
+  }
 }
 
 function createOrb(currentScene, orbs) {
@@ -468,7 +488,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);
       updatePlayer(playerActor, "RESPAWN");
-
       gameDataStream.write({
         type: "player-hasRespawn",
         data: uselessData
@@ -476,8 +495,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "player-dead") {
       const playerActor = game.localCache.Orbs.get(payload.id);
       if (playerActor.name == "Player") {
+        console.log("dead frere");
         updatePlayer(playerActor, "DEAD");
       }
+    } else if (type === "gameOver") {
+      console.log("game over")
+      gameOver(gameDataStream);
     }
   });
 }
