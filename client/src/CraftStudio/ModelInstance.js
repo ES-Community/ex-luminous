@@ -120,22 +120,33 @@ class ModelInstance {
     let asc, end;
     let asc1, end1;
     const geometry = new THREE.BufferGeometry();
-    geometry.dynamic = true;
-    geometry.attributes = {
-      index: { itemSize: 1, array: new Uint16Array(boxCount * 36) },
-      position: { itemSize: 3, array: new Float32Array(boxCount * 72) },
-      normal: { itemSize: 3, array: new Float32Array(boxCount * 72) },
-      uv: { itemSize: 2, array: new Float32Array(boxCount * 48) }
-    };
+    // geometry.dynamic = true;
+
+    {
+      const indexAttribute = new THREE.BufferAttribute(new Uint16Array(boxCount * 36), 1);
+      indexAttribute.dynamic = true;
+
+      const positionAttribute = new THREE.BufferAttribute(new Uint16Array(boxCount * 72), 3);
+      positionAttribute.dynamic = true;
+
+      const normalAttribute = new THREE.BufferAttribute(new Uint16Array(boxCount * 72), 3);
+      normalAttribute.dynamic = true;
+
+      const uvAttribute = new THREE.BufferAttribute(new Uint16Array(boxCount * 48), 2);
+      uvAttribute.dynamic = true;
+
+      geometry.setIndex(indexAttribute);
+      geometry.addAttribute("position", positionAttribute);
+      geometry.addAttribute("normal", normalAttribute);
+      geometry.addAttribute("uv", uvAttribute);
+    }
 
     // Split indices in groups for GPU submission
     const bufChunkDivider = 6; // FIXME: Why 6, past me? because quad?
     const bufChunkSize = Math.floor((0xffff + 1) / bufChunkDivider);
-    const indices = geometry.attributes.index.array;
+    const indices = geometry.getIndex().array;
 
     const quads = boxCount * 6;
-    const triangles = quads * 2;
-
     for (i = 0, end = quads, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
       indices[i * 6 + 0] = (i * 4 + 0) % (bufChunkSize * bufChunkDivider);
       indices[i * 6 + 1] = (i * 4 + 1) % (bufChunkSize * bufChunkDivider);
@@ -146,19 +157,18 @@ class ModelInstance {
     }
 
     geometry.groups = [];
+    const triangles = quads * 2;
     const offsets = (triangles * 3) / (((bufChunkSize * bufChunkDivider) / 4) * 6);
 
     for (i = 0, end1 = offsets, asc1 = 0 <= end1; asc1 ? i < end1 : i > end1; asc1 ? i++ : i--) {
-      const offset = {
-        materialIndex: i * bufChunkSize * bufChunkDivider,
-        start: ((i * bufChunkSize * bufChunkDivider) / 4) * 6,
-        count: Math.min(
-          ((bufChunkSize * bufChunkDivider) / 4) * 6,
-          triangles * 3 - ((i * bufChunkSize * bufChunkDivider) / 4) * 6
-        )
-      };
+      const materialIndex = i * bufChunkSize * bufChunkDivider;
+      const start = ((i * bufChunkSize * bufChunkDivider) / 4) * 6;
+      const count = Math.min(
+        ((bufChunkSize * bufChunkDivider) / 4) * 6,
+        triangles * 3 - ((i * bufChunkSize * bufChunkDivider) / 4) * 6
+      );
 
-      geometry.groups.push(offset);
+      geometry.addGroup(start, count, materialIndex);
     }
 
     return geometry;
