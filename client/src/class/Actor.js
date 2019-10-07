@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * SOME CODE ARE CREATED BY Elisee MAURER for Superpowers
+ * https://github.com/superpowers/superpowers-game/tree/master/SupEngine/src
+ */
+
 // Require Third-party Dependencies
 const THREE = require("three");
 

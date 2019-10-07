@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * ORIGINAL CODE CREATED BY Elisee MAURER for Superpowers
+ * https://github.com/superpowers/superpowers-game/tree/master/SupEngine/src
+ */
+
 // Require Node.js Dependencies
 const { EventEmitter } = require("events");
 
