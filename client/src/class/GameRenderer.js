@@ -33,7 +33,8 @@ class GameRenderer extends events {
     this.localCache = {
       Orbs: new Map(),
       Grass: new Map(),
-      Shadows: new Map()
+      Shadows: new Map(),
+      Sounds: new Map()
     };
   }
 

@@ -77,7 +77,7 @@ function updatePlayer(actor, currentBehavior, orbTexture) {
     }
     case "RESPAWN": {
       // do some animation for the respawn and then emit a gameStream
-      gameDataStream.write({
+      game.gameDataStream.write({
         type: "player-hasRespawn"
       });
       break;
@@ -199,6 +199,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   });
   game.mapSize = mapSize;
   game.cubeSize = 16;
+  game.gameDataStream;
   GridBehavior.cubeSize = game.cubeSize;
 
   // const mySound = SoundPlayer.loadSoundAsset(game.audio, "O218.ogg", { loop: true });
@@ -304,9 +305,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       const playerActor = game.localCache.Orbs.get(payload.id);
       updatePlayer(playerActor, "RESPAWN", orbTexture);
     }
-
-    // emit to the game renderer
-    game.emit("data", type, payload);
   });
 
   for (const cube of GridBehavior.generateGridEx(mapSize.x, mapSize.z)) {
