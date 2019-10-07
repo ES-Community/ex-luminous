@@ -18,7 +18,7 @@ module.exports = {
   /**
    * Number of grass spawned when the game starts.
    */
-  INIT_GRASS_COUNT: 100,
+  INIT_GRASS_COUNT: 50,
 
   ENTITY_DEFAULT_RADIUS: 0.5,
 

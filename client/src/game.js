@@ -139,7 +139,6 @@ function updatePlayer(actor, currentBehavior) {
       break;
     }
     case "OFFLINE": {
-      console.log(actor);
       actor.threeObject.children[1].intensity = 0;
       actor.threeObject.remove(actor.threeObject.children[0]);
       break;
@@ -276,6 +275,40 @@ async function gameOver(gameDataStream) {
   }
 }
 
+async function win(gameDataStream) {
+  const fadeTxt = document.getElementById("fade-txt");
+  fadeTxt.innerHTML = `🌻 The world start to be something ! 🌻`;
+  const fade = document.getElementById("fade");
+  fade.style.display = "flex";
+  fade.classList.remove("hide");
+
+  // setup restart button
+  if (isHost) {
+    const restartBtn = document.getElementById("restart");
+    restartBtn.classList.remove("hide");
+    document.getElementById("close-window").classList.remove("hide");
+    let restartListener;
+    restartListener = async () => {
+      if (game instanceof GameRenderer) {
+        if (typeof game.currentScene !== "undefined") {
+          game.currentScene.clear();
+        }
+        game.renderer.clear();
+        gameDataStream.removeAllListeners("data");
+        gameDataStream.removeAllListeners("end");
+        gameDataStream.removeAllListeners("error");
+        game.removeAllListeners("update");
+        game.removeAllListeners("init");
+        game = null;
+        document.getElementById("game").innerHTML = "";
+      }
+      await start();
+      gameDataStream.write({ type: "restart", data: dummyData });
+    };
+    restartBtn.addEventListener("click", restartListener);
+  }
+}
+
 function createOrb(currentScene, orbs) {
   const orbsActor = new Actor(`orbs_${orbs.id}`);
   const orbsColor = new THREE.Color(0xffffff);
@@ -287,7 +320,6 @@ function createOrb(currentScene, orbs) {
   // orbsActor.threeObject.add(PlayerBehavior.CreateLight(4));
   orbsActor.addScriptedBehavior(new LightBehavior());
   orbsActor.getBehaviorByName("LightBehavior").awake();
-  console.log(orbsActor);
   currentScene.add(orbsActor);
 
   return orbsActor;
@@ -521,12 +553,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "player-dead") {
       const playerActor = game.localCache.Orbs.get(payload.id);
       if (playerActor.name == "Player") {
-        console.log("dead frere");
         updatePlayer(playerActor, "DEAD");
       }
     } else if (type === "gameOver") {
-      console.log("game over");
       gameOver(gameDataStream);
+    } else if (type === "win") {
+      win(gameDataStream);
     }
   });
 }

@@ -4,6 +4,7 @@ const { EventEmitter } = require("events");
 
 const { TICKS_PER_SECOND } = require("../config");
 const Orb = require("../behaviors/Orb");
+const Grass = require("../behaviors/Grass");
 
 const GameState = require("./GameState");
 
@@ -29,6 +30,7 @@ class Game extends EventEmitter {
       this.timeout = setTimeout(gameLoop, waitBetweenTicks);
       this.update();
       this.checkGameOver();
+      this.checkWin();
     };
 
     gameLoop();
@@ -77,6 +79,17 @@ class Game extends EventEmitter {
         this.pause();
         this.state.gameStep = 0;
         this.emit("change", "gameOver", this.state)
+      }
+    }
+  }
+
+  checkWin() {
+    if (this.state.grass.length > 0) {
+      const oneIsBlooming = this.state.grass.some((grass) => grass.currentBehavior == Grass.Behavior.BLOOM);
+      if (oneIsBlooming) {
+        this.pause();
+        this.state.gameStep = 0;
+        this.emit("change", "win", this.state)
       }
     }
   }
