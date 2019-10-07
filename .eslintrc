@@ -25,6 +25,7 @@
     "playerName": true,
     "server": true,
     "grpcClient": true,
-    "isHost": true
+    "isHost": true,
+    "CraftStudio": true
   }
 }
