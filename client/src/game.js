@@ -357,6 +357,10 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   const grassTexture = [textures[0], textures[1]];
   const orbTexture = [textures[2], textures[3]];
 
+  // Get charge bar & mask
+  const chargeBar = document.getElementById("charge-bar");
+  const chargeMask = document.getElementById("charge-mask");
+
   // Server state & events
   gameDataStream.on("data", ({ type, data }) => {
     const payload = JSON.parse(data);
@@ -402,7 +406,23 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
             orbActor.currentBehavior = orb.currentBehavior;
             updatePlayer(orbActor, orb.currentBehavior);
           }
+
           if (orb.name === playerName) {
+            const loadingGrass = orb.loadingGrass;
+            if (loadingGrass === null) {
+              if (!chargeBar.classList.contains("hide")) {
+                chargeBar.classList.add("hide");
+              }
+              continue;
+            }
+
+            if (chargeBar.classList.contains("hide")) {
+              chargeBar.classList.remove("hide");
+            }
+            const grassActor = game.localCache.Grass.get(orb.loadingGrass);
+            const factor = 100 - grassActor.loading * 100;
+            chargeMask.style.width = `${factor}%`;
+
             continue;
           }
 
@@ -427,6 +447,8 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
+          grassActor.loading = grass.loading;
+
           if (grassActor.currentBehavior !== grass.currentBehavior) {
             updateGrass(grassActor, grass.currentBehavior, grassTexture, currentScene.scene);
             grassActor.currentBehavior = grass.currentBehavior;
