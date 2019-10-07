@@ -8,7 +8,7 @@
     "start": "electron .",
     "lobby": "electron . lobby",
     "package-linux": "node build.js linux",
-    "package-mac": "node build.js osx",
+    "package-mac": "node build.js darwin",
     "package-win": "node build.js win32",
     "postinstall": "npm rebuild grpc --target=5.0.0 --runtime=electron --dist-url=https://atom.io/download/electron"
   },
