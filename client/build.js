@@ -18,7 +18,8 @@ async function bundleElectronApp() {
     platform: process.argv[2],
     asar: true,
     out: path.join(__dirname, "dist"),
-    overwrite: true
+    overwrite: true,
+    ignore: [/node_modules.grpc.deps/, /node_modules.three.examples/]
   };
   const result = await packager(options);
   console.log("build done", result);

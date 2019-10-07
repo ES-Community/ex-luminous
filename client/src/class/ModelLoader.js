@@ -5,7 +5,7 @@ const { extname } = require("path");
 
 // Require Third-party Dependencies
 const THREE = require("three");
-require("three/examples/js/loaders/OBJLoader");
+require("../three/OBJLoader");
 
 class ModelLoader {
   constructor(options) {

@@ -4,7 +4,6 @@
 const { remote } = require("electron");
 const THREE = require("three");
 window.THREE = THREE;
-require("three/examples/js/controls/OrbitControls");
 
 // Require Internal Dependencies
 const GameRenderer = require("./class/GameRenderer.js");
