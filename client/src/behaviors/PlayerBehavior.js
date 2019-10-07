@@ -44,8 +44,8 @@ class PlayerBehavior extends ScriptBehavior {
 
     this.speed = 0.45;
 
-    this.radiusLight = 20;
-    this.light = new THREE.PointLight(0x282208, 2, this.radiusLight * 4, 1);
+    this.radiusLight = 80;
+    this.light = new THREE.PointLight(0x282208, 2, this.radiusLight * 4, 10);
     // this.light.castShadow = true;
     // this.light.power = 100;
     this.light.position.set(0, 2, 0);
@@ -62,7 +62,7 @@ class PlayerBehavior extends ScriptBehavior {
 
   update() {
     const speedMove = 0.01;
-    const range = 0.5;
+    const range = 1;
     this.light.intensity = Math.cos(this.timer * speedMove * 2) * range + 4;
     // this.light.position.y = Math.cos(this.timer * speedMove ) + 2
     // this.light.position.x = Math.cos(this.timer * speedMove) * range

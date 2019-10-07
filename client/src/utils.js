@@ -45,8 +45,8 @@ function updateLight(actor, type) {
     return;
   }
   if (type === "add") {
-    light.intensity = 1.5;
-    light.distance = 8 * game.cubeSize;
+    light.intensity = 1.25;
+    light.distance = 6 * game.cubeSize;
   } else {
     light.intensity = 0.1;
     light.distance = 3 * game.cubeSize;

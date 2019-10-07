@@ -8,8 +8,8 @@ const THREE = require("three");
 
 class GrassBehavior extends ScriptBehavior {
   static CreateLight(radius = 3, visible = true) {
-    const light = new THREE.PointLight(0xffffff, 0.1, radius * game.cubeSize, 3);
-    light.position.set(0, 14, 0);
+    const light = new THREE.PointLight(0xe5a2a2, 0.1, radius * game.cubeSize, 2);
+    light.position.set(0, 16, 0);
     light.visible = visible;
 
     return light;
@@ -22,7 +22,11 @@ class GrassBehavior extends ScriptBehavior {
 
   awake() {
     game.modelLoader.load("Herbe", "Herbe_Neutre.png").then((model) => {
-      model.children[0].material.needsUpdate = true;
+      const meshMaterial = model.children[0].material;
+      meshMaterial.needsUpdate = true;
+      // meshMaterial.roughness = 0.5;
+      // meshMaterial.metalness = 1;
+
       this.actor.threeObject.add(model);
       this.actor.threeObject.add(GrassBehavior.CreateLight());
     });

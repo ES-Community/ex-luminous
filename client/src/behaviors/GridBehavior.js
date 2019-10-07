@@ -28,7 +28,7 @@ const Grid = {
     const geometry = new THREE.BoxGeometry(this.cubeSize, 1, this.cubeSize);
     for (let x = -this.cubeToAdd; x < sizeX + this.cubeToAdd; x++) {
       for (let y = -this.cubeToAdd; y < sizeY + this.cubeToAdd; y++) {
-        const factor = Math.random() > 0.9;
+        const factor = Math.random() > 0.75;
         const cube = new THREE.Mesh(geometry, factor ? material2 : material);
         cube.position.set(x * this.cubeSize, this.defaultYPosition, y * this.cubeSize);
 
