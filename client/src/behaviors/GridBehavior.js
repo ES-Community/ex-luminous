@@ -18,10 +18,11 @@ const material2 = new THREE.MeshPhongMaterial({
 const Grid = {
   cubeSize: 4,
   defaultYPosition: 0,
+  cubeToAdd: 10,
   *generateGridEx(sizeX, sizeY) {
     const geometry = new THREE.BoxGeometry(this.cubeSize, 1, this.cubeSize);
-    for (let x = 0; x < sizeX; x++) {
-      for (let y = 0; y < sizeY; y++) {
+    for (let x = -this.cubeToAdd; x < sizeX + this.cubeToAdd; x++) {
+      for (let y = -this.cubeToAdd; y < sizeY + this.cubeToAdd; y++) {
         const factor = Math.random() > 0.9;
         const cube = new THREE.Mesh(geometry, factor ? material2 : material);
         cube.position.set(x * this.cubeSize, this.defaultYPosition, y * this.cubeSize);
