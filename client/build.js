@@ -26,6 +26,14 @@ async function bundleElectronApp() {
 }
 
 async function copyExternal(buildPath, electronVersion, arch, platform, callback) {
+  // Copy ".obj" files that are ignored by default
+  const modelPath = "assets/models";
+  const clientPath = path.join(__dirname, "../client", modelPath);
+  const objFiles = (await fs.readdir(clientPath)).filter((file) => file.endsWith(".obj"));
+  await Promise.all(
+    objFiles.map((objFile) => fs.copy(path.join(clientPath, objFile), path.join(buildPath, modelPath, objFile)))
+  );
+
   const serverPath = path.join(__dirname, "../server");
   const protoPath = path.join(__dirname, "../protos");
   await buildServer(serverPath, electronVersion);
