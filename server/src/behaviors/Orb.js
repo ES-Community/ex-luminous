@@ -22,7 +22,8 @@ class Orb extends Entity {
     UNLOADRESPAWN: "UNLOADRESPAWN",
     LOADRESPAWN: "LOADRESPAWN",
     RESPAWN: "RESPAWN",
-    OFFLINE: "OFFLINE"
+    OFFLINE: "OFFLINE",
+    ONLINE: "ONLINE"
   };
 
   static LiveBehaviors = ["NORMAL", "HUNTED", "WOUNDED"];
@@ -32,7 +33,8 @@ class Orb extends Entity {
     this.name = name;
     this.huntedBy = [];
     this.interactingWith = null;
-    this.currentBehavior = Orb.Behavior.NORMAL;
+    this.currentBehavior = Orb.Behavior.ONLINE;
+    this.previousBehavior = null;
     this.respawnTicks = 0;
     this.orbContact = 0;
     this.loadingGrass = null;
@@ -48,9 +50,6 @@ class Orb extends Entity {
   }
 
   update(gameState, game) {
-    if (this.currentBehavior === Orb.Behavior.OFFLINE) {
-      return;
-    }
     switch (this.currentBehavior) {
       case Orb.Behavior.NORMAL: {
         this.isHunted();
@@ -99,6 +98,9 @@ class Orb extends Entity {
         }
         break;
       }
+      case Orb.Behavior.ONLINE:
+      case Orb.Behavior.OFFLINE:
+        break;
       default: {
         throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
       }

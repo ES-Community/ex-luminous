@@ -61,32 +61,38 @@ class Game extends EventEmitter {
       }
       case "player-hasRespawn": {
         const orb = this.findOrbByPlayer(player);
-        if (typeof orb !== "undefined") {
-          orb.currentBehavior = "NORMAL";
-        }
+        orb.currentBehavior = Orb.Behavior.NORMAL;
+        break;
+      }
+      case "player-loaded": {
+        const orb = this.findOrbByPlayer(player);
+        player.goingOnline = setTimeout(() => {
+          orb.currentBehavior = orb.previousBehavior || Orb.Behavior.NORMAL;
+        }, 1000);
         break;
       }
       default:
-        throw new Error("Missing data handler");
+        throw new Error(`Missing data handler: ${type}`);
     }
   }
 
   setPlayerOffline(player) {
+    clearTimeout(player.goingOnline);
     const orb = this.findOrbByPlayer(player);
     orb.previousBehavior = orb.currentBehavior;
-    orb.currentBehavior = "OFFLINE";
+    orb.currentBehavior = Orb.Behavior.OFFLINE;
     for (const shadow of orb.huntedBy) {
       shadow.currentMeal = null;
       shadow.setWandering();
     }
     orb.huntedBy = [];
     orb.interactingWith = null;
+    orb.loadingGrass = null;
   }
 
   setPlayerOnline(player) {
     const orb = this.findOrbByPlayer(player);
-    orb.currentBehavior = orb.previousBehavior;
-    orb.previousBehavior = null;
+    orb.currentBehavior = Orb.Behavior.ONLINE;
   }
 
   findOrbByPlayer(player) {
