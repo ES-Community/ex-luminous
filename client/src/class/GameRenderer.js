@@ -30,7 +30,6 @@ class GameRenderer extends events {
     const gameElement = document.getElementById("game");
     gameElement.appendChild(this.renderer.domElement);
 
-    this.audio = new Audio();
     this.input = new Input(this.renderer.domElement);
     this.framesPerSecond = 60;
     this.localCache = {

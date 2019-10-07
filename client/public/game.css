@@ -128,3 +128,36 @@ div#charge-bar > div.progression {
   border-color: #ffee58;
   color: #ffee58;
 }
+
+div#left-icons {
+  width: 30px;
+  height: 100%;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  right: 5px;
+  bottom: 5px;
+  z-index: 3;
+}
+div#left-icons > ul {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+div#left-icons > ul li {
+  height: 30px;
+  background: #263238;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: 1px solid #37474f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+div#left-icons > ul li:hover {
+  cursor: pointer;
+  background: #37474f;
+}
+div#left-icons > ul li + li {
+  margin-top: 5px;
+}

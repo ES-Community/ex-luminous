@@ -11,6 +11,7 @@ const GameRenderer = require("./class/GameRenderer.js");
 const ModelLoader = require("./class/ModelLoader");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
+const Audio = require("./class/Audio");
 const Camera = require("./class/Camera");
 const Timer = require("./class/Timer");
 const SoundPlayer = require("./class/SoundPlayer");
@@ -27,6 +28,8 @@ const modelsPath = "../assets/models/";
 const texturePath = "../assets/textures/";
 const texturesAssets = ["Herbe_Neutre.png", "Herbe_Verte.png", "Orb.png", "Orb_Detect.png"];
 const uselessData = JSON.stringify({ useless: true });
+const globalAudio = new Audio();
+let isGuiButtonsSetup = false;
 
 function updateGrass(actor, currentBehavior, grassTexture, scene) {
   switch (currentBehavior) {
@@ -155,6 +158,7 @@ async function start() {
   const backToLobbyBtn = document.getElementById("back-lobby");
   let lobbyListener;
   if (!isHost) {
+    backToLobbyBtn.classList.remove("hide");
     backToLobbyBtn.style.display = "flex";
     lobbyListener = () => {
       const currentWindow = remote.getCurrentWindow();
@@ -176,6 +180,7 @@ async function start() {
 
   const fadeTxt = document.getElementById("fade-txt");
   if (connectionPayload.ok) {
+    setupGuiButtons();
     closeWindowBtn.removeEventListener("click", closeListener);
     closeWindowBtn.classList.add("hide");
     if (!isHost) {
@@ -201,7 +206,9 @@ async function start() {
 async function reconnectAndResetGame() {
   const fadeTxt = document.getElementById("fade-txt");
   fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
-  document.getElementById("fade").classList.remove("hide");
+  const fade = document.getElementById("fade");
+  fade.style.display = "flex";
+  fade.classList.remove("hide");
   document.getElementById("close-window").classList.remove("hide");
 
   if (game instanceof GameRenderer) {
@@ -254,6 +261,33 @@ function createGrass(currentScene, grass) {
   return grassActor;
 }
 
+function setupGuiButtons() {
+  if (isGuiButtonsSetup) {
+    return;
+  }
+  isGuiButtonsSetup = true;
+  let soundIsMuted = false;
+
+  const muteSoundBtn = document.getElementById("mute-sound");
+  const backToLobby = document.getElementById("back-lobby2");
+
+  muteSoundBtn.addEventListener("click", () => {
+    globalAudio.masterVolume = soundIsMuted ? 0.3 : 0;
+    muteSoundBtn.innerHTML = soundIsMuted ? "🔉" : "🔈";
+    soundIsMuted = !soundIsMuted;
+  });
+
+  backToLobby.addEventListener("click", () => {
+    const currentWindow = remote.getCurrentWindow();
+    console.log(`isHost: ${isHost}`);
+    if (isHost) {
+      currentWindow.close();
+    } else {
+      currentWindow.loadURL(`file://${__dirname}/../views/lobby.html`);
+    }
+  });
+}
+
 async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let isFirstGameData = true;
 
@@ -270,14 +304,14 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   };
   GridBehavior.cubeSize = game.cubeSize;
 
-  game.audio.masterVolume = 0.3;
-  const bgSound = await SoundPlayer.loadSoundAsset(game.audio, "back-ambient-void.ogg", {
+  globalAudio.masterVolume = 0.3;
+  const bgSound = await SoundPlayer.loadSoundAsset(globalAudio, "back-ambient-void.ogg", {
     loop: true,
     volume: 0.5
   });
-  const chaseSound = await SoundPlayer.loadSoundAsset(game.audio, "hon-won.wav", { volume: 0.8 });
-  const herbeSound = await SoundPlayer.loadSoundAsset(game.audio, "giling.ogg", { volume: 0.8 });
-  const deathSound = await SoundPlayer.loadSoundAsset(game.audio, "death.wav", { volume: 0.8 });
+  const chaseSound = await SoundPlayer.loadSoundAsset(globalAudio, "hon-won.wav", { volume: 0.8 });
+  const herbeSound = await SoundPlayer.loadSoundAsset(globalAudio, "giling.ogg", { volume: 0.8 });
+  const deathSound = await SoundPlayer.loadSoundAsset(globalAudio, "death.wav", { volume: 0.8 });
 
   game.localCache.Sounds.set("background", bgSound);
   game.localCache.Sounds.set("chased", chaseSound);
@@ -286,6 +320,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   game.on("init", () => {
     bgSound.play();
   });
+  setupGuiButtons();
 
   // Setup all Scenes default items
   const currentScene = new Scene();
@@ -341,13 +376,18 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       game.init(currentScene, camera.camera);
       // game.input.lockMouse();
       setTimeout(() => {
-        document.getElementById("fade").classList.add("hide");
         gameDataStream.write({
           type: "player-loaded",
           data: uselessData
         });
+
+        const fade = document.getElementById("fade");
+        fade.classList.add("hide");
+        setTimeout(() => {
+          fade.style.display = "none";
+        }, 1000);
       }, 200);
-      
+
       return;
     } else if (type === "currentState") {
       for (const orb of payload.orbs) {
@@ -401,7 +441,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);
       updatePlayer(playerActor, "RESPAWN");
-     
+
       gameDataStream.write({
         type: "player-hasRespawn",
         data: uselessData

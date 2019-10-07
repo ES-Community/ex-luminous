@@ -16,6 +16,12 @@
       </div>
     </div>
     <div id="game"></div>
+    <div id="left-icons">
+      <ul>
+        <li id="mute-sound">🔉</li>
+        <li id="back-lobby2">🚪</li>
+      </ul>
+    </div>
     <div id="charge-bar">
       <div id="charge-mask"></div>
       <div class="progression"></div>
@@ -30,7 +36,7 @@
       const whatwgLocation = new URL(window.location.href);
       window.server = (whatwgLocation.searchParams.get("server") || "127.0.0.1") + ":50051";
       window.playerName = whatwgLocation.searchParams.get("name") || "invite";
-      window.isHost = Boolean(whatwgLocation.searchParams.get("isHost"));
+      window.isHost = Boolean(Number(whatwgLocation.searchParams.get("isHost")));
       fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
 
       start().catch(console.error);
