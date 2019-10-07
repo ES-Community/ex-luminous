@@ -31,6 +31,7 @@ class Orb extends Entity {
     this.interactingWith = null;
     this.currentBehavior = Orb.Behavior.NORMAL;
     this.respawnTicks = 0;
+    this.orbContact = 0;
   }
 
   toJSON() {
@@ -41,19 +42,22 @@ class Orb extends Entity {
     };
   }
 
-  update(gameState) {
+  update(gameState, game) {
     if (this.currentBehavior === "OFFLINE") {
       return;
     }
-    this.isHunted();
     switch (this.currentBehavior) {
       case Orb.Behavior.NORMAL: {
+        this.isHunted();
         if (this.isTouchingAnyShadow(gameState)) {
           this.currentBehavior = Orb.Behavior.WOUNDED;
         }
         break;
       }
       case Orb.Behavior.HUNTED: {
+        if (this.isTouchingAnyShadow(gameState)) {
+          this.currentBehavior = Orb.Behavior.WOUNDED;
+        }
         break;
       }
       case Orb.Behavior.WOUNDED: {

@@ -7,6 +7,11 @@ const ScriptBehavior = require("../class/ScriptBehavior");
 const THREE = require("three");
 
 class PlayerBehavior extends ScriptBehavior {
+
+  constructor(canMove = true){
+    super();
+    this.canMove = canMove;
+  }
   static CreateMesh(color = 0xc4c2ad) {
     const geometry = new THREE.SphereBufferGeometry(3, 32, 32);
     const material = new THREE.MeshStandardMaterial({
@@ -25,7 +30,6 @@ class PlayerBehavior extends ScriptBehavior {
   static CreateLight(radius = 4) {
     const light = new THREE.PointLight(0xffffff, 6.5, radius * game.cubeSize, 5);
     light.position.set(0, 1, 0);
-
     return light;
   }
 
@@ -38,7 +42,6 @@ class PlayerBehavior extends ScriptBehavior {
   awake() {
     const currentPos = this.actor.threeObject.position;
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
-
     this.speed = 0.6;
 
     this.radiusLight = 20;
@@ -68,19 +71,20 @@ class PlayerBehavior extends ScriptBehavior {
     const cubeMiddleSize = game.cubeSize / 2;
     const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
     const mapSizeX = game.mapSize.x * game.cubeSize - 1;
-    if (game.input.isKeyDown("KeyW")) {
-      this.actor.threeObject.translateX(-this.speed);
+    if(this.canMove){
+      if (game.input.isKeyDown("KeyW")) {
+        this.actor.threeObject.translateX(-this.speed);
+      }
+      if (game.input.isKeyDown("KeyS")) {
+        this.actor.threeObject.translateX(this.speed);
+      }
+      if (game.input.isKeyDown("KeyA")) {
+        this.actor.threeObject.translateZ(this.speed);
+      }
+      if (game.input.isKeyDown("KeyD")) {
+        this.actor.threeObject.translateZ(-this.speed);
+      }
     }
-    if (game.input.isKeyDown("KeyS")) {
-      this.actor.threeObject.translateX(this.speed);
-    }
-    if (game.input.isKeyDown("KeyA")) {
-      this.actor.threeObject.translateZ(this.speed);
-    }
-    if (game.input.isKeyDown("KeyD")) {
-      this.actor.threeObject.translateZ(-this.speed);
-    }
-
     const currentPos = this.actor.threeObject.position.clone();
     const maxSizeZ = mapSizeZ - cubeMiddleSize;
     const maxSizeX = mapSizeX - cubeMiddleSize;

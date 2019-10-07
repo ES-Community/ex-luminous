@@ -45,6 +45,10 @@ class Entity {
     return gameState.liveOrbs().some((orb) => this.isTouching(orb));
   }
 
+  isTouchingAnyDeadOrb(gameState) {
+    return gameState.deadOrbs().some((orb) => this.isTouching(orb) && orb.id != this.id);
+  }
+
   isTouchingAnyShadow(gameState) {
     return gameState.shadows.some((shadow) => this.isTouching(shadow));
   }

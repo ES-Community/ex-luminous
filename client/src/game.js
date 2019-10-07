@@ -13,7 +13,7 @@ const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
 const Camera = require("./class/Camera");
 const SoundPlayer = require("./class/SoundPlayer");
-const { updateLight, updateMeshTexture } = require("./utils");
+const { updateLight, updateMeshTexture, updateLightColor } = require("./utils");
 const grpc = require("./grpc.js");
 
 // Require Behaviors
@@ -58,7 +58,7 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
   }
 }
 
-function updatePlayer(actor, currentBehavior, orbTexture) {
+function updatePlayer(actor, currentBehavior, gameData) {
   switch (currentBehavior) {
     case "NORMAL": {
       // updateMeshTexture(actor, orbTexture[0]);
@@ -72,21 +72,41 @@ function updatePlayer(actor, currentBehavior, orbTexture) {
       break;
     }
     case "DEAD": {
-      // const playerPosition = actor.threeObject.position;
-      // scene.remove(actor.threeObject);
-      // const orbsColor = new THREE.Color("grey");
-      // const playerBehavior = new PlayerBehavior(false);
-      // const orbsMesh = playerBehavior.CreateMesh(orbsColor);
-      // orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
-      // actor.threeObject.add(orbsMesh);
-      // scene.add(actor);
+      var color = new THREE.Color("rgb(180, 180, 180)");
+      if (actor.behaviors.length > 0) {
+        actor.behaviors[0].canMove = false;
+        actor.behaviors[0].light.color = color;
+      }
+      const material = new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.5,
+        metalness: 1,
+        side: THREE.BackSide
+      });
+      material.needsUpdate = true;
+      updateMeshTexture(actor, null, material);
       break;
     }
     case "RESPAWN": {
-      // do some animation for the respawn and then emit a gameStream
-      game.gameDataStream.write({
-        type: "player-hasRespawn"
+      var color = new THREE.Color(0xc4c2ad);
+      if (actor.behaviors.length > 0) {
+        actor.behaviors[0].canMove = true;
+        actor.behaviors[0].light.color = color;
+      }
+      const material = new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.5,
+        metalness: 1,
+        side: THREE.BackSide
       });
+      material.needsUpdate = true;
+      updateMeshTexture(actor, null, material);
+      gameData.on("update", () => {
+        gameData.write({
+          type: "player-hasRespawn",
+          data: null
+        });
+      })
       break;
     }
   }
@@ -171,6 +191,7 @@ function createOrb(currentScene, orbs) {
   orbsActor.setGlobalPosition(PlayerBehavior.PosToVector3(orbs.position));
   orbsActor.threeObject.add(orbsMesh);
   orbsActor.threeObject.add(PlayerBehavior.CreateLight(4));
+  console.log(orbsActor);
   currentScene.add(orbsActor);
 
   return orbsActor;
@@ -274,7 +295,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
           const orbActor = game.localCache.Orbs.get(orb.id);
           if (orbActor.currentBehavior !== orb.currentBehavior) {
             orbActor.currentBehavior = orb.currentBehavior;
-            updatePlayer(orbActor, orb.currentBehavior, orbTexture, currentScene.scene);
+            updatePlayer(orbActor, orb.currentBehavior, currentScene.scene);
           }
           if (orb.name === playerName) {
             continue;
@@ -301,7 +322,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
         if (game.localCache.Grass.has(grass.id)) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
-
           if (grassActor.currentBehavior !== grass.currentBehavior) {
             grassActor.currentBehavior = grass.currentBehavior;
             updateGrass(grassActor, grass.currentBehavior, grassTexture, currentScene.scene);
@@ -320,7 +340,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "player-respawn") {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);
-      updatePlayer(playerActor, "RESPAWN", orbTexture);
+      updatePlayer(playerActor, "RESPAWN", orbTexture, gameDataStream);
+    } else if (type === "player-dead") {
+      const playerActor = game.localCache.Orbs.get(payload.id);
+      if (playerActor.name == "Player") {
+        updatePlayer(playerActor, "DEAD", orbTexture, currentScene.scene);
+      }
     }
   });
 }

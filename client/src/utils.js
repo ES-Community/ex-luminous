@@ -3,14 +3,22 @@
 // Require Third-party Dependencies
 const THREE = require("three");
 
-function updateMeshTexture(actor, texture) {
-  actor.threeObject.traverse(function(obj) {
+function updateMeshTexture(actor, texture = null, color = null) {
+  actor.threeObject.traverse(function (obj) {
     if (obj instanceof THREE.Mesh) {
-      if (obj.material.map == texture) {
-        return;
+      if (texture == null && color == null) {
+        return
       }
-      obj.material.map = texture;
-      obj.material.needsUpdate = true;
+      if (texture == null) {
+        obj.material = color;
+      }
+      if (color == null) {
+        if (obj.material.map == texture) {
+          return;
+        }
+        obj.material.map = texture;
+        obj.material.needsUpdate = true;
+      }
     }
   });
 }
@@ -36,7 +44,6 @@ function updateLight(actor, type) {
   if (light === null) {
     return;
   }
-
   if (type === "add") {
     light.intensity = 1.5;
     light.distance = 8 * game.cubeSize;
@@ -49,5 +56,6 @@ function updateLight(actor, type) {
 module.exports = {
   updateMeshTexture,
   updateMesh3D,
-  updateLight
+  updateLight,
+  updateLightColor
 };
