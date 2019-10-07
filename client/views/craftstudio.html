@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>test</title>
+  </head>
+  <body>
+    <div id="game"></div>
+    <script>
+      window.CraftStudio = {};
+
+      const THREE = require("three");
+      THREE.Euler.DefaultOrder = "YXZ";
+      const GameRenderer = require("../src/class/GameRenderer.js");
+      const Scene = require("../src/class/Scene.js");
+      const loadCraftStudioModel = require("../src/CraftStudio/Loader.js");
+
+      // Setup GameRenderer
+      const game = new GameRenderer(4);
+
+      // Setup all Scenes default items
+      const currentScene = new Scene();
+      currentScene.add(new THREE.GridHelper(100, 20));
+      currentScene.scene.background = new THREE.Color("white");
+
+      // Initialize Camera & Controls
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+      camera.position.set(1000, 1000, 1000);
+      camera.lookAt(0, 0, 0);
+      camera.updateProjectionMatrix();
+
+      game.init(currentScene, camera);
+      game.on("init", () => {
+        console.log("game init");
+        loadCraftStudioModel("Herbe_Verte")
+          .then(({ mesh }) => {
+            currentScene.add(mesh);
+            mesh.geometry.computeBoundingSphere();
+          })
+          .catch(console.error);
+      });
+
+      game.on("update", () => {});
+    </script>
+  </body>
+</html>

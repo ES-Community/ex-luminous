@@ -28,6 +28,9 @@ const bottomNormal = new THREE.Vector3();
 const leftNormal = new THREE.Vector3();
 const topNormal = new THREE.Vector3();
 
+const rootMatrix = new THREE.Matrix4();
+const dummyScale = {};
+
 class ModelInstance {
   constructor(model) {
     this.model = model;
@@ -56,24 +59,17 @@ class ModelInstance {
   }
 
   SetPose(modelAnimation, frame) {
-    var box, boxIndex, j, len, ref;
-    boxIndex = 0;
-    ref = this.model.rootBoxes;
-    for (j = 0, len = ref.length; j < len; j++) {
-      box = ref[j];
+    let boxIndex = 0;
+    for (let i = 0; i < this.model.rootBoxes.length; i++) {
+      // prettier-ignore
       boxIndex += this.poseBoxRecurse(
-        this.geometry,
-        boxIndex,
-        box,
-        new THREE.Matrix4(),
-        this.material.map,
-        modelAnimation,
-        frame
+        this.geometry, boxIndex, this.model.rootBoxes[i], rootMatrix, this.material.map, modelAnimation, frame
       );
     }
-    this.geometry.attributes.position.needsUpdate = true;
-    this.geometry.attributes.normal.needsUpdate = true;
-    this.geometry.attributes.uv.needsUpdate = true;
+
+    this.geometry.getAttribute("position").needsUpdate = true;
+    this.geometry.getAttribute("normal").needsUpdate = true;
+    this.geometry.getAttribute("uv").needsUpdate = true;
   }
 
   GetBoxTransform(boxName, modelAnimation, frame) {
@@ -112,7 +108,7 @@ class ModelInstance {
       globalBoxMatrix.multiplyMatrices(boxMatrix, globalBoxMatrix);
       box = box.parent;
     }
-    globalBoxMatrix.decompose(transform.position, transform.orientation, {});
+    globalBoxMatrix.decompose(transform.position, transform.orientation, dummyScale);
 
     return transform;
   }
@@ -183,7 +179,8 @@ class ModelInstance {
         box.orientation
       );
     } else {
-      ({ position, orientation } = box);
+      position = box.position;
+      orientation = box.orientation;
     }
 
     const origin = box.offsetFromPivot
@@ -224,8 +221,8 @@ class ModelInstance {
       .normalize();
 
     // Setup faces
-    const positions = geometry.attributes.position.array;
-    const normals = geometry.attributes.normal.array;
+    const positions = geometry.getAttribute("position").array;
+    const normals = geometry.getAttribute("normal").array;
 
     // prettier-ignore
     this.setupFace(positions, normals, boxIndex * 24 + 0 * 4, rightTopFront, leftTopFront, leftBottomFront, rightBottomFront, frontNormal); // Front
@@ -259,7 +256,7 @@ class ModelInstance {
       [box.size.x, box.size.z] // Top
     ];
 
-    const uvs = geometry.attributes.uv.array;
+    const uvs = geometry.getAttribute("uv").array;
     const { width, height } = texture.image;
     for (let i = 0; i < 6; i++) {
       uvs[(boxIndex * 6 + i) * 8 + 0 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + faceSizes[i][0]) / width;
@@ -278,7 +275,7 @@ class ModelInstance {
     // Recurse
     boxIndex++;
     let boxCount = 1;
-    for (let childBox of Array.from(box.children)) {
+    for (const childBox of box.children) {
       // prettier-ignore
       const childBoxCount = this.poseBoxRecurse(geometry, boxIndex, childBox, boxMatrix, texture, modelAnimation, frame);
       boxIndex += childBoxCount;
