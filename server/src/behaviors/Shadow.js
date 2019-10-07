@@ -9,7 +9,8 @@ const {
   SHADOW_MAX_WANDERING_TIME,
   SHADOW_MAX_WAITING_TIME,
   SHADOW_MIN_WAITING_TIME,
-  SHADOW_SPEED
+  SHADOW_SPEED,
+  SHADOW_RADIUS
 } = require("../config");
 const { randomFloatInRange, randomAngle } = require("../utils/random");
 const { timeToTicks } = require("../utils/convertTicks");
@@ -20,7 +21,7 @@ const Orb = require("./Orb");
 const effectiveShadowSpeed = SHADOW_SPEED / TICKS_PER_SECOND;
 
 class Shadow extends Entity {
-  static RADIUS = 0.1;
+  static RADIUS = SHADOW_RADIUS;
 
   static Behavior = {
     WAITING: "WAITING",

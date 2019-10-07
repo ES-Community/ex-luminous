@@ -1,11 +1,11 @@
 "use strict";
 
-const { MAP_SIZE_X, MAP_SIZE_Z } = require("../config");
+const { MAP_SIZE_X, MAP_SIZE_Z, ENTITY_DEFAULT_RADIUS } = require("../config");
 const getId = require("../utils/getId");
 const mandatory = require("../utils/mandatoryParam");
 
 class Entity {
-  static RADIUS = 0.5;
+  static RADIUS = ENTITY_DEFAULT_RADIUS;
 
   constructor(position = mandatory("position"), healthPoints = mandatory("healthPoints")) {
     this.id = getId();

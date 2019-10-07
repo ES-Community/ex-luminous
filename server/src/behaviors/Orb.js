@@ -2,17 +2,16 @@
 
 const { randomPosition } = require("../utils/random");
 
-const { PLAYER_LOAD_DELAY, PLAYER_RESPAWN_TIME } = require("../config");
+const { ORB_LOAD_DELAY, ORB_RESPAWN_TIME, ORB_RADIUS, ORB_MAX_HP } = require("../config");
 const { timeToTicks } = require("../utils/convertTicks");
 
 const Entity = require("./Entity");
 
-const playerLoadRespawnDelayTicks = Math.round(timeToTicks(PLAYER_LOAD_DELAY));
-const playerRespawnTimeTicks = Math.round(timeToTicks(PLAYER_RESPAWN_TIME));
-const ORB_MAX_HP = 1;
+const playerLoadRespawnDelayTicks = Math.round(timeToTicks(ORB_LOAD_DELAY));
+const playerRespawnTimeTicks = Math.round(timeToTicks(ORB_RESPAWN_TIME));
 
 class Orb extends Entity {
-  static RADIUS = 0.2;
+  static RADIUS = ORB_RADIUS;
 
   static Behavior = {
     NORMAL: "NORMAL",
