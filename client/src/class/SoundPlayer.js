@@ -118,7 +118,7 @@ class SoundPlayer {
     }
 
     if (this.source !== null) {
-      if (this.source.mediaElement !== null) {
+      if (typeof this.source.mediaElement !== "undefined") {
         this.source.mediaElement.pause();
         this.source.mediaElement.currentTime = 0;
       } else {

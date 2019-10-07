@@ -7,8 +7,7 @@ const ScriptBehavior = require("../class/ScriptBehavior");
 const THREE = require("three");
 
 class PlayerBehavior extends ScriptBehavior {
-
-  constructor(canMove = true){
+  constructor(canMove = true) {
     super();
     this.canMove = canMove;
   }
@@ -42,7 +41,8 @@ class PlayerBehavior extends ScriptBehavior {
   awake() {
     const currentPos = this.actor.threeObject.position;
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
-    this.speed = 0.6;
+
+    this.speed = 0.45;
 
     this.radiusLight = 20;
     this.light = new THREE.PointLight(0x282208, 2, this.radiusLight * 4, 1);
@@ -71,7 +71,7 @@ class PlayerBehavior extends ScriptBehavior {
     const cubeMiddleSize = game.cubeSize / 2;
     const mapSizeZ = game.mapSize.z * game.cubeSize - 1;
     const mapSizeX = game.mapSize.x * game.cubeSize - 1;
-    if(this.canMove){
+    if (this.canMove) {
       if (game.input.isKeyDown("KeyW")) {
         this.actor.threeObject.translateX(-this.speed);
       }

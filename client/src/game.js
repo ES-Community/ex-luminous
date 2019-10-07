@@ -12,6 +12,7 @@ const ModelLoader = require("./class/ModelLoader");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
 const Camera = require("./class/Camera");
+const Timer = require("./class/Timer");
 const SoundPlayer = require("./class/SoundPlayer");
 const { updateLight, updateMeshTexture, updateLightColor } = require("./utils");
 const grpc = require("./grpc.js");
@@ -36,6 +37,11 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
     case "LIGHT": {
       updateMeshTexture(actor, grassTexture[1]);
       updateLight(actor, "add");
+      const herbeLight = game.localCache.Sounds.get("herbeLight");
+      if (herbeLight.getState() !== SoundPlayer.State.Playing) {
+        herbeLight.play();
+      }
+
       break;
     }
     case "LOADING": {
@@ -61,10 +67,26 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
 function updatePlayer(actor, currentBehavior, gameData) {
   switch (currentBehavior) {
     case "NORMAL": {
+      if (game.data.hunt.walk()) {
+        const chasedSound = game.localCache.Sounds.get("chased");
+        if (chasedSound.getState() === SoundPlayer.State.Playing) {
+          chasedSound.stop();
+        }
+      }
       // updateMeshTexture(actor, orbTexture[0]);
+
       break;
     }
     case "HUNTED": {
+      if (!game.data.hunt.isStarted) {
+        game.data.hunt.start();
+
+        const chasedSound = game.localCache.Sounds.get("chased");
+        if (chasedSound.getState() !== SoundPlayer.State.Playing) {
+          chasedSound.play();
+        }
+      }
+
       // updateMeshTexture(actor, orbTexture[1]);
       break;
     }
@@ -72,6 +94,11 @@ function updatePlayer(actor, currentBehavior, gameData) {
       break;
     }
     case "DEAD": {
+      const deathSound = game.localCache.Sounds.get("death");
+      if (deathSound.getState() !== SoundPlayer.State.Playing) {
+        deathSound.play();
+      }
+
       var color = new THREE.Color("rgb(180, 180, 180)");
       if (actor.behaviors.length > 0) {
         actor.behaviors[0].canMove = false;
@@ -85,6 +112,15 @@ function updatePlayer(actor, currentBehavior, gameData) {
       });
       material.needsUpdate = true;
       updateMeshTexture(actor, null, material);
+
+      // const playerPosition = actor.threeObject.position;
+      // scene.remove(actor.threeObject);
+      // const orbsColor = new THREE.Color("grey");
+      // const playerBehavior = new PlayerBehavior(false);
+      // const orbsMesh = playerBehavior.CreateMesh(orbsColor);
+      // orbsActor.setGlobalPosition(playerBehavior.PosToVector3(playerPosition));
+      // actor.threeObject.add(orbsMesh);
+      // scene.add(actor);
       break;
     }
     case "RESPAWN": {
@@ -106,7 +142,7 @@ function updatePlayer(actor, currentBehavior, gameData) {
           type: "player-hasRespawn",
           data: null
         });
-      })
+      });
       break;
     }
   }
@@ -221,15 +257,34 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let isFirstGameData = true;
 
   // Setup GameRenderer
-  window.game = new GameRenderer(mapSize);
+  const game = new GameRenderer(mapSize);
+  window.game = game;
   game.modelLoader = new ModelLoader({ modelsPath, texturePath });
   game.gameDataStream;
+  game.data = {
+    hunt: new Timer(120, {
+      autoStart: false,
+      keepIterating: false
+    })
+  };
   GridBehavior.cubeSize = game.cubeSize;
 
-  // const mySound = SoundPlayer.loadSoundAsset(game.audio, "O218.ogg", { loop: true });
-  // game.on("init", () => {
-  //   mySound.play();
-  // });
+  game.audio.masterVolume = 0.3;
+  const bgSound = await SoundPlayer.loadSoundAsset(game.audio, "back-ambient-void.ogg", {
+    loop: true,
+    volume: 0.5
+  });
+  const chaseSound = await SoundPlayer.loadSoundAsset(game.audio, "hon-won.wav", { volume: 0.8 });
+  const herbeSound = await SoundPlayer.loadSoundAsset(game.audio, "giling.ogg", { volume: 0.8 });
+  const deathSound = await SoundPlayer.loadSoundAsset(game.audio, "death.wav", { volume: 0.8 });
+
+  game.localCache.Sounds.set("background", bgSound);
+  game.localCache.Sounds.set("chased", chaseSound);
+  game.localCache.Sounds.set("herbeLight", herbeSound);
+  game.localCache.Sounds.set("death", deathSound);
+  game.on("init", () => {
+    bgSound.play();
+  });
 
   // Setup all Scenes default items
   const currentScene = new Scene();

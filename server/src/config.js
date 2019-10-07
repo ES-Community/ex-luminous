@@ -21,7 +21,7 @@ module.exports = {
    */
   GRASS_LOAD_DELAY: 4,
 
-   /**
+  /**
    * Time that a player must be in contact with a player until it starts loading the respawn.
    */
   PLAYER_LOAD_DELAY: 4,
@@ -42,5 +42,5 @@ module.exports = {
   SHADOW_MAX_WANDERING_TIME: 4,
   SHADOW_MAX_WAITING_TIME: 5,
   SHADOW_MIN_WAITING_TIME: 2,
-  SHADOW_SPEED: 1
+  SHADOW_SPEED: 1.5
 };

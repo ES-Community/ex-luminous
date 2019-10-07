@@ -9,11 +9,12 @@ class Timer {
    * @param {boolean} [options.keepIterating]
    */
   constructor(tickInterval = 60, options = {}) {
-    const { autoStart = Timer.AutoStart, keepIterating = Timer.KeepIterating } = options;
+    const { autoStart = Timer.AutoStart, keepIterating = Timer.KeepIterating, callback = null } = options;
 
     this.tickInterval = tickInterval;
     this.isStarted = autoStart;
     this.keepIterating = keepIterating;
+    this.callback = callback;
     this.tick = 0;
   }
 
@@ -36,6 +37,9 @@ class Timer {
     }
 
     this.tick = 0;
+    if (this.callback !== null) {
+      this.callback();
+    }
     return true;
   }
 }
