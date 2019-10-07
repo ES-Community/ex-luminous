@@ -22,6 +22,7 @@ class GrassBehavior extends ScriptBehavior {
 
   awake() {
     game.modelLoader.load("Herbe", "Herbe_Neutre.png").then((model) => {
+      model.children[0].material.needsUpdate = true;
       this.actor.threeObject.add(model);
       this.actor.threeObject.add(GrassBehavior.CreateLight());
     });

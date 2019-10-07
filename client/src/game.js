@@ -313,11 +313,9 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "grass-dead") {
       /** @type {Actor} */
       const grassActor = game.localCache.Grass.get(payload.id);
-      grassActor.triggerBehaviorEvent("destroy");
-      grassActor.destroy();
-      game.objectsToBeDeleted.push(grassActor.threeObject);
+      grassActor.threeObject.children[1].intensity = 0;
+      grassActor.threeObject.remove(grassActor.threeObject.children[0]);
 
-      // console.log(grassActor.behaviors);
       // updateGrass(grassActor, "DEAD", grassTexture, currentScene.scene);
     } else if (type === "player-respawn") {
       /** @type {Actor} */

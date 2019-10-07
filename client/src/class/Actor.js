@@ -41,8 +41,9 @@ class Actor {
     }
   }
 
-  destroy() {
-    for (const children of this.threeObject.children) {
+  destroy(childrens = this.threeObject.children) {
+    for (const children of childrens) {
+      this.destroy(children.children);
       this.threeObject.remove(children);
     }
   }

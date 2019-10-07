@@ -8,13 +8,15 @@ const THREE = require("three");
 
 class PlayerBehavior extends ScriptBehavior {
   static CreateMesh(color = 0xc4c2ad) {
-    const geometry = new THREE.SphereBufferGeometry(1.5, 32, 32);
+    const geometry = new THREE.SphereBufferGeometry(3, 32, 32);
     const material = new THREE.MeshStandardMaterial({
       color,
       roughness: 0.5,
       metalness: 1,
       side: THREE.BackSide
     });
+    material.needsUpdate = true;
+
     const mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(0, 2, 0);
     return mesh;

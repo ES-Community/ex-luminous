@@ -12,10 +12,13 @@ const material = new THREE.MeshStandardMaterial({
   map: GroundGrass,
   metalness: 0
 });
+material.needsUpdate = true;
+
 const material2 = new THREE.MeshStandardMaterial({
   map: GroundGrass2,
   metalness: 0
 });
+material2.needsUpdate = true;
 
 const Grid = {
   cubeSize: 4,
