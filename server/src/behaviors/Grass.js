@@ -59,6 +59,7 @@ class Grass extends Entity {
           if (++this.orbContactTicks === grassLoadDelayTicks) {
             this.orbContactTicks = 0;
             this.currentBehavior = Grass.Behavior.LOADING;
+            this.orb.loadingGrass = this;
           }
         }
         break;
@@ -72,11 +73,13 @@ class Grass extends Entity {
         this.bloomTicks++;
         this.loading = this.bloomTicks / grassBloomTimeTicks;
         if (this.bloomTicks === grassBloomTimeTicks) {
+          this.orb.loadingGrass = null;
           this.currentBehavior = Grass.Behavior.BLOOM;
           break;
         }
 
         if (this.isTouchingAnyShadow(gameState)) {
+          this.orb.loadingGrass = null;
           this.currentBehavior = Grass.Behavior.WOUNDED;
           break;
         }
@@ -84,6 +87,12 @@ class Grass extends Entity {
         break;
       }
       case Grass.Behavior.UNLOADING: {
+        if (this.orb) {
+          this.orb.loadingGrass = this;
+          this.currentBehavior = Grass.Behavior.LOADING;
+          break;
+        }
+
         this.bloomTicks--;
         this.loading = this.bloomTicks / grassBloomTimeTicks;
         if (this.bloomTicks === 0) {
@@ -126,7 +135,6 @@ class Grass extends Entity {
       if (closestOrb !== this.orb) {
         this.clearOrb();
         this.orb = closestOrb;
-        this.orb.loadingGrass = this;
       }
     }
   }
