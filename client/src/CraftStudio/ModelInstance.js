@@ -147,12 +147,12 @@ class ModelInstance {
       indices[i * 6 + 5] = (i * 4 + 3) % (bufChunkSize * bufChunkDivider);
     }
 
-    geometry.offsets = [];
+    geometry.groups = [];
     const offsets = (triangles * 3) / (((bufChunkSize * bufChunkDivider) / 4) * 6);
 
     for (i = 0, end1 = offsets, asc1 = 0 <= end1; asc1 ? i < end1 : i > end1; asc1 ? i++ : i--) {
       const offset = {
-        index: i * bufChunkSize * bufChunkDivider,
+        materialIndex: i * bufChunkSize * bufChunkDivider,
         start: ((i * bufChunkSize * bufChunkDivider) / 4) * 6,
         count: Math.min(
           ((bufChunkSize * bufChunkDivider) / 4) * 6,
@@ -160,7 +160,7 @@ class ModelInstance {
         )
       };
 
-      geometry.offsets.push(offset);
+      geometry.groups.push(offset);
     }
 
     return geometry;
