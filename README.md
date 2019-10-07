@@ -8,7 +8,7 @@ The theme is **Start with nothing**.
 
 ## Prerequisites
 
-- [Node.js 12](https://nodejs.org/en/) with npm
+- [Node.js 12](https://nodejs.org/en/)
 
 ## Getting Started
 

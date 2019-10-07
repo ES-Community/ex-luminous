@@ -15,8 +15,9 @@ jobs:
           npm ci
           npm run package-linux
           ls dist
+          tar -czf dist/ExLuminous-linux-x64.tar.gz dist/ExLuminous-linux-x64
         displayName: "Build for Linux"
-      - publish: $(System.DefaultWorkingDirectory)/client/dist/ExLuminous-linux-x64
+      - publish: $(System.DefaultWorkingDirectory)/client/dist/ExLuminous-linux-x64.tar.gz
         artifact: ExLuminousLinux
   - job: Mac
     pool:
@@ -31,7 +32,10 @@ jobs:
           npm ci
           npm run package-mac
           ls dist
+          tar -czf dist/ExLuminous-darwin-x64.tar.gz dist/ExLuminous-darwin-x64
         displayName: "Build for Mac"
+      - publish: $(System.DefaultWorkingDirectory)/client/dist/ExLuminous-darwin-x64.tar.gz
+        artifact: ExLuminousMac
   - job: Windows
     pool:
       vmImage: "windows-latest"
@@ -45,4 +49,7 @@ jobs:
           npm ci
           npm run package-win
           ls dist
+          Compress-Archive dist/ExLuminous-win32-x64 dist/ExLuminous-win32-x64.zip
         displayName: "Build for Windows"
+      - publish: $(System.DefaultWorkingDirectory)/client/dist/ExLuminous-win32-x64.zip
+        artifact: ExLuminousWindows
