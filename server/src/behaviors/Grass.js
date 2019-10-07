@@ -94,14 +94,6 @@ class Grass extends Entity {
     }
   }
 
-  isTouchingAnyOrb(gameState) {
-    return gameState.onlineOrbs().some((orb) => this.isTouching(orb));
-  }
-
-  isTouchingAnyShadow(gameState) {
-    return gameState.shadows.some((shadow) => this.isTouching(shadow));
-  }
-
   isLuminous() {
     return this.currentBehavior !== Grass.Behavior.NORMAL && this.currentBehavior !== Grass.Behavior.WOUNDED;
   }

@@ -2,8 +2,14 @@
 
 const { randomPosition } = require("../utils/random");
 
+
+const { PLAYER_LOAD_DELAY, PLAYER_RESPAWN_TIME } = require("../config");
+const { timeToTicks } = require("../utils/convertTicks");
+
 const Entity = require("./Entity");
 
+const playerLoadRespawnDelayTicks = Math.round(timeToTicks(PLAYER_LOAD_DELAY));
+const playerRespawnTimeTicks = Math.round(timeToTicks(PLAYER_RESPAWN_TIME));
 const ORB_MAX_HP = 1;
 
 class Orb extends Entity {
@@ -12,6 +18,9 @@ class Orb extends Entity {
     HUNTED: "HUNTED",
     WOUNDED: "WOUNDED",
     DEAD: "DEAD",
+    UNLOADRESPAWN: "UNLOADRESPAWN",
+    LOADRESPAWN: "LOADRESPAWN",
+    RESPAWN: "RESPAWN",
     OFFLINE: "OFFLINE"
   };
   constructor(name) {
@@ -20,6 +29,7 @@ class Orb extends Entity {
     this.huntedBy = [];
     this.interactingWith = null;
     this.currentBehavior = Orb.Behavior.NORMAL;
+    this.respawnTicks = 0;
     this.isDead = false;
   }
 
@@ -35,6 +45,9 @@ class Orb extends Entity {
   update(gameState) {
     if (this.currentBehavior === "OFFLINE") {
       return;
+    }
+    if (this.isDead == true) {
+      this.currentBehavior == Orb.Behavior.DEAD;
     }
     this.isHunted();
     switch (this.currentBehavior) {
@@ -53,13 +66,34 @@ class Orb extends Entity {
         if (this.healthPoints === 0) {
           this.currentBehavior = Orb.Behavior.DEAD;
           game.emit("change", "player-dead", { id: this.id });
-          this.delete();
         }
         break;
       }
+      case Orb.Behavior.UNLOADRESPAWN: {
+        if (--this.respawnTicks === 0) {
+          this.currentBehavior = Orb.Behavior.DEAD;
+        }
+        break;
+      }
+      case Orb.Behavior.LOADRESPAWN: {
+        if (!this.isTouchingAnyOrb(gameState)) {
+          this.currentBehavior = Orb.Behavior.UNLOADRESPAWN;
+        } else if (++this.respawnTicks === playerRespawnTimeTicks) {
+          this.currentBehavior = Orb.Behavior.RESPAWN;
+        }
+        break;
+      }
+      case Orb.Behavior.RESPAWN: {
+        game.emit("change", "player-respawn", { id: this.id });
+      }
       case Orb.Behavior.DEAD: {
-        console.error("player is dead") 
-               break;
+        if (this.isTouchingAnyOrb(gameState)) {
+          if (++this.orbContact === playerLoadRespawnDelayTicks) {
+            this.orbContact = 0;
+            this.currentBehavior = Orb.Behavior.LOADRESPAWN;
+          }
+        }
+        break;
       }
       default: {
         throw new Error(`missing behavior implementation: ${this.currentBehavior}`);
@@ -74,9 +108,6 @@ class Orb extends Entity {
     }
   }
 
-  isTouchingAnyShadow(gameState) {
-    return gameState.shadows.some((shadow) => this.isTouching(shadow));
-  }
 }
 
 module.exports = Orb;

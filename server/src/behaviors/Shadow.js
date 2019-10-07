@@ -99,7 +99,7 @@ class Shadow extends Entity {
     const orb = orbList.find(inVisionRadius);
 
 
-    if (orb) {
+    if (orb && orb.isDead == false) {
       this.currentMeal = orb.entity;
       this.currentBehavior = Shadow.Behavior.HUNTING;
       orb.entity.huntedBy.push(this);

@@ -59,6 +59,13 @@ class Game extends EventEmitter {
         }
         break;
       }
+      case "player-hasRespawn": {
+        const orb = this.findOrbByPlayer(player);
+        if (typeof orb !== "undefined") {
+          orb.isDead = false;
+          orb.currentBehavior = "NORMAL"
+        }
+      }
       default:
         throw new Error("Missing data handler");
     }

@@ -20,6 +20,15 @@ module.exports = {
    * Time that a player must be in contact with a grass until it starts loading.
    */
   GRASS_LOAD_DELAY: 4,
+
+   /**
+   * Time that a player must be in contact with a player until it starts loading the respawn.
+   */
+  PLAYER_LOAD_DELAY: 4,
+  /**
+   * Time during which the grass must be loading until it respawn.
+   */
+  PLAYER_RESPAWN_TIME: 8,
   /**
    * Time during which the grass must be loading until it blooms.
    */
