@@ -41,11 +41,12 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
     case "LIGHT": {
       updateMeshTexture(actor, grassTexture[1]);
       updateLight(actor, "add");
-      const herbeLight = game.localCache.Sounds.get("herbeLight");
-      if (herbeLight.getState() !== SoundPlayer.State.Playing) {
-        herbeLight.play();
+      if (actor.currentBehavior === "NORMAL") {
+        const herbeLight = game.localCache.Sounds.get("herbeLight");
+        if (herbeLight.getState() !== SoundPlayer.State.Playing) {
+          herbeLight.play();
+        }
       }
-
       break;
     }
     case "LOADING": {
@@ -423,8 +424,8 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
           /** @type {Actor} */
           const grassActor = game.localCache.Grass.get(grass.id);
           if (grassActor.currentBehavior !== grass.currentBehavior) {
-            grassActor.currentBehavior = grass.currentBehavior;
             updateGrass(grassActor, grass.currentBehavior, grassTexture, currentScene.scene);
+            grassActor.currentBehavior = grass.currentBehavior;
           }
         } else {
           game.localCache.Grass.set(grass.id);
