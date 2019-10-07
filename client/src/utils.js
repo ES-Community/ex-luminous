@@ -4,10 +4,10 @@
 const THREE = require("three");
 
 function updateMeshTexture(actor, texture = null, color = null) {
-  actor.threeObject.traverse(function (obj) {
+  actor.threeObject.traverse(function(obj) {
     if (obj instanceof THREE.Mesh) {
       if (texture == null && color == null) {
-        return
+        return;
       }
       if (texture == null) {
         obj.material = color;
@@ -56,6 +56,5 @@ function updateLight(actor, type) {
 module.exports = {
   updateMeshTexture,
   updateMesh3D,
-  updateLight,
-  updateLightColor
+  updateLight
 };
