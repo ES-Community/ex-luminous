@@ -39,21 +39,19 @@ async function loadCraftStudioModel(modelName, loadAnimation = false) {
   });
   texture.needsUpdate = true;
 
-  const model = new Model(modelDef, texture);
-  const modelInstance = new ModelInstance(model);
-  const mesh = new THREE.Mesh(modelInstance.geometry, modelInstance.material);
+  const model = new ModelInstance(new Model(modelDef, texture));
+  const mesh = new THREE.Mesh(model.geometry, model.material);
   mesh.scale.set(1.0 / 16.0, 1.0 / 16.0, 1.0 / 16.0);
   mesh.geometry.computeBoundingSphere();
 
+  // TODO: load many animations ? (not only one...);
+  const result = { model, mesh, animation: null };
   if (loadAnimation) {
     const modelAnimDef = await readJSON(join(MODELS_DIR, "animations", `${modelName}.csjsmodelanim`));
-    const animation = new ModelAnimation(modelAnimDef);
-    animation.animationFrame = 0;
-
-    return { mesh, animation };
+    result.animation = new ModelAnimation(modelAnimDef);
   }
 
-  return { mesh, animation: null };
+  return result;
 }
 
 module.exports = loadCraftStudioModel;

@@ -45,42 +45,40 @@ function computeFrameInterpolationFactor(previousFrame, nextFrame, frame, durati
     if (frame < previousFrame) {
       frame += duration;
     }
+
     factor = (frame - previousFrame) / length;
   }
+
   return factor;
 }
 
 class ModelAnimation {
   constructor(modelAnimDef) {
-    var delta, frame, nodeAnim, nodeName;
     this.duration = modelAnimDef.duration;
     this.holdLastKeyframe = modelAnimDef.holdLastKeyframe;
     this.nodeAnimations = {};
+    this.animationFrame = 0;
 
-    for (nodeName in modelAnimDef.nodeAnimations) {
+    for (const nodeName in modelAnimDef.nodeAnimations) {
       const nodeAnimData = modelAnimDef.nodeAnimations[nodeName];
-      this.nodeAnimations[nodeName] = nodeAnim = {
+      const nodeAnim = {
         positionKeys: [],
         orientationKeys: []
       };
-      const ref1 = nodeAnimData.position;
-      for (frame in ref1) {
-        delta = ref1[frame];
+      this.nodeAnimations[nodeName] = nodeAnim;
+
+      for (const frame in nodeAnimData.position) {
         nodeAnim.positionKeys.push({
           frame: parseInt(frame),
-          delta: new THREE.Vector3(delta[0], delta[1], delta[2])
+          delta: new THREE.Vector3(...nodeAnimData.position[frame])
         });
       }
 
-      const ref2 = nodeAnimData.rotation;
-      for (frame in ref2) {
-        delta = ref2[frame];
-        const quaternionDelta = new THREE.Quaternion().setFromEuler(
-          new THREE.Euler(THREE.Math.degToRad(delta[0]), THREE.Math.degToRad(delta[1]), THREE.Math.degToRad(delta[2]))
-        );
+      for (const frame in nodeAnimData.position) {
+        const position = nodeAnimData.position[frame].map((value) => THREE.Math.degToRad(value));
         nodeAnim.orientationKeys.push({
           frame: parseInt(frame),
-          delta: quaternionDelta
+          delta: new THREE.Quaternion().setFromEuler(new THREE.Euler(...position))
         });
       }
     }
@@ -127,6 +125,7 @@ class ModelAnimation {
       frame,
       this.duration
     );
+
     return keyframes.previous.delta.clone().slerp(keyframes.next.delta, factor);
   }
 }

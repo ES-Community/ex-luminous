@@ -8,26 +8,6 @@
 // Require Third-party Dependencies
 const THREE = require("three");
 
-// Variables
-const leftTopBack = new THREE.Vector3();
-const rightTopBack = new THREE.Vector3();
-const rightBottomBack = new THREE.Vector3();
-const leftBottomBack = new THREE.Vector3();
-const rightTopFront = new THREE.Vector3();
-const leftTopFront = new THREE.Vector3();
-const leftBottomFront = new THREE.Vector3();
-const rightBottomFront = new THREE.Vector3();
-
-const v1 = new THREE.Vector3();
-const v2 = new THREE.Vector3();
-
-const frontNormal = new THREE.Vector3();
-const backNormal = new THREE.Vector3();
-const rightNormal = new THREE.Vector3();
-const bottomNormal = new THREE.Vector3();
-const leftNormal = new THREE.Vector3();
-const topNormal = new THREE.Vector3();
-
 class ModelInstance {
   constructor(model) {
     this.model = model;
@@ -40,6 +20,24 @@ class ModelInstance {
       transparent: model.transparent === true,
       blending: THREE.NormalBlending
     });
+    this.leftTopBack = new THREE.Vector3();
+    this.rightTopBack = new THREE.Vector3();
+    this.rightBottomBack = new THREE.Vector3();
+    this.leftBottomBack = new THREE.Vector3();
+    this.rightTopFront = new THREE.Vector3();
+    this.leftTopFront = new THREE.Vector3();
+    this.leftBottomFront = new THREE.Vector3();
+    this.rightBottomFront = new THREE.Vector3();
+
+    this.v1 = new THREE.Vector3();
+    this.v2 = new THREE.Vector3();
+
+    this.frontNormal = new THREE.Vector3();
+    this.backNormal = new THREE.Vector3();
+    this.rightNormal = new THREE.Vector3();
+    this.bottomNormal = new THREE.Vector3();
+    this.leftNormal = new THREE.Vector3();
+    this.topNormal = new THREE.Vector3();
     this.ResetPose();
   }
 
@@ -168,15 +166,14 @@ class ModelInstance {
 
   poseBoxRecurse(geometry, boxIndex, box, parentMatrix, texture, modelAnimation, frame) {
     let orientation, position;
-    if (modelAnimation != null) {
+    if (modelAnimation !== null) {
       position = box.position.clone().add(modelAnimation.GetPositionDelta(box.name, frame));
       orientation = new THREE.Quaternion().multiplyQuaternions(
         modelAnimation.GetOrientationDelta(box.name, frame),
         box.orientation
       );
     } else {
-      ({ position } = box);
-      ({ orientation } = box);
+      ({ position, orientation } = box);
     }
 
     const origin = box.offsetFromPivot
@@ -187,99 +184,69 @@ class ModelInstance {
     boxMatrix.multiplyMatrices(parentMatrix, boxMatrix);
 
     // Vertex positions
-    leftTopBack.copy(box.vertexCoords[0]).applyMatrix4(boxMatrix);
-    rightTopBack.copy(box.vertexCoords[1]).applyMatrix4(boxMatrix);
-    rightBottomBack.copy(box.vertexCoords[2]).applyMatrix4(boxMatrix);
-    leftBottomBack.copy(box.vertexCoords[3]).applyMatrix4(boxMatrix);
-    rightTopFront.copy(box.vertexCoords[4]).applyMatrix4(boxMatrix);
-    leftTopFront.copy(box.vertexCoords[5]).applyMatrix4(boxMatrix);
-    leftBottomFront.copy(box.vertexCoords[6]).applyMatrix4(boxMatrix);
-    rightBottomFront.copy(box.vertexCoords[7]).applyMatrix4(boxMatrix);
+    this.leftTopBack.copy(box.vertexCoords[0]).applyMatrix4(boxMatrix);
+    this.rightTopBack.copy(box.vertexCoords[1]).applyMatrix4(boxMatrix);
+    this.rightBottomBack.copy(box.vertexCoords[2]).applyMatrix4(boxMatrix);
+    this.leftBottomBack.copy(box.vertexCoords[3]).applyMatrix4(boxMatrix);
+    this.rightTopFront.copy(box.vertexCoords[4]).applyMatrix4(boxMatrix);
+    this.leftTopFront.copy(box.vertexCoords[5]).applyMatrix4(boxMatrix);
+    this.leftBottomFront.copy(box.vertexCoords[6]).applyMatrix4(boxMatrix);
+    this.rightBottomFront.copy(box.vertexCoords[7]).applyMatrix4(boxMatrix);
 
     // Face normals
-    frontNormal
-      .crossVectors(v1.subVectors(leftBottomFront, leftTopFront), v2.subVectors(rightTopFront, leftTopFront))
+    this.frontNormal
+      .crossVectors(
+        this.v1.subVectors(this.leftBottomFront, this.leftTopFront),
+        this.v2.subVectors(this.rightTopFront, this.leftTopFront)
+      )
       .normalize();
-    backNormal
-      .crossVectors(v1.subVectors(rightBottomBack, rightTopBack), v2.subVectors(leftTopBack, rightTopBack))
+    this.backNormal
+      .crossVectors(
+        this.v1.subVectors(this.rightBottomBack, this.rightTopBack),
+        this.v2.subVectors(this.leftTopBack, this.rightTopBack)
+      )
       .normalize();
-    rightNormal
-      .crossVectors(v1.subVectors(rightBottomFront, rightTopFront), v2.subVectors(rightTopBack, rightTopFront))
+    this.rightNormal
+      .crossVectors(
+        this.v1.subVectors(this.rightBottomFront, this.rightTopFront),
+        this.v2.subVectors(this.rightTopBack, this.rightTopFront)
+      )
       .normalize();
-    bottomNormal
-      .crossVectors(v1.subVectors(leftBottomBack, leftBottomFront), v2.subVectors(rightBottomFront, leftBottomFront))
+    this.bottomNormal
+      .crossVectors(
+        this.v1.subVectors(this.leftBottomBack, this.leftBottomFront),
+        this.v2.subVectors(this.rightBottomFront, this.leftBottomFront)
+      )
       .normalize();
-    leftNormal
-      .crossVectors(v1.subVectors(leftBottomBack, leftTopBack), v2.subVectors(leftTopFront, leftTopBack))
+    this.leftNormal
+      .crossVectors(
+        this.v1.subVectors(this.leftBottomBack, this.leftTopBack),
+        this.v2.subVectors(this.leftTopFront, this.leftTopBack)
+      )
       .normalize();
-    topNormal
-      .crossVectors(v1.subVectors(leftTopFront, leftTopBack), v2.subVectors(rightTopBack, leftTopBack))
+    this.topNormal
+      .crossVectors(
+        this.v1.subVectors(this.leftTopFront, this.leftTopBack),
+        this.v2.subVectors(this.rightTopBack, this.leftTopBack)
+      )
       .normalize();
 
     // Setup faces
     const positions = geometry.attributes.position.array;
     const normals = geometry.attributes.normal.array;
 
-    this.setupFace(
-      positions,
-      normals,
-      boxIndex * 24 + 0 * 4,
-      rightTopFront,
-      leftTopFront,
-      leftBottomFront,
-      rightBottomFront,
-      frontNormal
-    ); // Front
-    this.setupFace(
-      positions,
-      normals,
-      boxIndex * 24 + 1 * 4,
-      leftTopBack,
-      rightTopBack,
-      rightBottomBack,
-      leftBottomBack,
-      backNormal
-    ); // Back
-    this.setupFace(
-      positions,
-      normals,
-      boxIndex * 24 + 2 * 4,
-      rightTopBack,
-      rightTopFront,
-      rightBottomFront,
-      rightBottomBack,
-      rightNormal
-    ); // Right
-    this.setupFace(
-      positions,
-      normals,
-      boxIndex * 24 + 3 * 4,
-      rightBottomFront,
-      leftBottomFront,
-      leftBottomBack,
-      rightBottomBack,
-      bottomNormal
-    ); // Bottom
-    this.setupFace(
-      positions,
-      normals,
-      boxIndex * 24 + 4 * 4,
-      leftTopFront,
-      leftTopBack,
-      leftBottomBack,
-      leftBottomFront,
-      leftNormal
-    ); // Left
-    this.setupFace(
-      positions,
-      normals,
-      boxIndex * 24 + 5 * 4,
-      rightTopBack,
-      leftTopBack,
-      leftTopFront,
-      rightTopFront,
-      topNormal
-    ); // Top
+    // prettier-ignore
+    this.setupFace(positions, normals, boxIndex * 24 + 0 * 4, this.rightTopFront, this.leftTopFront, this.leftBottomFront, this.rightBottomFront, this.frontNormal); // Front
+    // prettier-ignore
+    this.setupFace(positions, normals, boxIndex * 24 + 1 * 4, this.leftTopBack, this.rightTopBack, this.rightBottomBack, this.leftBottomBack, this.backNormal); // Back
+    // prettier-ignore
+    this.setupFace(positions, normals, boxIndex * 24 + 2 * 4, this.rightTopBack, this.rightTopFront, this.rightBottomFront, this.rightBottomBack, this.rightNormal ); // Right
+    // prettier-ignore
+    this.setupFace(positions, normals, boxIndex * 24 + 3 * 4, this.rightBottomFront, this.leftBottomFront, this.leftBottomBack, this.rightBottomBack, this.bottomNormal); // Bottom
+    // prettier-ignore
+    this.setupFace(positions, normals, boxIndex * 24 + 4 * 4, this.leftTopFront, this.leftTopBack, this.leftBottomBack, this.leftBottomFront, this.leftNormal); // Left
+    // prettier-ignore
+    this.setupFace(positions, normals, boxIndex * 24 + 5 * 4, this.rightTopBack, this.leftTopBack, this.leftTopFront, this.rightTopFront, this.topNormal); // Top
 
     // UVs
     const faceOffsets = [
@@ -301,37 +268,27 @@ class ModelInstance {
     ];
 
     const uvs = geometry.attributes.uv.array;
+    const { width, height } = texture.image;
     for (let i = 0; i < 6; i++) {
-      uvs[(boxIndex * 6 + i) * 8 + 0 * 2 + 0] =
-        (faceOffsets[i][0] + box.texOffset[0] + faceSizes[i][0]) / texture.image.width;
-      uvs[(boxIndex * 6 + i) * 8 + 0 * 2 + 1] = 1 - (faceOffsets[i][1] + box.texOffset[1] + 0) / texture.image.height;
+      uvs[(boxIndex * 6 + i) * 8 + 0 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + faceSizes[i][0]) / width;
+      uvs[(boxIndex * 6 + i) * 8 + 0 * 2 + 1] = 1 - (faceOffsets[i][1] + box.texOffset[1] + 0) / height;
 
-      uvs[(boxIndex * 6 + i) * 8 + 1 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + 0) / texture.image.width;
-      uvs[(boxIndex * 6 + i) * 8 + 1 * 2 + 1] = 1 - (faceOffsets[i][1] + box.texOffset[1] + 0) / texture.image.height;
+      uvs[(boxIndex * 6 + i) * 8 + 1 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + 0) / width;
+      uvs[(boxIndex * 6 + i) * 8 + 1 * 2 + 1] = 1 - (faceOffsets[i][1] + box.texOffset[1] + 0) / height;
 
-      uvs[(boxIndex * 6 + i) * 8 + 2 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + 0) / texture.image.width;
-      uvs[(boxIndex * 6 + i) * 8 + 2 * 2 + 1] =
-        1 - (faceOffsets[i][1] + box.texOffset[1] + faceSizes[i][1]) / texture.image.height;
+      uvs[(boxIndex * 6 + i) * 8 + 2 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + 0) / width;
+      uvs[(boxIndex * 6 + i) * 8 + 2 * 2 + 1] = 1 - (faceOffsets[i][1] + box.texOffset[1] + faceSizes[i][1]) / height;
 
-      uvs[(boxIndex * 6 + i) * 8 + 3 * 2 + 0] =
-        (faceOffsets[i][0] + box.texOffset[0] + faceSizes[i][0]) / texture.image.width;
-      uvs[(boxIndex * 6 + i) * 8 + 3 * 2 + 1] =
-        1 - (faceOffsets[i][1] + box.texOffset[1] + faceSizes[i][1]) / texture.image.height;
+      uvs[(boxIndex * 6 + i) * 8 + 3 * 2 + 0] = (faceOffsets[i][0] + box.texOffset[0] + faceSizes[i][0]) / width;
+      uvs[(boxIndex * 6 + i) * 8 + 3 * 2 + 1] = 1 - (faceOffsets[i][1] + box.texOffset[1] + faceSizes[i][1]) / height;
     }
 
     // Recurse
     boxIndex++;
     let boxCount = 1;
     for (let childBox of Array.from(box.children)) {
-      const childBoxCount = this.poseBoxRecurse(
-        geometry,
-        boxIndex,
-        childBox,
-        boxMatrix,
-        texture,
-        modelAnimation,
-        frame
-      );
+      // prettier-ignore
+      const childBoxCount = this.poseBoxRecurse(geometry, boxIndex, childBox, boxMatrix, texture, modelAnimation, frame);
       boxIndex += childBoxCount;
       boxCount += childBoxCount;
     }
