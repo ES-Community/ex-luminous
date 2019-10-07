@@ -2,7 +2,6 @@
 
 const { randomPosition } = require("../utils/random");
 
-
 const { PLAYER_LOAD_DELAY, PLAYER_RESPAWN_TIME } = require("../config");
 const { timeToTicks } = require("../utils/convertTicks");
 
@@ -30,24 +29,19 @@ class Orb extends Entity {
     this.interactingWith = null;
     this.currentBehavior = Orb.Behavior.NORMAL;
     this.respawnTicks = 0;
-    this.isDead = false;
   }
 
   toJSON() {
     return {
       ...super.toJSON(),
       name: this.name,
-      currentBehavior: this.currentBehavior,
-      isDead: this.isDead
+      currentBehavior: this.currentBehavior
     };
   }
 
   update(gameState) {
     if (this.currentBehavior === "OFFLINE") {
       return;
-    }
-    if (this.isDead == true) {
-      this.currentBehavior == Orb.Behavior.DEAD;
     }
     this.isHunted();
     switch (this.currentBehavior) {
@@ -61,9 +55,7 @@ class Orb extends Entity {
         break;
       }
       case Orb.Behavior.WOUNDED: {
-        console.error("player is wounded")
-        this.healthPoints--;
-        if (this.healthPoints === 0) {
+        if (--this.healthPoints === 0) {
           this.currentBehavior = Orb.Behavior.DEAD;
           game.emit("change", "player-dead", { id: this.id });
         }
@@ -85,6 +77,7 @@ class Orb extends Entity {
       }
       case Orb.Behavior.RESPAWN: {
         game.emit("change", "player-respawn", { id: this.id });
+        break;
       }
       case Orb.Behavior.DEAD: {
         if (this.isTouchingAnyOrb(gameState)) {
@@ -107,7 +100,6 @@ class Orb extends Entity {
       this.currentBehavior = Orb.Behavior.NORMAL;
     }
   }
-
 }
 
 module.exports = Orb;

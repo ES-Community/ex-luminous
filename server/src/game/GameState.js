@@ -19,8 +19,11 @@ class GameState {
     this.grass = generateGrass();
   }
 
-  onlineOrbs() {
-    return this.orbs.filter((orb) => orb.currentBehavior !== "OFFLINE");
+  /**
+   * Returns orbs that are neither DEAD, nor OFFLINE
+   */
+  liveOrbs() {
+    return this.orbs.filter((orb) => orb.currentBehavior !== "OFFLINE" && orb.currentBehavior !== "DEAD");
   }
 }
 

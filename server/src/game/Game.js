@@ -62,9 +62,9 @@ class Game extends EventEmitter {
       case "player-hasRespawn": {
         const orb = this.findOrbByPlayer(player);
         if (typeof orb !== "undefined") {
-          orb.isDead = false;
-          orb.currentBehavior = "NORMAL"
+          orb.currentBehavior = "NORMAL";
         }
+        break;
       }
       default:
         throw new Error("Missing data handler");

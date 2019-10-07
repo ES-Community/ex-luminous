@@ -42,7 +42,7 @@ class Entity {
   }
 
   isTouchingAnyOrb(gameState) {
-    return gameState.onlineOrbs().some((orb) => this.isTouching(orb));
+    return gameState.liveOrbs().some((orb) => this.isTouching(orb));
   }
 
   isTouchingAnyShadow(gameState) {

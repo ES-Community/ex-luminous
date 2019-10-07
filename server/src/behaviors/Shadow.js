@@ -86,7 +86,6 @@ class Shadow extends Entity {
       return item.distance <= visionRadius;
     }
 
-
     const grassList = this.sortByDistance(gameState.grass.filter((grass) => grass.isLuminous()));
     const grass = grassList.find(inVisionRadius);
     if (grass) {
@@ -95,11 +94,10 @@ class Shadow extends Entity {
       return;
     }
 
-    const orbList = this.sortByDistance(gameState.onlineOrbs());
+    const orbList = this.sortByDistance(gameState.liveOrbs());
     const orb = orbList.find(inVisionRadius);
 
-
-    if (orb && orb.entity.isDead == false) {
+    if (orb) {
       this.currentMeal = orb.entity;
       this.currentBehavior = Shadow.Behavior.HUNTING;
       orb.entity.huntedBy.push(this);
