@@ -29,7 +29,7 @@ async function lobbyConnectionAttempt(grpcClient) {
       grpcClient.connect({ name: playerName }, function(err, data) {
         if (err) {
           fadeTxt.innerHTML = `💀 ${err.message}`;
-          fadeSpan.style.display = "block";
+          fadeSpan.style.visibility = "visible";
           resolve(null);
         } else {
           resolve(data);
@@ -41,7 +41,7 @@ async function lobbyConnectionAttempt(grpcClient) {
     }
 
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    fadeSpan.style.display = "none";
+    fadeSpan.style.visibility = "hidden";
     fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
   }
 

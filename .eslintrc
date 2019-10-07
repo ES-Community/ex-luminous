@@ -24,6 +24,7 @@
     "game": true,
     "playerName": true,
     "server": true,
-    "grpcClient": true
+    "grpcClient": true,
+    "isHost": true
   }
 }

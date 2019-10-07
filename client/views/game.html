@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Ludum-dare-45</title>
+    <title>Ex-luminous</title>
     <link rel="stylesheet" href="../public/reset.css" />
     <link rel="stylesheet" href="../public/game.css" />
   </head>
@@ -10,7 +10,10 @@
     <div id="fade">
       <p id="fade-txt"></p>
       <span id="fade-span">New connection attempt in five seconds</span>
-      <div id="close-window" class="btn">close window</div>
+      <div class="buttons-line">
+        <div id="close-window" class="btn">✖️ close window</div>
+        <div id="back-lobby" style="display: none" class="btn">🚪 back to lobby</div>
+      </div>
     </div>
     <div id="game"></div>
     <script>
@@ -22,6 +25,7 @@
       const whatwgLocation = new URL(window.location.href);
       window.server = (whatwgLocation.searchParams.get("server") || "127.0.0.1") + ":50051";
       window.playerName = whatwgLocation.searchParams.get("name") || "invite";
+      window.isHost = Boolean(whatwgLocation.searchParams.get("isHost"));
       fadeTxt.innerHTML = `🕐 Connection in progress to <b>${server}</b>`;
 
       start().catch(console.error);

@@ -45,6 +45,8 @@ async function createGameServer() {
   let gameWindow = new remote.BrowserWindow({
     width: 1200,
     height: 800,
+    autoHideMenuBar: true,
+    icon: join("public", "images", "ludumdare.ico"),
     webPreferences: {
       nodeIntegration: true
     }
@@ -72,7 +74,7 @@ async function createGameServer() {
   });
 
   gameWindow.webContents.openDevTools();
-  gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1&name=${playerName}`);
+  gameWindow.loadURL(`file://${__dirname}/game.html?server=127.0.0.1&name=${playerName}&isHost=1`);
 }
 
 function setupServerInfo(cp) {
@@ -165,7 +167,7 @@ function connectPlayerToServer() {
       sessionStorage.setItem("cachedPlayerName", playerName);
 
       const currentWindow = remote.getCurrentWindow();
-      currentWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}`);
+      currentWindow.loadURL(`file://${__dirname}/game.html?server=${ipValue}&name=${playerName}&isHost=0`);
     }
   });
 }

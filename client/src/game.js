@@ -11,6 +11,7 @@ const GameRenderer = require("./class/GameRenderer.js");
 const ModelLoader = require("./class/ModelLoader");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
+const SoundPlayer = require("./class/SoundPlayer");
 const { updateLight, updateMeshTexture } = require("./utils");
 const grpc = require("./grpc.js");
 
@@ -87,6 +88,17 @@ function updatePlayer(actor, currentBehavior, orbTexture) {
 async function start() {
   window.grpcClient = grpc.createClient(server);
 
+  const backToLobbyBtn = document.getElementById("back-lobby");
+  let lobbyListener;
+  if (!isHost) {
+    backToLobbyBtn.style.display = "flex";
+    lobbyListener = () => {
+      const currentWindow = remote.getCurrentWindow();
+      currentWindow.loadURL(`file://${__dirname}/../views/lobby.html`);
+    };
+    backToLobbyBtn.addEventListener("click", lobbyListener);
+  }
+
   // Setup close button
   const closeWindowBtn = document.getElementById("close-window");
   const closeListener = () => {
@@ -102,6 +114,10 @@ async function start() {
   if (connectionPayload.ok) {
     closeWindowBtn.removeEventListener("click", closeListener);
     closeWindowBtn.classList.add("hide");
+    if (!isHost) {
+      backToLobbyBtn.classList.add("hide");
+      backToLobbyBtn.removeEventListener("click", lobbyListener);
+    }
     fadeTxt.innerHTML = `🚀 Loading and generating game assets`;
 
     const { mapSize } = JSON.parse(connectionPayload.data);
@@ -184,6 +200,11 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   game.mapSize = mapSize;
   game.cubeSize = 16;
   GridBehavior.cubeSize = game.cubeSize;
+
+  // const mySound = SoundPlayer.loadSoundAsset(game.audio, "O218.ogg", { loop: true });
+  // game.on("init", () => {
+  //   mySound.play();
+  // });
 
   const currentScene = new Scene();
   currentScene.background = new THREE.Color("black");
