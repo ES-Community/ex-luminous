@@ -1,6 +1,7 @@
 trigger:
   tags:
-    include: "v*"
+    include:
+      - "*"
 
 jobs:
   - job: Linux
