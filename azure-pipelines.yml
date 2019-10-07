@@ -1,0 +1,48 @@
+trigger:
+  - master
+
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.x'
+    displayName: 'Install Node.js'
+  - script: |
+      cd client
+      npm ci
+      npm run package-linux
+      ls dist
+    displayName: 'Build for Linux'
+  # - publish: $(System.DefaultWorkingDirectory)/client/dist/
+  #   artifact: WebApp
+- job: Mac
+  pool:
+    vmImage: 'macOS-latest'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.x'
+    displayName: 'Install Node.js'
+  - script: |
+      cd client
+      npm ci
+      npm run package-mac
+      ls dist
+    displayName: 'Build for Mac'
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.x'
+    displayName: 'Install Node.js'
+  - script: |
+      cd client
+      npm ci
+      npm run package-win
+      ls dist
+    displayName: 'Build for Windows'
