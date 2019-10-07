@@ -25,8 +25,8 @@ const GrassBehavior = require("./behaviors/GrassBehavior");
 const LightBehavior = require("./behaviors/LightBehavior");
 
 // Variables
-const modelsPath = "../assets/models/";
-const texturePath = "../assets/textures/";
+const modelsPath = __dirname + "/../assets/models/";
+const texturePath = __dirname + "/../assets/textures/";
 const texturesAssets = ["Herbe_Neutre.png", "Herbe_Verte.png", "Orb.png", "Orb_Detect.png"];
 const uselessData = JSON.stringify({ useless: true });
 const globalAudio = new Audio();
