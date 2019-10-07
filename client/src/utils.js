@@ -21,8 +21,13 @@ function updateMesh3D(actor, newMesh) {
 }
 
 function updateLight(actor, type) {
+  /** @type {THREE.PointLight} */
   let light = null;
-  for (const children of actor.threeObject.children) {
+  for (let i = 0; i < actor.threeObject.children.length; i++) {
+    if (i === 0) {
+      continue;
+    }
+    const children = actor.threeObject.children[i];
     if (children instanceof THREE.PointLight) {
       light = children;
       break;
@@ -32,9 +37,12 @@ function updateLight(actor, type) {
     return;
   }
 
-  const isVisible = type === "add";
-  if (light.visible !== isVisible) {
-    light.visible = isVisible;
+  if (type === "add") {
+    light.intensity = 1.5;
+    light.distance = 8 * game.cubeSize;
+  } else {
+    light.intensity = 0.1;
+    light.distance = 3 * game.cubeSize;
   }
 }
 

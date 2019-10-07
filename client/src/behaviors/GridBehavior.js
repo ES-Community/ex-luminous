@@ -9,10 +9,11 @@ const GroundGrass2 = new THREE.TextureLoader().load("../assets/textures/Ground-G
 
 // Cube textures
 const material = new THREE.MeshStandardMaterial({
-  map: GroundGrass
+  map: GroundGrass,
+  metalness: 0
 });
 const material2 = new THREE.MeshStandardMaterial({
-  color: GroundGrass2,
+  map: GroundGrass2,
   metalness: 0
 });
 

@@ -41,6 +41,12 @@ class Actor {
     }
   }
 
+  destroy() {
+    for (const children of this.threeObject.children) {
+      this.threeObject.remove(children);
+    }
+  }
+
   getChildrenActorByName(name) {
     for (const actor of this.childrens) {
       if (actor.name === name) {

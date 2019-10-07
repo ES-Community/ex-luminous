@@ -51,7 +51,8 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
       break;
     }
     case "DEAD": {
-      scene.remove(actor.threeObject);
+      console.log("REMOVE OBJECT!");
+      // scene.remove(actor.threeObject);
       break;
     }
   }
@@ -312,7 +313,12 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "grass-dead") {
       /** @type {Actor} */
       const grassActor = game.localCache.Grass.get(payload.id);
-      updateGrass(grassActor, "DEAD", grassTexture, currentScene.scene);
+      grassActor.triggerBehaviorEvent("destroy");
+      grassActor.destroy();
+      game.objectsToBeDeleted.push(grassActor.threeObject);
+
+      // console.log(grassActor.behaviors);
+      // updateGrass(grassActor, "DEAD", grassTexture, currentScene.scene);
     } else if (type === "player-respawn") {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);

@@ -25,6 +25,7 @@ class GameRenderer extends events {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.BasicShadowMap;
+    this.objectsToBeDeleted = [];
 
     const gameElement = document.getElementById("game");
     gameElement.appendChild(this.renderer.domElement);
@@ -94,9 +95,7 @@ class GameRenderer extends events {
     gameLoop();
     this.resizeRenderer();
     window.onresize = () => this.resizeRenderer();
-    setImmediate(() => {
-      this.emit("init");
-    });
+    setImmediate(() => this.emit("init"));
   }
 
   update(timestamp = 0) {
@@ -116,6 +115,11 @@ class GameRenderer extends events {
     this.emit("update");
     for (const actor of this.currentScene.actors) {
       actor.triggerBehaviorEvent("update");
+    }
+
+    while (this.objectsToBeDeleted.length > 0) {
+      const threeObject = this.objectsToBeDeleted.pop();
+      this.currentScene.scene.remove(threeObject);
     }
     this.renderer.render(this.currentScene.scene, this.camera);
   }

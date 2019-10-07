@@ -37,7 +37,7 @@ class PlayerBehavior extends ScriptBehavior {
     const currentPos = this.actor.threeObject.position;
     this.actor.setGlobalPosition(new THREE.Vector3(currentPos.x, PlayerBehavior.Y_POSITION, currentPos.z));
 
-    this.speed = 0.3;
+    this.speed = 0.6;
 
     this.radiusLight = 20;
     this.light = new THREE.PointLight(0x282208, 2, this.radiusLight * 4, 1);

@@ -7,9 +7,9 @@ const ScriptBehavior = require("../class/ScriptBehavior");
 const THREE = require("three");
 
 class GrassBehavior extends ScriptBehavior {
-  static CreateLight(radius = 5, visible = false) {
-    const light = new THREE.PointLight(0xffffff, 6.5, radius * game.cubeSize, 5);
-    light.position.set(0, 1, 0);
+  static CreateLight(radius = 3, visible = true) {
+    const light = new THREE.PointLight(0xffffff, 0.1, radius * game.cubeSize, 3);
+    light.position.set(0, 14, 0);
     light.visible = visible;
 
     return light;
