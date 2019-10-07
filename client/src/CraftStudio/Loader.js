@@ -27,16 +27,20 @@ async function readJSON(filePath) {
   return JSON.parse(buf.toString());
 }
 
+function loadImage(imagePath) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = imagePath;
+    img.addEventListener("load", () => resolve(img), false);
+  });
+}
+
 async function loadCraftStudioModel(modelName, loadAnimation = false) {
   const modelDef = await readJSON(join(MODELS_DIR, `${modelName}.csjsmodel`));
-  const texture = await new Promise((resolve, reject) => {
-    new THREE.TextureLoader().load(
-      join(ASSETS_DIR, "textures", `${modelName}.png`),
-      (texture) => resolve(texture),
-      void 0,
-      reject
-    );
-  });
+  const img = await loadImage(join(ASSETS_DIR, "textures", `${modelName}.png`));
+
+  // prettier-ignore
+  const texture = new THREE.Texture(img, void 0, void 0, void 0, THREE.NearestFilter, THREE.NearestFilter, void 0, void 0, 0);
   texture.needsUpdate = true;
 
   const model = new ModelInstance(new Model(modelDef, texture));
