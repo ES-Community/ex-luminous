@@ -11,6 +11,7 @@ const GameRenderer = require("./class/GameRenderer.js");
 const ModelLoader = require("./class/ModelLoader");
 const Scene = require("./class/Scene");
 const Actor = require("./class/Actor");
+const Camera = require("./class/Camera");
 const SoundPlayer = require("./class/SoundPlayer");
 const { updateLight, updateMeshTexture } = require("./utils");
 const grpc = require("./grpc.js");
@@ -19,6 +20,10 @@ const grpc = require("./grpc.js");
 const PlayerBehavior = require("./behaviors/PlayerBehavior");
 const GridBehavior = require("./behaviors/GridBehavior");
 const GrassBehavior = require("./behaviors/GrassBehavior");
+
+// Variables
+const modelsPath = "../assets/models/";
+const texturePath = "../assets/textures/";
 
 function updateGrass(actor, currentBehavior, grassTexture, scene) {
   switch (currentBehavior) {
@@ -146,6 +151,8 @@ async function reconnectAndResetGame() {
     }
 
     game.renderer.clear();
+    game.removeAllListeners("update");
+    game.removeAllListeners("init");
     game = null;
     document.getElementById("game").innerHTML = "";
   }
@@ -192,13 +199,8 @@ function createGrass(currentScene, grass) {
 async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   let isFirstGameData = true;
 
-  window.game = new GameRenderer();
-  game.modelLoader = new ModelLoader({
-    modelsPath: "../assets/models/",
-    texturePath: "../assets/textures/"
-  });
-  game.mapSize = mapSize;
-  game.cubeSize = 16;
+  window.game = new GameRenderer(mapSize);
+  game.modelLoader = new ModelLoader({ modelsPath, texturePath });
   game.gameDataStream;
   GridBehavior.cubeSize = game.cubeSize;
 
@@ -208,19 +210,28 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
   // });
 
   const currentScene = new Scene();
-  currentScene.background = new THREE.Color("black");
 
   const Player = new Actor("Player");
   Player.addScriptedBehavior(new PlayerBehavior(true));
   currentScene.add(Player);
 
-  // Initialize Camera & Controls
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-  camera.name = "Camera";
-  camera.position.set(50, 120, 0);
-  camera.lookAt(Player.threeObject.position);
-  currentScene.add(camera);
-  Player.threeObject.add(camera);
+  const camera = new Camera(Player);
+  camera.camera.lookAt(Player.threeObject.position);
+  currentScene.add(camera.camera);
+  Player.threeObject.add(camera.camera);
+  for (const cube of GridBehavior.generateGridEx(mapSize.x, mapSize.z)) {
+    currentScene.add(cube);
+  }
+
+  game.on("update", () => {
+    const playerPos = Player.threeObject.position.clone();
+    gameDataStream.write({
+      type: "player-moved",
+      data: JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize })
+    });
+
+    camera.update(game, playerPos, Player);
+  });
 
   const grassTexture = [
     await game.modelLoader.loadTexture("Herbe_Neutre.png"),
@@ -251,7 +262,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       }
 
       game.renderer.domElement.focus();
-      game.init(currentScene, camera);
+      game.init(currentScene, camera.camera);
       // game.input.lockMouse();
       setTimeout(() => {
         document.getElementById("fade").classList.add("hide");
@@ -308,53 +319,6 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);
       updatePlayer(playerActor, "RESPAWN", orbTexture);
-    }
-  });
-
-  for (const cube of GridBehavior.generateGridEx(mapSize.x, mapSize.z)) {
-    currentScene.add(cube);
-  }
-
-  let rotationSpeed = 0.01;
-  let scrollRange = 10;
-  let timer = 0;
-  let lerpCam = false;
-  let lerpCamDuration = 60;
-  let cameraPosition = camera.position;
-  game.on("update", () => {
-    const playerPos = Player.threeObject.position.clone();
-    gameDataStream.write({
-      type: "player-moved",
-      data: JSON.stringify({ x: playerPos.x / game.cubeSize, z: playerPos.z / game.cubeSize })
-    });
-    camera.lookAt(Player.threeObject.position);
-
-    if (game.input.isKeyDown("KeyM") && !lerpCam) {
-      cameraPosition = camera.position.clone();
-      lerpCam = true;
-    }
-
-    if (lerpCam === true) {
-      const factor = timer / lerpCamDuration;
-      timer++;
-
-      const x = THREE.Math.lerp(cameraPosition.x, cameraPosition.x + scrollRange, factor);
-      const y = THREE.Math.lerp(cameraPosition.y, cameraPosition.y + scrollRange, factor);
-
-      camera.position.set(x, y, 0);
-      if (timer === lerpCamDuration) {
-        lerpCam = false;
-        timer = 0;
-      }
-    }
-
-    if (game.input.isMouseButtonDown(2)) {
-      const mouseDelta = game.input.mouseDelta;
-      // game.input.lockMouse();
-      Player.threeObject.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -mouseDelta.x * rotationSpeed);
-    }
-    if (game.input.wasMouseButtonJustReleased(2)) {
-      // game.input.unlockMouse();
     }
   });
 }

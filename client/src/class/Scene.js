@@ -9,6 +9,7 @@ const Actor = require("./Actor");
 class Scene {
   constructor() {
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color("black");
 
     /** @type {Actor[]} */
     this.actors = [];

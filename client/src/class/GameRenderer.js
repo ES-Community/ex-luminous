@@ -12,9 +12,11 @@ const Audio = require("./Audio.js");
 const Scene = require("./Scene");
 
 class GameRenderer extends events {
-  constructor() {
+  constructor(mapSize, cubeSize = 16) {
     super();
 
+    this.mapSize = mapSize;
+    this.cubeSize = cubeSize;
     this.isInitialized = false;
     this.renderer = new THREE.WebGLRenderer({
       antialias: true
