@@ -14,7 +14,7 @@ const Actor = require("./class/Actor");
 const Camera = require("./class/Camera");
 const Timer = require("./class/Timer");
 const SoundPlayer = require("./class/SoundPlayer");
-const { updateLight, updateMeshTexture, updateLightColor } = require("./utils");
+const { updateLight, updateMeshTexture } = require("./utils");
 const grpc = require("./grpc.js");
 
 // Require Behaviors
@@ -64,7 +64,7 @@ function updateGrass(actor, currentBehavior, grassTexture, scene) {
   }
 }
 
-function updatePlayer(actor, currentBehavior, gameData) {
+function updatePlayer(actor, currentBehavior) {
   switch (currentBehavior) {
     case "NORMAL": {
       if (game.data.hunt.walk()) {
@@ -350,7 +350,7 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
           const orbActor = game.localCache.Orbs.get(orb.id);
           if (orbActor.currentBehavior !== orb.currentBehavior) {
             orbActor.currentBehavior = orb.currentBehavior;
-            updatePlayer(orbActor, orb.currentBehavior, currentScene.scene);
+            updatePlayer(orbActor, orb.currentBehavior);
           }
           if (orb.name === playerName) {
             continue;
@@ -395,11 +395,16 @@ async function initializeGameRenderer(gameDataStream, mapSize, playerName) {
     } else if (type === "player-respawn") {
       /** @type {Actor} */
       const playerActor = game.localCache.Orbs.get(payload.id);
-      updatePlayer(playerActor, "RESPAWN", orbTexture, gameDataStream);
+      updatePlayer(playerActor, "RESPAWN");
+      const uselessData = JSON.stringify({ useless: true });
+      gameDataStream.write({
+        type: "player-hasRespawn",
+        data: uselessData
+      });
     } else if (type === "player-dead") {
       const playerActor = game.localCache.Orbs.get(payload.id);
       if (playerActor.name == "Player") {
-        updatePlayer(playerActor, "DEAD", orbTexture, currentScene.scene);
+        updatePlayer(playerActor, "DEAD");
       }
     }
   });
